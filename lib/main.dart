@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
@@ -508,18 +507,18 @@ class _FirstAppState extends State<FirstApp> {
           ),
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            backgroundColor: Color(0xffF2F2F2),
-            selectedItemColor: Colors.black,
-            unselectedItemColor: Color(0xffB1B1B1),
-            selectedFontSize: 10,
-            unselectedFontSize: 10,
+            backgroundColor: Color(0xffFAFAFA),
+            selectedItemColor: Colors.black.withOpacity(0.7),
+            unselectedItemColor: Color(0xffB1B1B1).withOpacity(0.5),
+            selectedFontSize: 13,
+            unselectedFontSize: 13,
             currentIndex: _currentIndex,
             onTap: _onTap,
             items: [
-              BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: '홈'),
-              BottomNavigationBarItem(icon: Icon(Icons.list_rounded), label: '기록'),
-              BottomNavigationBarItem(icon: Icon(Icons.bar_chart_rounded), label: '단계'),
-              BottomNavigationBarItem(icon: Icon(Icons.info_rounded), label: '우리'),
+              BottomNavigationBarItem(icon: Icon(Icons.home_rounded, size: 25), label: '홈'),
+              BottomNavigationBarItem(icon: Icon(Icons.article_rounded, size: 25), label: '기록'),
+              BottomNavigationBarItem(icon: Icon(Icons.pending_rounded, size: 25), label: '단계'),
+              BottomNavigationBarItem(icon: Icon(Icons.info_rounded, size: 25), label: '우리'),
             ],
           ),
         ),
@@ -1422,16 +1421,27 @@ class _SecondPageState extends State<SecondPage> {
                                                   child: Wrap(
                                                       children: [
                                                         if(dayListAll.length != 0)
-                                                          for(var i = dayListAll[0].memo.toString().length - 1; i > 0; i--)
-                                                            Container(
-                                                              padding: EdgeInsets.all(5),
-                                                              margin: EdgeInsets.all(5),
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(7),
-                                                                color: Color(0xffF2F2F2),
-                                                              ),
-                                                              child: Text('# ' + todayListName[int.parse(dayListAll[0].memo.toString().substring(i-1, i))], style: TextStyle(color: Colors.grey, fontSize: 14)),
-                                                            )
+                                                          if(dayListAll[0].memo.toString().length > 1)
+                                                            for(var i = dayListAll[0].memo.toString().length - 1; i > 0; i--)
+                                                              Container(
+                                                                padding: EdgeInsets.all(5),
+                                                                margin: EdgeInsets.all(5),
+                                                                decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(7),
+                                                                  color: Color(0xffF2F2F2),
+                                                                ),
+                                                                child: Text('# ' + todayListName[int.parse(dayListAll[0].memo.toString().substring(i-1, i))], style: TextStyle(color: Colors.grey, fontSize: 14)),
+                                                              )
+                                                        else if(dayListAll[0].memo.toString().length == 1)
+                                                          Container(
+                                                            padding: EdgeInsets.all(5),
+                                                            margin: EdgeInsets.all(5),
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(7),
+                                                              color: Color(0xffF2F2F2),
+                                                            ),
+                                                            child: Text('# ' + todayListName[0], style: TextStyle(color: Colors.grey, fontSize: 14)),
+                                                          )
                                                       ]
                                                   )
                                               )
@@ -1569,7 +1579,7 @@ class _SecondPageState extends State<SecondPage> {
                                                       ),
                                                       margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2),
                                                       padding: EdgeInsets.all(30),
-                                                      width: MediaQuery.of(context).size.width*0.5,
+                                                      width: MediaQuery.of(context).size.width*0.6,
                                                       child: Column(
                                                         crossAxisAlignment: CrossAxisAlignment.center,
                                                         children: [
@@ -1582,7 +1592,7 @@ class _SecondPageState extends State<SecondPage> {
                                                               ),
                                                               child: Center(child: Icon(Icons.close_rounded, size: 40, color: Colors.redAccent))),
                                                           Text(' ', style: TextStyle(fontSize: 20)),
-                                                          Text('기록이 없어요', style: TextStyle(color: Color(0xff523A27), fontSize: 17, fontWeight: FontWeight.bold)),
+                                                          Text('도전과제 기록이 없어요', style: TextStyle(color: Color(0xff523A27), fontSize: 15, fontWeight: FontWeight.bold)),
                                                         ]
                                                       ),
                                                     ),
@@ -1841,8 +1851,10 @@ class _AboutUsState extends State<AboutUs> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('꿀곰의 시작', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                    Text('', style: TextStyle(fontSize: 6)),
-                                    Text('안녕하세요, 꿀곰 프로젝트 팀 입니다! 요즘 거의 대부분의 사람들은 휴대폰 사용으로 본인의 할 일을 못하고 미룬 경험이 몇 번 있을 거예요. 물론 저희 팀원들도 그런 경험이 있었죠. 꿀곰 팀은 장기간의 코로나 사태로 인해 늘어난 휴대폰 사용시간, 할 일을 못하면서 생기는 무기력증과 우울증 등이 중요한 사회적 문제라고 인식했어요. 그래서 저희 팀은 휴대폰 때문에 생기는 게으름을 방지하기 위한 앱을 만들기로 하였습니다.', style: TextStyle(fontSize: 15, height: 1.7, letterSpacing: 1.2, wordSpacing: 1.2)),
+                                    Text('', style: TextStyle(fontSize: 15)),
+                                    Text('안녕하세요, 꿀곰 프로젝트 팀 입니다! 요즘 거의 대부분의 사람들은 휴대폰 사용으로 본인의 할 일을 못하고 미룬 경험이 몇 번 있을 거예요. 물론 저희 팀원들도 그런 경험이 있었죠.', style: TextStyle(fontSize: 15, height: 1.7, letterSpacing: 1.2, wordSpacing: 1.2)),
+                                    Text('', style: TextStyle(fontSize: 15)),
+                                    Text('꿀곰 팀은 장기간의 코로나 사태로 인해 늘어난 휴대폰 사용시간, 할 일을 못하면서 생기는 무기력증과 우울증 등이 중요한 사회적 문제라고 인식했어요. 그래서 저희 팀은 휴대폰 때문에 생기는 게으름을 방지하기 위한 앱을 만들기로 했답니다.', style: TextStyle(fontSize: 15, height: 1.7, letterSpacing: 1.2, wordSpacing: 1.2)),
                                   ],
                                 ),
                               ),
@@ -1852,7 +1864,7 @@ class _AboutUsState extends State<AboutUs> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('꿀곰은 어떤 서비스를 하나요?', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                    Text('', style: TextStyle(fontSize: 6)),
+                                    Text('', style: TextStyle(fontSize: 15)),
                                     Text('꿀곰은 휴대폰 제한 사용 시간 도달 시 알람을 통해 자신이 수행할 도전 과제를 제공해 중독을 방지하고 게으름 악순환의 과정을 끊을 수 있도록 도움을 주는 서비스를 제공해요. 지속적으로 업데이트를 진행하여 더 많은 도전 과제와 다양한 기능을 추가할 예정입니다!', style: TextStyle(fontSize: 15, height: 1.7, letterSpacing: 1.2, wordSpacing: 1.2)),
                                   ],
                                 ),
@@ -1910,7 +1922,7 @@ class _AboutUsState extends State<AboutUs> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('  팀원', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                    Text('', style: TextStyle(fontSize: 6)),
+                                    Text('', style: TextStyle(fontSize: 15)),
                                     Bounce(
                                       duration: Duration(milliseconds: 100),
                                       onPressed: () {},
@@ -2137,7 +2149,7 @@ class _AboutUsState extends State<AboutUs> {
                                         )
                                       ],
                                     ),
-                                    Text('', style: TextStyle(fontSize: 6)),
+                                    Text('', style: TextStyle(fontSize: 15)),
                                     Text('꿀곰 프로젝트의 팀 블로그예요. 꿀곰이 만들어지는 과정과 꿀곰에 들어간 생각이 궁금하시다면 한번 방문해봐요.', style: TextStyle(fontSize: 15, height: 1.7, letterSpacing: 1.1, wordSpacing: 1.2)),
                                   ],
                                 ),
@@ -2578,29 +2590,33 @@ class _StrictAppState extends State<StrictApp> {
                 padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: ListView(children: [
                   Column(children:[
-                    Text('시간 제한', style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold)),
-                    Text('\n특정 앱의 사용 시간을 제한할 수 있어요.\n\n', style: TextStyle(color: Colors.grey, fontSize: 20)),
+                    Text('시간 제한', style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
+                    Text('\n특정 앱의 사용 시간을 제한할 수 있어요.\n\n\n\n', style: TextStyle(color: Colors.grey, fontSize: 17)),
                   ]),
-                  for(var i = 0; i < todayList.length; i++)
-                    if(todayList[i] == true)
-                      Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xffF7F7F7),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          margin: EdgeInsets.only(top: 15),
-                          padding: EdgeInsets.all(20),
-                          child: Row(children: [
-                            Text(todayListName[i], style: TextStyle(color: Colors.black, fontSize: 17)),
-                            Spacer(),
-                            DropdownMenu(),
-                          ])
-                      )
+                  Center(
+                    child: Container(
+                      padding: EdgeInsets.all(30),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25),
+                                  color: Color(0xffF2F2F2),
+                                ),
+                                child: Icon(Icons.priority_high_rounded, color: Colors.redAccent, size: 30)),
+                            Text('\n나중에 추가될 기능이에요.', style: TextStyle(fontSize: 15)),
+                          ],
+                        )),
+                  )
                 ],)
             ),
           ),
           bottomNavigationBar:Container(
-              margin: EdgeInsets.fromLTRB(40, 20, 40, 50),
               child: Bounce(
                   duration: Duration(milliseconds: 100),
                   onPressed: () {
@@ -2608,7 +2624,7 @@ class _StrictAppState extends State<StrictApp> {
                     });
                   },
                   child: Container(
-                    margin: EdgeInsets.fromLTRB(20, 0, 20, 50),
+                    margin: EdgeInsets.fromLTRB(50, 0, 50, 50),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Color(0xffF2F2F2),
@@ -2617,7 +2633,7 @@ class _StrictAppState extends State<StrictApp> {
                     child: Row(children: [
                       Text(' '),
                       Spacer(),
-                      Text('제한 시작', style: TextStyle(color: Colors.grey, fontSize: 20)),
+                      Text('제한 시작', style: TextStyle(color: Colors.grey, fontSize: 15)),
                       Spacer(),
                       Text(' '),
                     ]),
@@ -4965,105 +4981,6 @@ class _ChallengeTipState extends State<ChallengeTip> {
               )
           ),
         )
-    );
-  }
-}
-
-
-
-
-class DropdownMenu extends StatefulWidget {
-  const DropdownMenu({Key? key}) : super(key: key);
-
-  @override
-  State<DropdownMenu> createState() => _DropdownMenuState();
-}
-
-class _DropdownMenuState extends State<DropdownMenu> {
-  final List<String> items = [
-    '30분',
-    '1시간',
-    '2시간',
-    '3시간',
-    '4시간',
-    '5시간 이상',
-  ];
-  String? selectedValue;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2(
-          isExpanded: true,
-          hint: Row(
-            children: const [
-              SizedBox(
-                width: 4,
-              ),
-              Expanded(
-                child: Text(
-                  '-',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          items: items
-              .map((item) =>
-              DropdownMenuItem<String>(
-                value: item,
-                child: Text(
-                  item,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ))
-              .toList(),
-          value: selectedValue,
-          onChanged: (value) {
-            setState(() {
-              selectedValue = value as String;
-            });
-          },
-          icon: const Icon(
-            Icons.arrow_forward_ios_outlined,
-          ),
-          iconSize: 14,
-          iconEnabledColor: Colors.grey,
-          iconDisabledColor: Colors.grey,
-          buttonHeight: 50,
-          buttonWidth: 130,
-          buttonPadding: const EdgeInsets.only(left: 14, right: 14),
-          buttonDecoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: Color(0xffE1E1E1),
-          ),
-          buttonElevation: 0,
-          itemHeight: 40,
-          itemPadding: const EdgeInsets.only(left: 14, right: 14),
-          dropdownMaxHeight: 200,
-          dropdownWidth: 100,
-          dropdownPadding: null,
-          dropdownDecoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: Color(0xffF2F2F2),
-          ),
-          dropdownElevation: 8,
-          scrollbarRadius: const Radius.circular(40),
-          scrollbarThickness: 6,
-          scrollbarAlwaysShow: true,
-          offset: const Offset(0, 0),
-        ),
-      ),
     );
   }
 }
