@@ -22,15 +22,13 @@ import './db_test.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 var AllFontColor = Color(0xff565445);
-//var AllFontColor = Color(0xff706C60);
 var AllWidgetRadius = 30.0;
 var AllWidgetColor = Color(0xffFFFFF7);
-//var AllWidgetColor = Color(0xffFCFAF5);
 var AllBackgroundColor = Color(0xffF1F1E9);
-//var AllBackgroundColor = Color(0xffEDEDE6);
 var AllTonedownColor = Color(0xffE3E3D3);
 var backgroundColor = Colors.amber;
 
@@ -45,15 +43,10 @@ var timeAttack = false;
 var todayListCheck = false;
 var todayCheck = false; //오늘 기록을 했는지
 
-var yestlist = ['잠', '유튜브', '유튜브'];
-var yestTime = ['3', '2', '1'];
-var yestlistIcon = ['sleep.png', 'youtube.png', 'youtube.png'];
 var todayList = [false, false, false, false, false, false, false, false, false];
 var todayListUp = '';
 var todayListUpTime = 0;
-var todayListIcon = ['youtube.png', 'instagram.png', 'facebook.png'];
 var todayListName = ['유튜브', '인스타그램', '페이스북', '에브리타임', '낮잠', '늦잠', '멍때림', '딴짓', '야식'];
-var todayTime = [0,0,0,0,0,0,0,0,0];
 var todayListNow = false;
 var addPoint = false;
 
@@ -61,8 +54,8 @@ var categorylist = [['목 건강 챙기기', true], ['상체 운동', false], ['
 
 
 var notifyMe = false;
-var notifyHour = 9;
-var notifyMin = 47;
+var notifyHour = 8;
+var notifyMin = 13;
 
 var time = 0;
 
@@ -72,24 +65,21 @@ var todayMemo = [false, false, false];
 var emotion = [false, false, false];
 var nowemotion = 2;
 var todaySame = false;
-
 var badge = 5;
-var badgeListIcon = ['badge1.png','badge2.png','badge3.png'];
+var badgeListIcon = ['badge1.png','badge2.png','badge3.png', 'badge4.png', 'badge5.png', 'badge6.png'];
 var badgelist = ['첫 만남', '두 번째 꿀곰', '세 번째 꿀곰', '네 번째 꿀곰', '다섯 번째 꿀곰', '여섯 번째 꿀곰']; //badge title badgelistText = ['첫 꿀곰 기록', '챌린지 첫 경험', '처음으로 돌아본 나', '네번째', '5']; //badge 설명
 var badgeHave = 2; //badge를 가지고 있는지
 var mytext = '';
 bool challengeHow = true;
-var challengelistHowImage = ['youtube.png', 'facebook.png', 'instagram.png', 'youtube.png', 'instagram.png'];
 var challengelistHow = [['7마디 목 관절 마디마디의 유연성을 길러주고 목 주변의 경직된 근육과 안대, 근막을 풀어주며 뇌와 몸 간의 통로를 소통시켜 줍니다.', '가슴과 어깨를 펴고 손을 가슴뼈에 올려 상체를 고정합니다.', '고개를 천천히 한바퀴 돌립니다.', '고개를 옆으로 늘릴 때 꺾지 않고 주먹이 들어갈 정도의 공간을 유지하며 길게 늘려줍니다.'], ['현대인들은 각종 전자기기로 인해 대부분 거북목을 가지고 있습니다. 장기간 거북목을 가진 사람은 목 앞쪽 근육이 짧아져 있습니다. 짧아진 근육이 목을 당겨 자세가 망가지는 악순환을 끊는 데 목 돌리기 운동은 큰 도움을 줍니다.', '가슴과 어깨를 펴고 손을 가슴뼈에 올려 상체를 고정합니다.', '고개를 천천히 동서남북 방향으로 숙여줍니다.', '숙이는 방향의 반대편 목 근육을 이완시킨다는 느낌으로 천천히 늘려줍니다.'], ['Chin tuck 이라고 불리는 이 운동은 목의 아랫부분을 신전시키고 윗부분을 굽히게 만들어 거북목, 일자목으로 인한 통증을 완화하고 자세를 교정하는 데 도움이 됩니다.', '허리를 펴고 어깨를 벌려 양쪽 견갑골을 가볍게 모아줍니다.', '그 상태에서 손가락으로 턱을 가볍게 밀어줍니다.', '턱을 밀 때는 너무 강한 힘을 사용하지 않고 천천히 밀어주어야 하며, 이 자세를 유지합니다.'],
   ['후두하근은 뒤통수 아랫쪽에 4개의 근육으로, 뇌와 가장 가까운 근육이자 머리와 목, 어깨의 연결 근육으로 후두하근이 긴장된다면 자주 두통을 느낄 수 있습니다. 전자기기 이용이 잦은 학생, 직장인이라면 후두하근 마사지를 통해 눈의 피로와 두통을 완화할 수 있습니다.', '올바른 자세로 앉아 턱을 살짝 숙이고 깍지를 껴 엄지 손가락을 뒤통수로 위치시킵니다.', '엄지 손가락으로 뒤통수 아래에서 움푹 들어간 후두하근의 위치를 찾아줍니다.', '눈을 감고 오목한 부위를 20초 간 지긋이 눌러줍니다. 눌러줄 때 턱이 들리지 않아야 합니다.'], ['일반적으로 거북목을 가지고 있는 사람은 가슴 근육이 짧아지고 등 뒤쪽의 근육이 늘어납니다. 목과 등 뒤에 불편감이 느껴질 때 가슴 근육 스트레칭의 효과가 드러납니다.','벽 모서리 공간을 확보합니다.', '벽 모서리에 손을 올리고 어깨와 팔꿈치가 수직이 되도록 손을 올립니다.', '몸을 천천히 앞으로 기울입니다.']];
 var challengelist = ['목 돌리기', '목 늘리기', '턱 당기기', '후두하근 마사지', '가슴 근육 스트레칭']; //각 챌린지 별 내용
 var challengelistPoint = [10, 20, 40, 30, 50]; //각 챌린지 별 포인트 지급
-var challengeListIcon = [Icons.tv_rounded, Icons.water_drop_rounded, Icons.abc, Icons.abc, Icons.abc];
-var challengeListIconColor = [Colors.red, Colors.blueAccent, Colors.black, Colors.black, Colors.black];
+var challengeListIcon = [Icons.run_circle_rounded, Icons.run_circle_rounded, Icons.run_circle_rounded, Icons.run_circle_rounded, Icons.run_circle_rounded];
+var challengeListIconColor = [Colors.green, Colors.green, Colors.green, Colors.green, Colors.green];
 var sum = 0;
 var successChallenge = []; //완료한 챌린지 인덱스
 var successChallengePoint = [];
-var now = Random().nextInt(2); //내가 하고 있는 챌린지의 인덱스
 var answer = Random().nextInt(4);
 bool _isChallenge = true; //챌린지 위젯을 메인에 보여줄건지?
 bool _nowChallenge = false; //지금 챌린지를 하고 있는지?
@@ -105,7 +95,7 @@ var AllTop = [false, false, false];
 var CalendarBorder = [Colors.transparent, Color(0xffEFEFEF), AllFontColor];
 var CalendarText = [AllFontColor, AllFontColor, AllWidgetColor];
 var CalendarFontWeight = [FontWeight.normal, FontWeight.normal, FontWeight.bold];
-var BackColor = [Color(0xffF2F2F2), Color(0xffF2F2F2), Color(0xffE2E2E7), Colors.white];
+var BackColor = [Color(0xffF2F2F7), Color(0xffF2F2F7), Color(0xffF2F2F7), Colors.white];
 var savedDate = '';
 var todayEnter = 1;
 
@@ -487,296 +477,6 @@ class FirstApp extends StatefulWidget {
 
 class _FirstAppState extends State<FirstApp> {
 
-  /*@override
-  void initState() {
-    super.initState();
-    checkTime();
-    loadTime();
-    loadChallengeHow();
-    loadNotifyMe();
-    loadSavedDate();
-    loadIsChallenge();
-    print('저장된 날짜 savedDate: ${savedDate}');
-    if (savedDate == getToday()){ //당일 재접속
-      setSavedDate();
-      print('당일 재접속');
-      todaySame = true;
-    }
-    else { //당일 첫 접속
-      setSavedDate();
-      print('당일 첫접속');
-      todaySame = false;
-    }
-    if(hour >= 6 && hour < 12)
-      timeBlock = 0;
-    else if(hour >= 12 && hour < 17)
-      timeBlock = 1;
-    else
-      timeBlock = 2;
-    Duration duration = new Duration(seconds: 2);
-    Future.delayed(duration, () {
-      print('Challenge savedDate: $savedDate');
-      if (savedDate == getToday()){ //당일 재접속
-        print('당일 재접속-Challenge if');
-        loadTodayCheck();
-        setChallenge();
-      }
-      else { //당일 첫접속
-        print('당일 첫접속-Challenge else');
-        setTodayCheck();
-        setChallenge();
-        time = 0;
-      }
-      challengeLen = challengeNumber;
-      if(hour >= 6 && hour < 12){
-        if (savedTimeBlock == timeBlock) { //시간이 같다면
-          if(savedDate != getToday()){ //날짜가 바뀐다면
-            _isChallenge = true;
-            setIsChallenge();
-            timeBlockEnter = 0;
-            print('time0 날짜 바뀜');
-          }
-          timeBlockEnter += 1;
-          print('time0 if');
-        }
-        else { //시간이 다르다면
-          timeBlockEnter = 1;
-          _isChallenge = true;
-          setIsChallenge();
-          print('time0 else');
-        }
-      }
-      else if(hour >= 12 && hour < 17) {
-        if (savedTimeBlock == timeBlock) {
-          if(savedDate != getToday()){ //날짜가 바뀐다면
-            _isChallenge = true;
-            setIsChallenge();
-            timeBlockEnter = 0;
-            print('time1 날짜 바뀜');
-          }
-          timeBlockEnter += 1;
-          print('time1 if: $timeBlockEnter');
-        } else { //날짜가 안바뀐다면
-          timeBlockEnter = 1;
-          _isChallenge = true;
-          setIsChallenge();
-          print('time1 else');
-        }
-      }
-      else {
-        if (savedTimeBlock == timeBlock) {
-          if(savedDate != getToday()){ //날짜가 바뀐다면
-            _isChallenge = true;
-            setIsChallenge();
-            timeBlockEnter = 0;
-            print('time2 날짜 바뀜');
-          }
-          timeBlockEnter += 1;
-          print('time2 if');
-        } else {
-          _isChallenge = true;
-          setIsChallenge();
-          timeBlockEnter = 1;
-          print('time2 else');
-        }
-      }
-      setTimeBlock();
-      setTimeBlockEnter();
-      loadIsChallenge();
-    });
-  }
-  @override
-  setTodayCheck() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      prefs.setBool('todayCheck', false);
-      dayWeek = prefs.getInt('dayWeek') ?? 0;
-    });
-    todayCheck = false;
-    print('setTodayCheck-todayCheck: ${todayCheck}');
-    print('setTodayCheck-dayWeek: ${dayWeek}');
-  }
-  @override
-  loadTodayCheck() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      todayCheck = prefs.getBool('todayCheck') ?? true;
-    });
-    print('loadTodayCheck 실행');
-    if(todayCheck == false){ //기록 안했다면
-      setState((){
-        dayWeek = prefs.getInt('dayWeek') ?? 0;
-      });
-      print('loadTodayCheck>todayCheck==false');
-    }
-    else { //기록 했다면
-      setState((){
-        dayWeek = prefs.getInt('dayWeek') ?? 1;
-        dayWeek -= 1;
-      });
-      print('loadTodayCheck>todayCheck==true');
-    }
-    print('loadTodayCheck: ${todayCheck}');
-    print('loadtodayCheck-dayWeek: ${dayWeek}');
-  }
-  @override
-  loadIsChallenge() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      _isChallenge = prefs.getBool('isChallenge') ?? _isChallenge;
-    });
-    print('loadIsChallenge: ${_isChallenge}');
-  }
-  @override
-  loadTime() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    time = prefs.getInt('time') ?? time;
-  }
-  @override
-  checkTime() {
-    hour = int.parse(getTime().split(':')[0]);
-    print('hour: $hour');
-    loadTimeBlock();
-    loadTimeBlockEnter();
-  }
-  @override
-  setIsChallenge() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      prefs.setBool('isChallenge', _isChallenge);
-      print('setIsChallenge: $_isChallenge');
-    });
-  }
-  @override
-  loadTimeBlockEnter() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      timeBlockEnter = prefs.getInt('timeBlockEnter') ?? timeBlockEnter;
-      print('loadTimeBlockEnter: $timeBlockEnter');
-    });
-  }
-  setTimeBlockEnter() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      prefs.setInt('timeBlockEnter', timeBlockEnter);
-      print('setTimeBlockEnter: $timeBlockEnter');
-    });
-  }
-  @override
-  loadTimeBlock() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      savedTimeBlock = prefs.getInt('timeBlock') ?? timeBlock;
-      print('loadTimeBlock: $savedTimeBlock');
-    });
-  }
-  @override
-  setTimeBlock() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      prefs.setInt('timeBlock', timeBlock);
-      print('setTimeBlock: $timeBlock');
-    });
-  }
-  @override
-  setChallenge() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      print('setChallenge Execute');
-      print('setChallenge: $savedDate');
-      print('setChallenge-todayEnter: ${todayEnter}');
-      if (todayEnter > 1) {
-        print('setChallenge>todayEnter==${todayEnter}-if.기존 도전과제 불러오기');
-        for (var i = 0; i < 3; i++) {
-          challengeNumber.add(prefs.getInt('challengeNumber$i'));
-          print('setChallenge challengeNumber: ${challengeNumber}');
-        }
-      }
-      else {
-        print('setChallenge>todayEnter==${todayEnter}-else.새로운 도전과제 추가');
-
-        if(dayWeek < 5){
-          print('setChallenge>dayWeek==${dayWeek}일차 도전과제');
-          for(var i = 0; i < 3; i++){
-            challengeNumber.add(dayWeek);
-          }
-        }
-        else {
-          while (true) {
-            // 랜덤으로 번호를 생성해준다.
-            var rnd = Random().nextInt(challengelist.length);
-
-            // 만약 리스트에 생성된 번호가 없다면
-            if (!challengeNumber.contains(rnd)) {
-              challengeNumber.add(rnd);
-            }
-
-            // 리스트의 길이가 6이면 while문을 종료한다.
-            if (challengeNumber.length == 3) break;
-          }
-        }
-        for(var j = 0; j < 3; j++){
-          prefs.setInt('challengeNumber$j', challengeNumber[j]);
-        }
-        print('setChallenge: ${challengeNumber}');
-        print('setChallenge: ${prefs.getInt('challengeNumber1')}');
-      }
-    });
-  }
-  @override
-  loadChallenge() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      for(var i = 0; i < 3; i++){
-        challengeNumber[i] = prefs.getInt('challengeNumber$i');
-      }
-    });
-  }
-  @override
-  setSavedDate() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      prefs.setString('savedDate', getToday());
-      if (savedDate == getToday()){
-        todayEnter += 1;
-        print('setSavedDate with if: $savedDate');
-      }
-      else if (savedDate == false){
-        todayEnter = 1;
-      }
-      else {
-        todayEnter = 1;
-        print('setSavedDate with else: $savedDate');
-      }
-      prefs.setInt('todayEnter', todayEnter);
-    });
-  }
-  @override
-  loadSavedDate() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      savedDate = prefs.getString('savedDate') ?? 'hello';
-      todayEnter = prefs.getInt('todayEnter') ?? 0;
-      print('firstapp-loadSavedDate: $savedDate');
-    });
-  }
-  @override
-  loadChallengeHow() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      challengeHow = prefs.getBool('challengeHow') ?? challengeHow;
-      print('loadChallengeHow');
-      print('loadchallengeHow: $challengeHow');
-    });
-  }
-  @override
-  loadNotifyMe() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState((){
-      notifyMe = prefs.getBool('notifyMe') ?? notifyMe;
-    });
-  }*/
-
   int _currentIndex = 0;
   final List<Widget> _children = [FirstPage(), SecondPage(), ThirdPage(), AboutUs()];
 
@@ -1073,26 +773,6 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                       color: Colors.white,
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0XFF000066).withOpacity(0.03),
-                          blurRadius: 15,
-                          spreadRadius: 10,
-                          offset: const Offset(0, 10),
-                        ),
-                        BoxShadow(
-                          color: Color(0XFF000066).withOpacity(0.0165),
-                          blurRadius: 7.5,
-                          spreadRadius: 5,
-                          offset: const Offset(0, 5),
-                        ),
-                        BoxShadow(
-                          color: Color(0XFF000066).withOpacity(0.0095),
-                          blurRadius: 5,
-                          spreadRadius: 2.5,
-                          offset: const Offset(0, 2.5),
-                        ),
-                      ],
                     ),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1106,14 +786,14 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                               ])
                           ),
                           Container(
-                              margin: EdgeInsets.only(top: 5, left: 20, right: 20),
+                              margin: EdgeInsets.only(top: 13, left: 20, right: 20),
                               child: Row(children: [
                                 Container(height: 15, width: 200, color: Color(0xffF2F2F2)),
                                 Spacer(),
                               ])
                           ),
                           Container(
-                              margin: EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 20),
+                              margin: EdgeInsets.only(top: 13, left: 20, right: 20, bottom: 20),
                               child: Row(children: [
                                 Container(height: 15, width: 200, color: Color(0xffF2F2F2)),
                                 Spacer(),
@@ -1391,26 +1071,7 @@ class _WidgetChallengeState extends State<WidgetChallenge> {
           color: Colors.white,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Color(0XFF000066).withOpacity(0.03),
-              blurRadius: 15,
-              spreadRadius: 10,
-              offset: const Offset(0, 10),
-            ),
-            BoxShadow(
-              color: Color(0XFF000066).withOpacity(0.0165),
-              blurRadius: 7.5,
-              spreadRadius: 5,
-              offset: const Offset(0, 5),
-            ),
-            BoxShadow(
-              color: Color(0XFF000066).withOpacity(0.0095),
-              blurRadius: 5,
-              spreadRadius: 2.5,
-              offset: const Offset(0, 2.5),
-            ),
-          ],
+
         ),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1717,16 +1378,15 @@ class _SecondPageState extends State<SecondPage> {
                                     ),
                                     child: Column(children: [
                                       Container(
-                                          width: 150,
-                                          height: 150,
+                                          width: 100,
+                                          height: 100,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(75),
-                                            color: Color(0xffDFDFDF),
-                                            border: Border.all(width: 15, color: Colors.white.withOpacity(0.8)),
+                                            color: Colors.black.withOpacity(0.05),
                                           ),
-                                          child: Center(child: Icon(Icons.calendar_today_rounded, size: 50, color: Colors.grey))),
+                                          child: Center(child: Icon(Icons.calendar_today_rounded, size: 30, color: Colors.blueAccent))),
                                       Text(' ', style: TextStyle(fontSize: 30)),
-                                      Text('날짜를 선택해주세요', style: TextStyle(color: Color(0xffBFBFBF), fontSize: 20, fontWeight: FontWeight.bold)),
+                                      Text('날짜를 선택해주세요', style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold)),
                                     ])
                                 );
                               }
@@ -1844,24 +1504,91 @@ class _SecondPageState extends State<SecondPage> {
                                                 ]))
                                       else
                                         Container(
-                                            margin: EdgeInsets.only(top: 70),
-                                            padding: EdgeInsets.fromLTRB(40, 40, 40, 40),
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(30),
                                               color: Colors.transparent,
                                             ),
                                             child: Column(children: [
-                                              Container(
-                                                  width: 150,
-                                                  height: 150,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(75),
-                                                    color: Color(0xffFFF2AE),
-                                                    border: Border.all(width: 15, color: Color(0xffDFDFDF)),
+                                              Stack(
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      Container(
+                                                        height: 100,
+                                                        margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          color: Colors.white,
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            Spacer(),
+                                                            Text(''),
+                                                            Spacer(),
+                                                          ]
+                                                        )
+                                                      ),
+                                                      Container(
+                                                          height: 100,
+                                                          margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            color: Colors.white.withOpacity(0.7),
+                                                          ),
+                                                          child: Row(
+                                                              children: [
+                                                                Spacer(),
+                                                                Text(''),
+                                                                Spacer(),
+                                                              ]
+                                                          )
+                                                      ),
+                                                      Container(
+                                                          height: 100,
+                                                          margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            color: Colors.white.withOpacity(0.4),
+                                                          ),
+                                                          child: Row(
+                                                              children: [
+                                                                Spacer(),
+                                                                Text(''),
+                                                                Spacer(),
+                                                              ]
+                                                          )
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child: Center(child: Image.asset('assets/character.png', height: 80))),
-                                              Text(' ', style: TextStyle(fontSize: 30)),
-                                              Text('한 도전과제가 없어요', style: TextStyle(color: Colors.grey, fontSize: 20, fontWeight: FontWeight.bold)),
+                                                  Center(
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(20),
+                                                        color: Color(0xfff5eae9).withOpacity(1),
+                                                      ),
+                                                      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2),
+                                                      padding: EdgeInsets.all(30),
+                                                      width: MediaQuery.of(context).size.width*0.5,
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          Container(
+                                                              width: 70,
+                                                              height: 70,
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(75),
+                                                                color: Color(0xffFFFFFF),
+                                                              ),
+                                                              child: Center(child: Icon(Icons.close_rounded, size: 40, color: Colors.redAccent))),
+                                                          Text(' ', style: TextStyle(fontSize: 20)),
+                                                          Text('기록이 없어요', style: TextStyle(color: Color(0xff523A27), fontSize: 17, fontWeight: FontWeight.bold)),
+                                                        ]
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
                                             ])
                                         )
                                     ])
@@ -2016,20 +1743,22 @@ class _ThirdPageState extends State<ThirdPage> {
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: dayWeek == i ? Colors.blueAccent.withOpacity(0.2) : (i+1)%2 == 0 ? Colors.white : Color(0xffF2F2F2),
+                                  border: dayWeek == i ? Border.all(width: 1, color: Colors.blueAccent.withOpacity(0.1)) : Border.all(width: 0, color: Colors.transparent),
+                                  color: dayWeek == i ? Colors.blueAccent.withOpacity(0.2) : (i+1)%2 == 0 ? Colors.white : Color(0xffF7F7F7),
                                 ),
                                 child: Row(
                                     children: [
-                                      Icon(dayWeek >= i ? dayWeek == i ? Icons.navigate_next : Icons.lock_open : Icons.lock, color: dayWeek >= i ? dayWeek == i ? Colors.blueAccent : Colors.black : Colors.grey, size: 20),
+                                      Icon(dayWeek >= i ? dayWeek == i ? Icons.navigate_next : Icons.lock_open : Icons.lock, color: dayWeek >= i ? dayWeek == i ? Colors.blueAccent : Colors.blueAccent : Colors.grey, size: 15),
                                       Text('   '),
                                       Container(
                                           width: 25,
                                           height: 25,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(5),
-                                            color: dayWeek >= i ? dayWeek == i ? challengeListIconColor[i] : challengeListIconColor[i] : Color(0xffDFDFDF),
+                                            color: dayWeek >= i ? dayWeek == i ? Colors.blueAccent : Colors.white : Color(0xffEFEFEF),
+                                            border: Border.all(width: 1, color: dayWeek >= i ? dayWeek == i ? Colors.blueAccent : Color(0xffDFDFDF) : Color(0xffDFDFDF)),
                                           ),
-                                          child: Center(child: Icon(challengeListIcon[i], color: dayWeek >= i ? dayWeek == i ? Colors.white : Colors.white : Colors.grey, size: 15))),
+                                          child: Center(child: Icon(challengeListIcon[i], color: dayWeek >= i ? dayWeek == i ? Colors.white : Colors.blueAccent : Color(0xffBFBFBF), size: 17))),
                                       Text('  '+challengelist[i], style: TextStyle(color: dayWeek >= i ? dayWeek == i ? Colors.blueAccent : Colors.black : Colors.grey, fontSize: 15, fontWeight: dayWeek == i ? FontWeight.bold : FontWeight.normal)),
                                       Spacer(),
                                       Text('${i+1}일차', style: TextStyle(color: dayWeek >= i ? dayWeek == i ? Colors.blueAccent : Colors.black : Colors.grey, fontSize: 13)),
@@ -2066,8 +1795,8 @@ class _ThirdPageState extends State<ThirdPage> {
                             Text('${i+1}', style: TextStyle(color: Colors.grey, fontSize: 17)),
                             Text('  ${categorylist[i][0]}', style: TextStyle(color: Colors.black, fontSize: 15)),
                             Spacer(),
-                            Icon(categorylist[i][1] == true ? Icons.check_circle_rounded : Icons.cancel_rounded, size: 18, color: categorylist[i][1] == true ? Colors.black : Colors.grey),
-                            Text(categorylist[i][1] == true ? '  이용 가능' : '  추후 오픈', style: TextStyle(color: categorylist[i][1] == true ? Colors.black : Colors.grey, fontSize: 13)),
+                            Icon(categorylist[i][1] == true ? Icons.check_circle_rounded : Icons.cancel_rounded, size: 18, color: categorylist[i][1] == true ? Colors.blueAccent : Color(0xffCFCFCF)),
+                            Text(categorylist[i][1] == true ? '  이용 중' : '  추후 오픈', style: TextStyle(color: categorylist[i][1] == true ? Colors.blueAccent : Colors.grey, fontSize: 13)),
                           ],
                         ),
                       )
@@ -2448,7 +2177,7 @@ class _SecondAppState extends State<SecondApp> {
           highlightColor: Colors.transparent,
         ),
         home: Scaffold(
-          backgroundColor: AllWidgetColor,
+          backgroundColor: Colors.white,
           appBar: AppBar(
               iconTheme: IconThemeData(
                 color: Colors.grey,
@@ -2476,12 +2205,24 @@ class _SecondAppState extends State<SecondApp> {
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.spoke_rounded, color: Colors.amber),
-                        Container(
-                          margin: EdgeInsets.only(top: 20),
-                          child:
-                          Text('오늘의 게을렀던\n행동을 선택해주세요.', style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
+                        Row(
+                          children: [
+                            Container(
+                              width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25),
+                                  color: Colors.blueAccent,
+                                ),
+                                child: Icon(Icons.spoke_rounded, color: Colors.white, size: 30)),
+                            Container(
+                              margin: EdgeInsets.only(left: 20),
+                              child:
+                              Text('오늘의 게으름을\n선택해주세요.', style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),
+                            ),
+                          ],
                         ),
+                        Text('', style: TextStyle(color: Colors.grey, fontSize: 30)),
                         Container(
                           margin: EdgeInsets.only(top: 40),
                           child: Column(
@@ -2508,10 +2249,10 @@ class _SecondAppState extends State<SecondApp> {
                                           padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(20),
-                                            color: todayList[index] ? AllFontColor : AllBackgroundColor,
+                                            color: todayList[index] ? AllFontColor : Color(0xffF2F2F2),
                                           ),
                                           child: Center(
-                                            child: Text(todayListName[index], style: TextStyle(color: todayList[index] ? AllWidgetColor : AllFontColor, fontSize: 17),
+                                            child: Text(todayListName[index], style: TextStyle(color: todayList[index] ? AllWidgetColor : AllFontColor, fontSize: 17, fontWeight: todayList[index] ? FontWeight.bold : FontWeight.normal),
                                             ),
                                           )
                                       )
@@ -2526,7 +2267,7 @@ class _SecondAppState extends State<SecondApp> {
                 ),
                 Spacer(),
                 Container(
-                    margin: EdgeInsets.fromLTRB(60, 0, 60, 60),
+                    margin: EdgeInsets.fromLTRB(50, 0, 50, 50),
                     child: Bounce(
                         duration: Duration(milliseconds: 100),
                         onPressed: () {
@@ -2538,13 +2279,13 @@ class _SecondAppState extends State<SecondApp> {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            color: AllFontColor,
+                            color: Colors.blueAccent,
                           ),
                           padding: EdgeInsets.all(20),
                           child: Row(children:[
                             Text(''),
                             Spacer(),
-                            Text('기록하기', style: TextStyle(color: Colors.white, fontSize: 20)),
+                            Text('기록하기', style: TextStyle(color: Colors.white, fontSize: 15)),
                             Spacer(),
                             Text(''),
                           ]),
@@ -2588,7 +2329,7 @@ class _RememberTodayState extends State<RememberToday> {
                       onTap: () => {
                         Navigator.pop(context),
                       },
-                      child: Icon(Icons.navigate_before, color: AllFontColor, size: 20),
+                      child: Icon(Icons.navigate_before, color: AllFontColor, size: 30),
                     )
                 )
             ),
@@ -2600,8 +2341,9 @@ class _RememberTodayState extends State<RememberToday> {
                   child: ListView(children: [
                     Container(
                         margin: EdgeInsets.only(top: 20, bottom: 40, left: 10),
-                        child: Text('오늘 하루는 어땠나요?', style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold))),
+                        child: Text('오늘 하루를 표현해주세요.', style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold))),
                     Container(
+                      height: MediaQuery.of(context).size.height*0.4,
                       padding: EdgeInsets.all(10),
                       margin: EdgeInsets.only(bottom: 20, left: 5, right: 5),
                       decoration: BoxDecoration(
@@ -2716,9 +2458,9 @@ class BadgeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
-            backgroundColor: AllWidgetColor,
+            backgroundColor: Colors.white,
             appBar: AppBar(
-                backgroundColor: AllWidgetColor,
+                backgroundColor: Colors.white,
                 elevation: 0.0,
                 leading: Padding(
                     padding: EdgeInsets.all(8.0),
@@ -2733,13 +2475,12 @@ class BadgeApp extends StatelessWidget {
             body: ScrollConfiguration(
               behavior: NoGlowScrollBehavior(),
               child: Container(
-                  color: AllWidgetColor,
-                  margin: EdgeInsets.only(top: 30),
                   padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: ListView(children: [
                     Column(children:[
-                      Text('활동 뱃지', style: TextStyle(color: AllFontColor, fontSize: 30, fontWeight: FontWeight.bold)),
-                      Text('\n다양한 활동을 통해 뱃지를 얻을 수 있어요.', style: TextStyle(color: Colors.grey, fontSize: 20)),
+                      Text('', style: TextStyle(fontSize: 30)),
+                      Text('활동 뱃지', style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
+                      Text('\n다양한 활동을 통해 뱃지를 얻을 수 있어요.', style: TextStyle(color: Colors.grey, fontSize: 17)),
                     ]),
                     Container(
                       decoration: BoxDecoration(
@@ -2769,9 +2510,14 @@ class BadgeApp extends StatelessWidget {
                                           color: AllBackgroundColor,
                                           borderRadius: BorderRadius.circular(30),
                                         ),
-                                        child: Center(child: Image.asset('assets/badge/'+badgeListIcon[index], width: 40)))
+                                        child: Center(child: Image.asset('assets/badge/'+badgeListIcon[index], color: const Color.fromRGBO(255, 255, 255, 1), colorBlendMode: BlendMode.modulate, width: 40)))
                                   else
-                                    Container(width: 70, height: 70, decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: AllBackgroundColor, ),),
+                                    Container(
+                                      width: 70,
+                                      height: 70,
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Color(0xffF7F7F7), ),
+                                      child: Center(child: Image.asset('assets/badge/'+badgeListIcon[index], color: const Color.fromRGBO(255, 255, 255, 0.2), colorBlendMode: BlendMode.modulate, width: 40)),
+                                    ),
                                   Container(
                                       margin: EdgeInsets.only(top: 20),
                                       child: Column(
@@ -3538,7 +3284,8 @@ class _AllAppState extends State<AllApp> with WidgetsBindingObserver{
                                     )
                                   ])
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                              },
                             )
                           ],
                         )
@@ -3573,26 +3320,7 @@ class WidgetBadge extends StatelessWidget {
               color: Colors.white,
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0XFF000066).withOpacity(0.03),
-                  blurRadius: 15,
-                  spreadRadius: 10,
-                  offset: const Offset(0, 10),
-                ),
-                BoxShadow(
-                  color: Color(0XFF000066).withOpacity(0.0165),
-                  blurRadius: 7.5,
-                  spreadRadius: 5,
-                  offset: const Offset(0, 5),
-                ),
-                BoxShadow(
-                  color: Color(0XFF000066).withOpacity(0.0095),
-                  blurRadius: 5,
-                  spreadRadius: 2.5,
-                  offset: const Offset(0, 2.5),
-                ),
-              ],
+
             ),
             padding: EdgeInsets.all(25),
             child: Column(children: [
@@ -3644,26 +3372,7 @@ class WidgetPoint extends StatelessWidget {
               color: Colors.white,
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0XFF000066).withOpacity(0.03),
-                  blurRadius: 15,
-                  spreadRadius: 10,
-                  offset: const Offset(0, 10),
-                ),
-                BoxShadow(
-                  color: Color(0XFF000066).withOpacity(0.0165),
-                  blurRadius: 7.5,
-                  spreadRadius: 5,
-                  offset: const Offset(0, 5),
-                ),
-                BoxShadow(
-                  color: Color(0XFF000066).withOpacity(0.0095),
-                  blurRadius: 5,
-                  spreadRadius: 2.5,
-                  offset: const Offset(0, 2.5),
-                ),
-              ],
+
             ),
             padding: EdgeInsets.all(25),
             child: Column(children: [
@@ -3738,56 +3447,6 @@ class WidgetImage extends StatelessWidget {
     return SizedBox(
       height: 300,
       child: Image.asset('assets/rest.jpg'),
-    );
-  }
-}
-
-
-
-class WidgetBlock extends StatelessWidget {
-  const WidgetBlock({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.only(bottom: 15),
-        padding: EdgeInsets.all(25),
-        decoration: BoxDecoration(
-          color: AllWidgetColor,
-          borderRadius: BorderRadius.circular(AllWidgetRadius),
-        ),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children:[
-                Text('어제', style: TextStyle(fontSize: 20, color: AllFontColor, fontWeight: FontWeight.bold)),
-              ]),
-              Container(
-                padding: EdgeInsets.only(top: 10),
-                child: Column(children:<Widget>[
-                  if (yestlist.isNotEmpty == true)
-                    for(var i = 0; i < yestlist.length; i++)
-                      Container(
-                          padding: EdgeInsets.only(top: 20),
-                          child: Row(children: [
-                            Container(
-                              height: 40,
-                              width: 40,
-                              child: Center(child: Image.asset('assets/'+todayListIcon[i], height: 20)),
-                              decoration: BoxDecoration(
-                                  color: Color(0xffE3E3D3).withOpacity(0.5),
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(color: Color(0xffEFEFEF), width: 1)
-                              ),
-                            ),
-                            Text('   '+todayListName[i], style: TextStyle(color: AllFontColor, fontSize: 17)),
-                            Spacer(),
-                            Text(todayTime[i].toString() + '시간', style: TextStyle(color: Colors.grey))
-                          ],)
-                      ),
-                ]),
-              )
-            ])
     );
   }
 }
