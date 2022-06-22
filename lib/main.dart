@@ -3680,19 +3680,6 @@ class _ChallengeModeState extends State<ChallengeMode> {
     return MaterialApp(
         home: Scaffold(
             backgroundColor: Colors.white,
-            appBar: AppBar(
-                elevation: 0.0,
-                backgroundColor: Colors.white,
-                leading: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () => {
-                        Navigator.pop(context),
-                      },
-                      child: Icon(Icons.navigate_before_rounded, color: Colors.grey, size: 40),
-                    )
-                )
-            ),
             body: WillPopScope(
               child: _isChallenge ?
               challengeHow ?
@@ -3806,293 +3793,503 @@ class _ChallengeModeState extends State<ChallengeMode> {
                   ]))
               ) :
                   timeAttack ?
-              Container(
-                  margin: EdgeInsets.only(top: 30),
-                  child: Center(child: Column(children:[
-                    Spacer(),
-                    SizedBox(child: Column(children: [
-                      Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: Color(0xffF2F2F2),
-                          ),
-                          margin: EdgeInsets.only(bottom: 30),
-                          width: 100,
-                          height: 100,
-                          child: Center(child: timeroff ? Icon(Icons.check_rounded, color: Colors.blueAccent, size: 50) : Text('${sec~/1000}', style: TextStyle(color: (sec~/1000) <= 5 ? (sec~/1000) < 1 ? Colors.blueAccent : Colors.redAccent : Colors.black, fontSize: 50))),),/*Icon(challengeListIcon[challengeNumber[timeBlock]], color: challengeListIconColor[challengeNumber[timeBlock]], size: 50)),*/
-                      Container(margin: EdgeInsets.only(top: 0), child: Column(children: [
-                        Text(challengelist[challengeNumber[timeBlock]], style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
-                        Text('', style: TextStyle(fontSize: 10)),
-                        Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(7),
-                              color: Colors.blueAccent.withOpacity(0.1),
-                            ),
-                            child: Text('# ${categorylist[0][0]}', style: TextStyle(color: Colors.blueAccent, fontSize: 17))
-                        ),
-                        Text('', style: TextStyle(fontSize: 6)),
-                        Container(
-                            margin: EdgeInsets.only(top: 20, right: 50, left: 50),
-                            child: Text(challengelistHow[challengeNumber[timeBlock]][0], style: TextStyle(color: Colors.grey, fontSize: 15, letterSpacing: 1.2, wordSpacing: 1.2, height: 1.2))),
-                      ]
-                      )
-                      ),
-
-                    ])),
-                    Bounce(
-                        duration: Duration(milliseconds: 100),
-                        onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => ChallengeTip()));
-                        },
-                        child: Container(
-                          child:
-                          Icon(Icons.lightbulb_rounded, color: Colors.orange, size: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.orange.withOpacity(0.1),
-                          ),
-                          padding: EdgeInsets.all(10),
-                          margin: EdgeInsets.only(top: 40),
-                        )
-                    ),
-                    Spacer(),
-                    Spacer(),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Bounce(
-                            duration: Duration(milliseconds: 100),
-                            onPressed: () {
-                              print('포기하기');
-                              if (really == true) {
-                                setState((){
-                                  _nowChallenge = false;
-                                  _isChallenge = false;
-                                  setIsChallenge();
-                                  Navigator.pop(context);
-                                });
-                              }
-                              else {
-                                setState((){
-                                  Duration duration = new Duration(seconds: 3);
-                                  really = true;
-                                  Future.delayed(duration, (){
-                                    setState((){
-                                      really = false;
-                                    });
-                                  });
-                                });
-                              }
-                            },
-                            child: Container(
+                  Column(
+                    children: [
+                      Stack(
+                          children: [
+                            Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height*0.4,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.redAccent.withOpacity(really ? 1 : 0.07),
-                                ),
-                                padding: EdgeInsets.all(20),
-                                width: MediaQuery.of(context).size.width*0.35,
-                                margin: EdgeInsets.only(bottom: 50),
-                                child: Center(child: Text(really ? '정말 포기하기':'포기하기', style: TextStyle(color: really ? Colors.white : Colors.redAccent, fontSize: 15)))),
-                          ),
-                          Stack(
-                            children: [
-                              Container(
-                                  width: MediaQuery.of(context).size.width*0.35,
-                                  height: 55,
-
-                                  margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width*0.04, 0, 0, 50),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: LinearProgressIndicator(
-                                    valueColor: new AlwaysStoppedAnimation(Colors.blueAccent),
-                                    backgroundColor: Color(0xffF2F2F2),
-                                    value: ((30-(sec/1000)) + 1/(sec/1000))/30,
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/neck${challengeNumber[timeBlock]}.jpeg'),
+                                    fit: BoxFit.cover,
                                   ),
                                 )
-                              ),
-                              Bounce(
-                                  duration: Duration(milliseconds: 100),
-                                  onPressed: () {
-                                    if(timeroff == true) {
-                                      setState(() {
-                                        _nowChallenge = true;
-                                        todayChallenge = true;
-                                        completeChallenge = true;
-                                        successChallenge.add(
-                                            challengelist[
-                                            challengeNumber[
-                                            timeBlock]]);
-                                        successChallengePoint.add(
-                                            challengelistPoint[
-                                            challengeNumber[
-                                            timeBlock]]);
-                                        sum += challengelistPoint[
-                                        challengeNumber[
-                                        timeBlock]];
-                                        addPoint = false;
-                                      });
-                                    }
-                                    else {
-                                      if(timerset == false){
-                                        timer();
-                                      }
-                                      timerset = true;
-                                    }
-                                  },
-                                  child: Container(
-                                      width: MediaQuery.of(context).size.width*0.35,
-                                      margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width*0.04, 0, 0, 50),
-                                      padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.transparent,
+                            ),
+                            Center(
+                              child: Container(
+                                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17,),
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: Colors.black.withOpacity(0.3),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0XFF000066).withOpacity(0.03),
+                                          blurRadius: 15,
+                                          spreadRadius: 10,
+                                          offset: const Offset(0, 10),
+                                        ),
+                                        BoxShadow(
+                                          color: Color(0XFF000066).withOpacity(0.0165),
+                                          blurRadius: 7.5,
+                                          spreadRadius: 5,
+                                          offset: const Offset(0, 5),
+                                        ),
+                                        BoxShadow(
+                                          color: Color(0XFF000066).withOpacity(0.0095),
+                                          blurRadius: 5,
+                                          spreadRadius: 2.5,
+                                          offset: const Offset(0, 2.5),
+                                        ),
+                                      ]
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                      child: Container(
+                                        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17,),
+                                        width: 100,
+                                        height: 100,
                                       ),
-                                      child: Row(
-                                          children: [
-                                            Spacer(),
-                                            timerset ? Row(
-                                                children: [
-                                                  Text(timeroff ? '완료했어요' : '${sec~/1000}',style: TextStyle(color: timeroff ? Colors.white : (sec/1000) > 15 == true ? Colors.grey : Colors.white, fontSize: 15)),
-                                                ]
-                                            ) : Text(timeroff ? '완료했어요' : timerset ? '${sec~/1000}' : '타이머 시작', style: TextStyle(color: timeroff ? Colors.white : timerset ? Colors.grey : Colors.black, fontSize: 15)),
-                                            Spacer(),
-                                          ]
-                                      )
+                                    ),
                                   )
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ]))
-              ):Container(
-                      margin: EdgeInsets.only(top: 30),
-                      child: Center(child: Column(children:[
-                        Center(child: Text('')),
-                        Spacer(),
-                        SizedBox(child: Column(children: [
-                          Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Color(0xffF2F2F2),
-                              ),
-                              margin: EdgeInsets.only(bottom: 30),
-                              width: 100,
-                              height: 100,
-                              child: Icon(challengeListIcon[challengeNumber[timeBlock]], color: challengeListIconColor[challengeNumber[timeBlock]], size: 50)),
-                          Container(margin: EdgeInsets.only(top: 0), child: Column(children: [
-                            Text(challengelist[challengeNumber[timeBlock]], style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
-                            Text('', style: TextStyle(fontSize: 10)),
-                            Container(
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(7),
-                                  color: Colors.blueAccent.withOpacity(0.1),
-                                ),
-                                child: Text('# ${categorylist[0][0]}', style: TextStyle(color: Colors.blueAccent, fontSize: 17))
                             ),
-                            Text('', style: TextStyle(fontSize: 6)),
-                            Container(
-                                margin: EdgeInsets.only(top: 20, left: 50, right: 50),
-                                child: Text(challengelistHow[challengeNumber[timeBlock]][0], style: TextStyle(color: Colors.grey, fontSize: 15, letterSpacing: 1.2, wordSpacing: 1.2, height: 1.2))),
-                          ]
-                          )
-                          ),
-
-                        ])),
-                        Bounce(
-                            duration: Duration(milliseconds: 100),
-                            onPressed: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) => ChallengeTip()));
-                            },
-                            child: Container(
-                              child:
-                              Icon(Icons.lightbulb_rounded, color: Colors.orange, size: 20),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.orange.withOpacity(0.1),
-                              ),
-                              padding: EdgeInsets.all(10),
-                              margin: EdgeInsets.only(top: 40),
-                            )
-                        ),
-                        Spacer(),
-                        Spacer(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                            Center(
+                              child: Container(
+                                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17,),
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(75),
+                                ),
+                                child: Center(child: timeroff ? Icon(Icons.check_rounded, color: Colors.white, size: 50) : Text('${sec~/1000}', style: TextStyle(color: (sec~/1000) <= 5 ? (sec~/1000) < 1 ? Colors.white : Colors.redAccent : Colors.white, fontSize: 50))),),
+                            ),
                             Bounce(
                               duration: Duration(milliseconds: 100),
                               onPressed: () {
-                                print('포기하기');
-                                if (really == true) {
-                                  setState((){
-                                    _nowChallenge = false;
-                                    _isChallenge = false;
-                                    setIsChallenge();
-                                    Navigator.pop(context);
-                                  });
-                                }
-                                else {
-                                  setState((){
-                                    Duration duration = new Duration(seconds: 3);
-                                    really = true;
-                                    Future.delayed(duration, (){
-                                      setState((){
-                                        really = false;
-                                      });
-                                    });
-                                  });
-                                }
+                                Navigator.pop(context);
                               },
                               child: Container(
+                                  margin: EdgeInsets.only(top: 30, left: 30),
+                                  width: 50,
+                                  height: 50,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Colors.redAccent.withOpacity(really ? 1 : 0.07),
-                                  ),
-                                  padding: EdgeInsets.all(20),
-                                  width: MediaQuery.of(context).size.width*0.35,
-                                  margin: EdgeInsets.only(bottom: 50),
-                                  child: Center(child: Text(really ? '정말 포기하기':'포기하기', style: TextStyle(color: really ? Colors.white : Colors.redAccent, fontSize: 15)))),
-                            ),
-                            Bounce(
-                                duration: Duration(milliseconds: 100),
-                                onPressed: () {
-                                  setState((){
-                                    _nowChallenge = true;
-                                    todayChallenge = true;
-                                    completeChallenge = true;
-                                    successChallenge.add(challengelist[challengeNumber[timeBlock]]);
-                                    successChallengePoint.add(challengelistPoint[challengeNumber[timeBlock]]);
-                                    sum += challengelistPoint[challengeNumber[timeBlock]];
-                                    addPoint = false;
-                                  });
-                                },
-                                child: Container(
-                                    width: MediaQuery.of(context).size.width*0.35,
-                                    margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width*0.04, 0, 0, 50),
-                                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                    decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
-                                      color: Colors.blueAccent,
+                                      color: Colors.grey.withOpacity(1),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0XFF000066).withOpacity(0.03),
+                                          blurRadius: 15,
+                                          spreadRadius: 10,
+                                          offset: const Offset(0, 10),
+                                        ),
+                                        BoxShadow(
+                                          color: Color(0XFF000066).withOpacity(0.0165),
+                                          blurRadius: 7.5,
+                                          spreadRadius: 5,
+                                          offset: const Offset(0, 5),
+                                        ),
+                                        BoxShadow(
+                                          color: Color(0XFF000066).withOpacity(0.0095),
+                                          blurRadius: 5,
+                                          spreadRadius: 2.5,
+                                          offset: const Offset(0, 2.5),
+                                        ),
+                                      ]
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                      child: Center(
+                                        child: Icon(Icons.navigate_before_rounded, color: Colors.white, size: 30),
+                                      )
                                     ),
-                                    child: Row(
-                                        children: [
-                                          Spacer(),
-                                          Text('완료했어요', style: TextStyle(color: Colors.white, fontSize: 15)),
-                                          Spacer(),
-                                        ]
-                                    )
+                                  )
+                              ),
+                            ),
+                          ]),
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: Container(
+                            padding: EdgeInsets.fromLTRB(50, 30, 50, 0),
+                            child: Center(child: Column(children:[
+                              SizedBox(child: Column(children: [
+                                Container(margin: EdgeInsets.only(top: 0), child: Column(children: [
+                                  Text(challengelist[challengeNumber[timeBlock]], style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
+                                  Text('', style: TextStyle(fontSize: 10)),
+                                  Container(
+                                      padding: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(7),
+                                        color: Colors.blueAccent.withOpacity(0.1),
+                                      ),
+                                      child: Text('# ${categorylist[0][0]}', style: TextStyle(color: Colors.blueAccent, fontSize: 17))
+                                  ),
+                                  Text('', style: TextStyle(fontSize: 6)),
+                                  Container(
+                                      margin: EdgeInsets.only(top: 20),
+                                      child: Text(challengelistHow[challengeNumber[timeBlock]][0], style: TextStyle(color: Colors.grey, fontSize: 15, letterSpacing: 1.2, wordSpacing: 1.2, height: 1.2))),
+                                ]
+                                )
+                                ),
+                              ])),
+                              Bounce(
+                                  duration: Duration(milliseconds: 100),
+                                  onPressed: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) => ChallengeTip()));
+                                  },
+                                  child: Container(
+                                    child:
+                                    Icon(Icons.lightbulb_rounded, color: Colors.orange, size: 20),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.orange.withOpacity(0.1),
+                                    ),
+                                    padding: EdgeInsets.all(10),
+                                    margin: EdgeInsets.only(top: 40),
+                                  )
+                              ),
+                              Spacer(),
+                              Spacer(),
+        Container(
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Bounce(
+                    duration: Duration(milliseconds: 100),
+                    onPressed: () {
+                      print('포기하기');
+                      if (really == true) {
+                        setState((){
+                          _nowChallenge = false;
+                          _isChallenge = false;
+                          setIsChallenge();
+                          Navigator.pop(context);
+                        });
+                      }
+                      else {
+                        setState((){
+                          Duration duration = new Duration(seconds: 3);
+                          really = true;
+                          Future.delayed(duration, (){
+                            setState((){
+                              really = false;
+                            });
+                          });
+                        });
+                      }
+                    },
+                    child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.redAccent.withOpacity(really ? 1 : 0.07),
+                        ),
+                        padding: EdgeInsets.all(20),
+                        width: MediaQuery.of(context).size.width*0.35,
+                        margin: EdgeInsets.only(bottom: 50),
+                        child: Center(child: Text(really ? '정말 포기하기':'포기하기', style: TextStyle(color: really ? Colors.white : Colors.redAccent, fontSize: 15)))),
+                  ),
+        Stack(
+            children: [
+        Container(
+        width: MediaQuery.of(context).size.width*0.35,
+        height: 55,
+
+        margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width*0.04, 0, 0, 50),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: LinearProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation(Colors.blueAccent),
+            backgroundColor: Color(0xffF2F2F2),
+            value: ((30-(sec/1000)) + 1/(sec/1000))/30,
+          ),
+        )
+    ),
+    Bounce(
+    duration: Duration(milliseconds: 100),
+    onPressed: () {
+    if(timeroff == true) {
+    setState(() {
+    _nowChallenge = true;
+    todayChallenge = true;
+    completeChallenge = true;
+    successChallenge.add(
+    challengelist[
+    challengeNumber[
+    timeBlock]]);
+    successChallengePoint.add(
+    challengelistPoint[
+    challengeNumber[
+    timeBlock]]);
+    sum += challengelistPoint[
+    challengeNumber[
+    timeBlock]];
+    addPoint = false;
+    });
+    }else {
+      if(timerset == false){
+        timer();
+      }
+      timerset = true;
+    }
+    },
+        child: Container(
+            width: MediaQuery.of(context).size.width*0.35,
+            margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width*0.04, 0, 0, 50),
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.transparent,
+            ),
+            child: Row(
+                children: [
+                  Spacer(),
+                  timerset ? Row(
+                      children: [
+                        Text(timeroff ? '완료했어요' : '${sec~/1000}',style: TextStyle(color: timeroff ? Colors.white : (sec/1000) > 15 == true ? Colors.grey : Colors.white, fontSize: 15)),
+                      ]
+                  ) : Text(timeroff ? '완료했어요' : timerset ? '${sec~/1000}' : '타이머 시작', style: TextStyle(color: timeroff ? Colors.white : timerset ? Colors.grey : Colors.black, fontSize: 15)),
+                  Spacer(),
+                ]
+            )
+        )
+    ),
+            ],
+        ),
+                ],
+            ),
+        ),
+                            ]))
+                        ),
+                      ),
+                    ],
+                  ):Column(
+                    children: [
+                      Stack(
+                          children: [
+                            Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height*0.4,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/neck${challengeNumber[timeBlock]}.jpeg'),
+                                    fit: BoxFit.cover,
+                                  ),
                                 )
                             ),
-                          ],
+                            Center(
+                              child: Container(
+                                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17,),
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: Colors.black.withOpacity(0.3),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0XFF000066).withOpacity(0.03),
+                                          blurRadius: 15,
+                                          spreadRadius: 10,
+                                          offset: const Offset(0, 10),
+                                        ),
+                                        BoxShadow(
+                                          color: Color(0XFF000066).withOpacity(0.0165),
+                                          blurRadius: 7.5,
+                                          spreadRadius: 5,
+                                          offset: const Offset(0, 5),
+                                        ),
+                                        BoxShadow(
+                                          color: Color(0XFF000066).withOpacity(0.0095),
+                                          blurRadius: 5,
+                                          spreadRadius: 2.5,
+                                          offset: const Offset(0, 2.5),
+                                        ),
+                                      ]
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                      child: Container(
+                                        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17,),
+                                        width: 100,
+                                        height: 100,
+                                      ),
+                                    ),
+                                  )
+                              ),
+                            ),
+                            Center(
+                              child: Container(
+                                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17,),
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(75),
+                                ),
+                                child: Center(child: Icon(challengeListIcon[challengeNumber[timeBlock]], color: Colors.white, size: 70)),),
+                            ),
+                            Bounce(
+                              duration: Duration(milliseconds: 100),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                  margin: EdgeInsets.only(top: 30, left: 30),
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.grey.withOpacity(1),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0XFF000066).withOpacity(0.03),
+                                          blurRadius: 15,
+                                          spreadRadius: 10,
+                                          offset: const Offset(0, 10),
+                                        ),
+                                        BoxShadow(
+                                          color: Color(0XFF000066).withOpacity(0.0165),
+                                          blurRadius: 7.5,
+                                          spreadRadius: 5,
+                                          offset: const Offset(0, 5),
+                                        ),
+                                        BoxShadow(
+                                          color: Color(0XFF000066).withOpacity(0.0095),
+                                          blurRadius: 5,
+                                          spreadRadius: 2.5,
+                                          offset: const Offset(0, 2.5),
+                                        ),
+                                      ]
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: BackdropFilter(
+                                        filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                        child: Center(
+                                          child: Icon(Icons.navigate_before_rounded, color: Colors.white, size: 30),
+                                        )
+                                    ),
+                                  )
+                              ),
+                            ),
+                          ]),
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: Container(
+                            padding: EdgeInsets.fromLTRB(50, 30, 50, 0),
+                            child: Center(child: Column(children:[
+                              SizedBox(child: Column(children: [
+                                Container(margin: EdgeInsets.only(top: 0), child: Column(children: [
+                                  Text(challengelist[challengeNumber[timeBlock]], style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
+                                  Text('', style: TextStyle(fontSize: 10)),
+                                  Container(
+                                      padding: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(7),
+                                        color: Colors.blueAccent.withOpacity(0.1),
+                                      ),
+                                      child: Text('# ${categorylist[0][0]}', style: TextStyle(color: Colors.blueAccent, fontSize: 17))
+                                  ),
+                                  Text('', style: TextStyle(fontSize: 6)),
+                                  Container(
+                                      margin: EdgeInsets.only(top: 20),
+                                      child: Text(challengelistHow[challengeNumber[timeBlock]][0], style: TextStyle(color: Colors.grey, fontSize: 15, letterSpacing: 1.2, wordSpacing: 1.2, height: 1.2))),
+                                ]
+                                )
+                                ),
+                              ])),
+                              Bounce(
+                                  duration: Duration(milliseconds: 100),
+                                  onPressed: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) => ChallengeTip()));
+                                  },
+                                  child: Container(
+                                    child:
+                                    Icon(Icons.lightbulb_rounded, color: Colors.orange, size: 20),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.orange.withOpacity(0.1),
+                                    ),
+                                    padding: EdgeInsets.all(10),
+                                    margin: EdgeInsets.only(top: 40),
+                                  )
+                              ),
+                              Spacer(),
+                              Spacer(),
+                              Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Bounce(
+                                      duration: Duration(milliseconds: 100),
+                                      onPressed: () {
+                                        print('포기하기');
+                                        if (really == true) {
+                                          setState((){
+                                            _nowChallenge = false;
+                                            _isChallenge = false;
+                                            setIsChallenge();
+                                            Navigator.pop(context);
+                                          });
+                                        }
+                                        else {
+                                          setState((){
+                                            Duration duration = new Duration(seconds: 3);
+                                            really = true;
+                                            Future.delayed(duration, (){
+                                              setState((){
+                                                really = false;
+                                              });
+                                            });
+                                          });
+                                        }
+                                      },
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(20),
+                                            color: Colors.redAccent.withOpacity(really ? 1 : 0.07),
+                                          ),
+                                          padding: EdgeInsets.all(20),
+                                          width: MediaQuery.of(context).size.width*0.35,
+                                          margin: EdgeInsets.only(bottom: 50),
+                                          child: Center(child: Text(really ? '정말 포기하기':'포기하기', style: TextStyle(color: really ? Colors.white : Colors.redAccent, fontSize: 15)))),
+                                    ),
+                                    Bounce(
+                                        duration: Duration(milliseconds: 100),
+                                        onPressed: () {
+                                          setState((){
+                                            _nowChallenge = true;
+                                            todayChallenge = true;
+                                            completeChallenge = true;
+                                            successChallenge.add(challengelist[challengeNumber[timeBlock]]);
+                                            successChallengePoint.add(challengelistPoint[challengeNumber[timeBlock]]);
+                                            sum += challengelistPoint[challengeNumber[timeBlock]];
+                                            addPoint = false;
+                                          });
+                                        },
+                                        child: Container(
+                                            width: MediaQuery.of(context).size.width*0.35,
+                                            margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width*0.04, 0, 0, 50),
+                                            padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(20),
+                                              color: Colors.blueAccent,
+                                            ),
+                                            child: Row(
+                                                children: [
+                                                  Spacer(),
+                                                  Text('완료했어요', style: TextStyle(color: Colors.white, fontSize: 15)),
+                                                  Spacer(),
+                                                ]
+                                            )
+                                        )
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ]))
                         ),
-                      ]))
+                      ),
+                    ],
                   )
                   :
               Column(
@@ -4101,7 +4298,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
                     children: [
                       Container(
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height*0.3,
+                        height: MediaQuery.of(context).size.height*0.4,
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage('assets/neck${challengeNumber[timeBlock]}.jpeg'),
@@ -4111,7 +4308,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
                       ),
                       Center(
                         child: Container(
-                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.1,),
+                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17,),
                           width: 100,
                           height: 100,
                             decoration: BoxDecoration(
@@ -4141,9 +4338,9 @@ class _ChallengeModeState extends State<ChallengeMode> {
                             child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
                             child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                              filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
                               child: Container(
-                                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.1,),
+                                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17,),
                                 width: 100,
                                 height: 100,
                               ),
@@ -4153,13 +4350,57 @@ class _ChallengeModeState extends State<ChallengeMode> {
                       ),
                       Center(
                         child: Container(
-                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.1,),
+                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17,),
                           width: 100,
                           height: 100,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(75),
                           ),
                           child: Center(child: timeAttack ? Text('30', style: TextStyle(color: Colors.white, fontSize: 50)) : Icon(challengeListIcon[challengeNumber[timeBlock]], color: Colors.white, size: 70)),
+                        ),
+                      ),
+                      Bounce(
+                        duration: Duration(milliseconds: 100),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                            margin: EdgeInsets.only(top: 30, left: 30),
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.grey.withOpacity(1),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0XFF000066).withOpacity(0.03),
+                                    blurRadius: 15,
+                                    spreadRadius: 10,
+                                    offset: const Offset(0, 10),
+                                  ),
+                                  BoxShadow(
+                                    color: Color(0XFF000066).withOpacity(0.0165),
+                                    blurRadius: 7.5,
+                                    spreadRadius: 5,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                  BoxShadow(
+                                    color: Color(0XFF000066).withOpacity(0.0095),
+                                    blurRadius: 5,
+                                    spreadRadius: 2.5,
+                                    offset: const Offset(0, 2.5),
+                                  ),
+                                ]
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: BackdropFilter(
+                                  filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                  child: Center(
+                                    child: Icon(Icons.navigate_before_rounded, color: Colors.white, size: 30),
+                                  )
+                              ),
+                            )
                         ),
                       ),
                       ]),
