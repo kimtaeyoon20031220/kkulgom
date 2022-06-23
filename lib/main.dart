@@ -33,6 +33,7 @@ var AllBackgroundColor = Color(0xffF1F1E9);
 var AllTonedownColor = Color(0xffE3E3D3);
 var backgroundColor = Colors.amber;
 
+var newBadge = false;
 
 var dayList;
 var dayListToday;
@@ -129,7 +130,7 @@ var timeBlockEnter = 0;
 var savedTimeBlock = 0;
 
 var timeTitle = [['오늘도 반가워요!\n상쾌한 아침이에요.'], ['새로운 마음으로 도전과제를 해볼까요?'], ['피곤하지는 않나요?\n건강한 하루을 보내보아요.'], ['피곤할 때는 도전과제 한 판!'], ['좋은 저녁이에요.\n좋은 하루 보내셨나요?'], ['하루를 마무리하며 도전해봅시다!'], ['오늘 하루는 어떤가요?\n꿀곰 첫 방문 멘트'], ['도전 과제 한 판 해볼래요?']];
-
+var cardView = [false, false, false, false, false];
 
 Future<void> main() async {
   bool data = await fetchData();
@@ -245,6 +246,7 @@ class _MyAppState extends State<MyApp> {
       setTimeBlock();
       setTimeBlockEnter();
       loadIsChallenge();
+      loadBadgeHave();
       Future.delayed(Duration(milliseconds: 400), () {
         print('future checker 실행');
         if(challengeNumber[2] != null){
@@ -253,6 +255,14 @@ class _MyAppState extends State<MyApp> {
       });
       firstTime = false;
     });
+  }
+  @override
+  loadBadgeHave() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      badgeHave = prefs.getInt('badgeHave') ?? 0;
+    });
+    print('loadBadgeHave: ${badgeHave}');
   }
   @override
   setTodayCheck() async {
@@ -491,7 +501,6 @@ class _FirstAppState extends State<FirstApp> {
 
   @override
   Widget build(BuildContext context) {
-
 
     return MaterialApp(
       theme: ThemeData(
@@ -1372,23 +1381,91 @@ class _SecondPageState extends State<SecondPage> {
                             builder: (BuildContext context, AsyncSnapshot dayLen) {
                               if (dayLen.hasData == false || dayTLen == null || dayALen == null || dayListToday.length == 0 && dayLen.hasData == false) {
                                 return Container(
-                                    margin: EdgeInsets.only(top: 70),
-                                    padding: EdgeInsets.fromLTRB(40, 40, 40, 40),
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(30),
                                       color: Colors.transparent,
                                     ),
                                     child: Column(children: [
-                                      Container(
-                                          width: 100,
-                                          height: 100,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(75),
-                                            color: Colors.black.withOpacity(0.05),
+                                      Stack(
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Container(
+                                                  height: 100,
+                                                  margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: Colors.white,
+                                                  ),
+                                                  child: Row(
+                                                      children: [
+                                                        Spacer(),
+                                                        Text(''),
+                                                        Spacer(),
+                                                      ]
+                                                  )
+                                              ),
+                                              Container(
+                                                  height: 100,
+                                                  margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: Colors.white.withOpacity(0.7),
+                                                  ),
+                                                  child: Row(
+                                                      children: [
+                                                        Spacer(),
+                                                        Text(''),
+                                                        Spacer(),
+                                                      ]
+                                                  )
+                                              ),
+                                              Container(
+                                                  height: 100,
+                                                  margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: Colors.white.withOpacity(0.4),
+                                                  ),
+                                                  child: Row(
+                                                      children: [
+                                                        Spacer(),
+                                                        Text(''),
+                                                        Spacer(),
+                                                      ]
+                                                  )
+                                              ),
+                                            ],
                                           ),
-                                          child: Center(child: Icon(Icons.calendar_today_rounded, size: 30, color: Colors.blueAccent))),
-                                      Text(' ', style: TextStyle(fontSize: 30)),
-                                      Text('날짜를 선택해주세요', style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold)),
+                                          Center(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(20),
+                                                color: Color(0xffe6eef7).withOpacity(1),
+                                              ),
+                                              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2),
+                                              padding: EdgeInsets.all(30),
+                                              width: MediaQuery.of(context).size.width*0.6,
+                                              child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                        width: 70,
+                                                        height: 70,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(75),
+                                                          color: Color(0xffFFFFFF),
+                                                        ),
+                                                        child: Center(child: Icon(Icons.calendar_today_rounded, size: 30, color: Colors.blueAccent))),
+                                                    Text(' ', style: TextStyle(fontSize: 20)),
+                                                    Text('날짜를 선택해주세요', style: TextStyle(color: Color(0xff4c4e52), fontSize: 15, fontWeight: FontWeight.bold)),
+                                                  ]
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ])
                                 );
                               }
@@ -1684,8 +1761,8 @@ class ThirdPage extends StatefulWidget {
 }
 
 class _ThirdPageState extends State<ThirdPage> {
-  Future<dynamic> notifyDialog(BuildContext context, int me) async {
 
+  Future<dynamic> notifyDialog(BuildContext context, int me) async {
     return showDialog(
         context: context,
         builder: (context) {
@@ -1718,7 +1795,7 @@ class _ThirdPageState extends State<ThirdPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('설명\n', style: TextStyle(color: Colors.grey, fontSize: 15)),
-                      Text(challengelistHow[me][0], style: TextStyle(fontSize: 15, letterSpacing: 1.2, height: 1.2)),
+                      Text(challengelistHow[me][0], style: TextStyle(fontSize: 15, letterSpacing: 1, height: 1.7)),
                     ]
                   )
               )
@@ -1734,171 +1811,286 @@ class _ThirdPageState extends State<ThirdPage> {
             Expanded(
               child: ListView(
                   children: [
-                    Container(
-                      color: Colors.white,
-                        padding: EdgeInsets.fromLTRB(40, 40, 0, 40),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('${dayWeek + 1}일차', style: TextStyle(color: Colors.black, fontSize: 27, fontWeight: FontWeight.bold)),
-                            Text('\n\n모든 도전과제', style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),
-                          ],
-                        )
-                    ),
-                    Container(
-                      color: Colors.white,
-                        padding: EdgeInsets.only(bottom:50),
-                        child: Column(
-                            children: [
-                              for(var i = 0; i < challengelist.length; i++)
-                                Bounce(
-                                  duration: Duration(milliseconds: 100),
-                                  child: Container(
-                                      margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: dayWeek == i ? Border.all(width: 1, color: Colors.blueAccent.withOpacity(0.1)) : Border.all(width: 0, color: Colors.transparent),
-                                        color: dayWeek == i ? Colors.blueAccent.withOpacity(0.2) : (i+1)%2 == 0 ? Colors.white : Color(0xffF7F7F7),
-                                      ),
-                                      child: Row(
-                                          children: [
-                                            Icon(dayWeek >= i ? dayWeek == i ? Icons.lens : Icons.lock_open : Icons.lock, color: dayWeek >= i ? dayWeek == i ? Colors.blueAccent : Colors.blueAccent : Colors.grey, size: 15),
-                                            Text('   '),
-                                            Container(
-                                                width: 25,
-                                                height: 25,
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                  color: dayWeek >= i ? dayWeek == i ? Colors.white : Colors.white : Colors.white,
-                                                  border: Border.all(width: 1, color: dayWeek >= i ? dayWeek == i ? Color(0xffDFDFDF) : Color(0xffDFDFDF) : Color(0xffDFDFDF)),
-                                                ),
-                                                child: Center(child: Icon(challengeListIcon[i], color: dayWeek >= i ? dayWeek == i ? Colors.blueAccent : Colors.blueAccent : Color(0xffBFBFBF), size: 17))),
-                                            Text('  '+challengelist[i], style: TextStyle(color: dayWeek >= i ? dayWeek == i ? Colors.blueAccent : Colors.black : Colors.grey, fontSize: 15, fontWeight: dayWeek == i ? FontWeight.bold : FontWeight.normal)),
-                                            Spacer(),
-                                            Text('${i+1}일차', style: TextStyle(color: dayWeek >= i ? dayWeek == i ? Colors.blueAccent : Colors.black : Colors.grey, fontSize: 13)),
-                                          ]
-                                      )
-                                  ),
-                                  onPressed: () {
-                                    notifyDialog(context, i);
-                                  },
-                                )
-                            ]
-                        )
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 0, bottom: 0),
-                      height:MediaQuery.of(context).size.height*0.35,
-                      color: Colors.transparent,
-                      padding: EdgeInsets.only(),
-                      // 리스트뷰 추가
-                      child: ListView.builder(
-                        // 스크롤 방향 설정. 수평적으로 스크롤되도록 설정
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 5,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.7,
-                              margin: EdgeInsets.fromLTRB(index == 0 ? MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.15 : 10, 20, index == 4 ? MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.15 : 10, 20),
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/neck${index}.jpeg'),
-                                  fit: BoxFit.cover,
-                                ),
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0XFF000066).withOpacity(0.03),
-                                    blurRadius: 15,
-                                    spreadRadius: 10,
-                                    offset: const Offset(0, 10),
-                                  ),
-                                  BoxShadow(
-                                    color: Color(0XFF000066).withOpacity(0.0165),
-                                    blurRadius: 7.5,
-                                    spreadRadius: 5,
-                                    offset: const Offset(0, 5),
-                                  ),
-                                  BoxShadow(
-                                    color: Color(0XFF000066).withOpacity(0.0095),
-                                    blurRadius: 5,
-                                    spreadRadius: 2.5,
-                                    offset: const Offset(0, 2.5),
-                                  ),
-                                ],
-                              ),
-                              child: Container(
-                                padding: EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(0.3),
-                                      Colors.black.withOpacity(0.8),
-                                    ]
-                                  ),
-                                ),
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Spacer(),
-                                      Text(challengelist[index], style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold)),
-                                      Text('', style: TextStyle(fontSize: 6)),
-                                      Text(challengelistHow[index][0], style: TextStyle(color: Colors.white, fontSize: 15, height: 1.3)),
-                                    ]
-                                ),
-                              ),
-                            );
-                          }
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 0),
-                      color: Colors.white,
-                      padding: EdgeInsets.only(top: 40, right: 30, left: 30, bottom: 40),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(left: 10),
-                              child: Text('카테고리', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20))),
-                          Text('', style: TextStyle(fontSize: 30)),
-                          for(var i = 0; i < categorylist.length; i++)
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: i % 2 == 0 ? Color(0xffEFEFEF) : Colors.white,
-                              ),
-                              padding: EdgeInsets.all(10),
-                              child: Row(
-                                children: [
-                                  Text('${i+1}', style: TextStyle(color: Colors.grey, fontSize: 17)),
-                                  Text('  ${categorylist[i][0]}', style: TextStyle(color: Colors.black, fontSize: 15)),
-                                  Spacer(),
-                                  Icon(categorylist[i][1] == true ? Icons.check_circle_rounded : Icons.cancel_rounded, size: 18, color: categorylist[i][1] == true ? Colors.blueAccent : Color(0xffCFCFCF)),
-                                  Text(categorylist[i][1] == true ? '  이용 중' : '  추후 오픈', style: TextStyle(color: categorylist[i][1] == true ? Colors.blueAccent : Colors.grey, fontSize: 13)),
-                                ],
-                              ),
+                    Stack(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 300,
+                          decoration: BoxDecoration(
+                            color: Colors.indigoAccent,
+                            image: DecorationImage(
+                              image: AssetImage('assets/thirdbackground.jpg'),
+                              fit: BoxFit.cover,
                             )
-                        ]
-                      )
-                    )
+                          ),
+                          child: Container(color: Colors.black.withOpacity(0.3)),
+                        ),
+                        Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0XFF000066).withOpacity(0.03),
+                                  blurRadius: 15,
+                                  spreadRadius: 10,
+                                  offset: const Offset(0, 10),
+                                ),
+                                BoxShadow(
+                                  color: Color(0XFF000066).withOpacity(0.0165),
+                                  blurRadius: 7.5,
+                                  spreadRadius: 5,
+                                  offset: const Offset(0, 5),
+                                ),
+                                BoxShadow(
+                                  color: Color(0XFF000066).withOpacity(0.0095),
+                                  blurRadius: 5,
+                                  spreadRadius: 2.5,
+                                  offset: const Offset(0, 2.5),
+                                ),
+                              ],
+    ),
+                            child: Column(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17, /*left: MediaQuery.of(context).size.width*0.05+40*/),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text('${dayWeek + 1}일차', style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold)),
+                                        Text('${getToday().split('-')[0]}년 ${getToday().split('-')[1]}월 ${getToday().split('-')[2]}일', style: TextStyle(color: Colors.white.withOpacity(0.7
+                                        ), fontSize: 17))
+                                      ],
+                                    )),
+                                Container(
+                                  margin: EdgeInsets.only(top: 30),
+                                  width: MediaQuery.of(context).size.width*0.9,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(20),
+                                        topLeft: Radius.circular(20),
+                                      ),
+                                      color: Colors.white,
+                                    ),
+                                    padding: EdgeInsets.fromLTRB(40, 0, 0, 20),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('\n\n모든 도전과제', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 17, fontWeight: FontWeight.bold)),
+                                      ],
+                                    )
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width*0.9,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(20),
+                                        bottomRight: Radius.circular(20),
+                                      ),
+                                    ),
+                                    padding: EdgeInsets.only(bottom:50),
+                                    child: Column(
+                                        children: [
+                                          for(var i = 0; i < challengelist.length; i++)
+                                            Bounce(
+                                              duration: Duration(milliseconds: 100),
+                                              child: Container(
+                                                  margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                                                  padding: EdgeInsets.all(10),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(15),
+                                                    color: (i+1)%2 == 0 ? Colors.white : Color(0xffF7F7F7),
+                                                  ),
+                                                  child: Row(
+                                                      children: [
+                                                        Icon(dayWeek >= i ? dayWeek == i ? Icons.lens : Icons.lock_open : Icons.lock, color: dayWeek >= i ? dayWeek == i ? Colors.indigoAccent.withOpacity(0.5) : Colors.indigoAccent : Colors.grey, size: 13),
+                                                        Text('   '),
+                                                        Container(
+                                                            width: 25,
+                                                            height: 25,
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(5),
+                                                              color: dayWeek >= i ? dayWeek == i ? Colors.white : Colors.white : Colors.white,
+                                                              border: Border.all(width: 1, color: dayWeek >= i ? dayWeek == i ? Color(0xffDFDFDF) : Color(0xffDFDFDF) : Color(0xffDFDFDF)),
+                                                            ),
+                                                            child: Center(child: Icon(challengeListIcon[i], color: dayWeek >= i ? dayWeek == i ? Colors.indigoAccent : Colors.indigoAccent : Color(0xffBFBFBF), size: 17))),
+                                                        Text('  '+challengelist[i], style: TextStyle(color: dayWeek >= i ? dayWeek == i ? Colors.indigoAccent : Colors.black : Colors.grey, fontSize: 15, fontWeight: dayWeek == i ? FontWeight.bold : FontWeight.normal)),
+                                                        Spacer(),
+                                                        Text('${i+1}일차', style: TextStyle(color: dayWeek >= i ? dayWeek == i ? Colors.indigoAccent : Colors.black : Colors.grey, fontSize: 13)),
+                                                      ]
+                                                  )
+                                              ),
+                                              onPressed: () {
+                                                notifyDialog(context, i);
+                                              },
+                                            ),
+                                          Text('\n\n6일차 이후에는 도전과제가 랜덤으로 지정돼요.', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                                        ]
+                                    )
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 0, bottom: 0),
+                                  height:MediaQuery.of(context).size.height*0.4,
+                                  color: Colors.transparent,
+                                  padding: EdgeInsets.only(),
+                                  // 리스트뷰 추가
+                                  child: ListView.builder(
+                                    // 스크롤 방향 설정. 수평적으로 스크롤되도록 설정
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: 5,
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return Bounce(
+                                          duration: Duration(milliseconds: 100),
+                                          onPressed: () {
+                                            setState((){
+                                              cardView[index] ? cardView[index] = false : cardView[index] = true;
+                                            });
+                                            print(cardView[index]);
+                                          },
+                                          child: Container(
+                                            width: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .width * 0.7,
+                                            margin: EdgeInsets.fromLTRB(index == 0 ? MediaQuery
+                                                .of(context)
+                                                .size
+                                                .width * 0.05 : 10, 20, index == 4 ? MediaQuery
+                                                .of(context)
+                                                .size
+                                                .width * 0.15 : 10, 20),
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage('assets/neck${index}.jpeg'),
+                                                fit: BoxFit.cover,
+                                              ),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Color(0XFF000066).withOpacity(0.03),
+                                                  blurRadius: 15,
+                                                  spreadRadius: 10,
+                                                  offset: const Offset(0, 10),
+                                                ),
+                                                BoxShadow(
+                                                  color: Color(0XFF000066).withOpacity(0.0165),
+                                                  blurRadius: 7.5,
+                                                  spreadRadius: 5,
+                                                  offset: const Offset(0, 5),
+                                                ),
+                                                BoxShadow(
+                                                  color: Color(0XFF000066).withOpacity(0.0095),
+                                                  blurRadius: 5,
+                                                  spreadRadius: 2.5,
+                                                  offset: const Offset(0, 2.5),
+                                                ),
+                                              ],
+                                            ),
+                                            child: cardView[index] ?
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(20),
+                                              child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                                  child: Container(
+                                                      padding: EdgeInsets.all(20),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.black.withOpacity(0.5),
+                                                      ),
+                                                      child: AnimatedOpacity(
+                                                        duration: Duration(milliseconds: 50),
+                                                        opacity: cardView[index] ? 1.0 : 0.0,
+                                                        child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Center(
+                                                                child: Text(challengelist[index], style: TextStyle(
+                                                                    color: Colors.white.withOpacity(0.7),
+                                                                    fontSize: 20,
+                                                                    fontWeight: FontWeight.bold)),
+                                                              ),
+                                                              Text('', style: TextStyle(fontSize: 10)),
+                                                              Text(challengelistHow[index][0], style: TextStyle(color: Colors.white, fontSize: 15, height: 1.7,),),
+                                                            ]
+                                                        ),
+                                                      ))
+                                              ),
+                                            ):
+                                            Container(
+                                              padding: EdgeInsets.all(20),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  gradient: LinearGradient(
+                                                      begin: Alignment.topCenter,
+                                                      end: Alignment.bottomCenter,
+                                                      colors: [
+                                                        Colors.black.withOpacity(0.3),
+                                                        Colors.black.withOpacity(0.7),
+                                                      ]
+                                                  )
+                                              ),
+                                              child:
+                                              AnimatedOpacity(
+                                                duration: Duration(milliseconds: 50),
+                                                opacity: cardView[index] ? 0.0 : 1.0,
+                                                child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Spacer(),
+                                                      Text(challengelist[index], style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 20,
+                                                          fontWeight: FontWeight.bold)),
+                                                      Text('', style: TextStyle(fontSize: 6)),
+                                                      Text(challengelistHow[index][0], style: TextStyle(color: Colors.white, fontSize: 15, height: 1.7,), overflow: TextOverflow.ellipsis, maxLines: 3),
+                                                    ]
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                  ),
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05, bottom: 20),
+                                    decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(20),
+    color: Colors.white,
+    ),
+                                    padding: EdgeInsets.only(top: 40, right: 30, left: 30, bottom: 40),
+                                    child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                              margin: EdgeInsets.only(left: 10),
+                                              child: Text('카테고리', style: TextStyle(color: Colors.black.withOpacity(0.7), fontWeight: FontWeight.bold, fontSize: 17))),
+                                          Text('', style: TextStyle(fontSize: 30)),
+                                          for(var i = 0; i < categorylist.length; i++)
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(10),
+                                                color: i % 2 == 0 ? Color(0xffF2F2F2) : Colors.white,
+                                              ),
+                                              padding: EdgeInsets.all(10),
+                                              child: Row(
+                                                children: [
+                                                  Text('${i+1}', style: TextStyle(color: Colors.grey, fontSize: 17)),
+                                                  Text('  ${categorylist[i][0]}', style: TextStyle(color: Colors.black, fontSize: 15)),
+                                                  Spacer(),
+                                                  Icon(categorylist[i][1] == true ? Icons.check_circle_rounded : Icons.cancel_rounded, size: 18, color: categorylist[i][1] == true ? Colors.blueAccent : Color(0xffCFCFCF)),
+                                                  Text(categorylist[i][1] == true ? '  이용 중   ' : '  추후 오픈', style: TextStyle(color: categorylist[i][1] == true ? Colors.blueAccent : Colors.grey, fontSize: 13)),
+                                                ],
+                                              ),
+                                            )
+                                        ]
+                                    )
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ]
+                    ),
                   ]
               ),
             ),
@@ -2561,7 +2753,7 @@ class BadgeApp extends StatelessWidget {
         home: Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.transparent,
                 elevation: 0.0,
                 leading: Padding(
                     padding: EdgeInsets.all(8.0),
@@ -2576,12 +2768,22 @@ class BadgeApp extends StatelessWidget {
             body: ScrollConfiguration(
               behavior: NoGlowScrollBehavior(),
               child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.blueAccent.withOpacity(0),
+                          Colors.blueAccent.withOpacity(0.2),
+                        ]
+                    ),
+                  ),
                   padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: ListView(children: [
                     Column(children:[
                       Text('', style: TextStyle(fontSize: 30)),
-                      Text('활동 뱃지', style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
-                      Text('\n다양한 활동을 통해 뱃지를 얻을 수 있어요.', style: TextStyle(color: Colors.grey, fontSize: 17)),
+                      Text('활동 뱃지', style: TextStyle(color: Color(0xff0f1f42), fontSize: 25, fontWeight: FontWeight.bold)),
+                      Text('\n다양한 활동을 통해 뱃지를 얻을 수 있어요.', style: TextStyle(color: Color(0xff0f1f42).withOpacity(0.5), fontSize: 17)),
                     ]),
                     Container(
                       decoration: BoxDecoration(
@@ -2605,28 +2807,140 @@ class BadgeApp extends StatelessWidget {
                                 child: Column(children: <Widget>[
                                   if (badgeHave > index)
                                     Container(
-                                        width: 70,
-                                        height: 70,
-                                        decoration: BoxDecoration(
-                                          color: AllBackgroundColor,
-                                          borderRadius: BorderRadius.circular(30),
-                                        ),
-                                        child: Center(child: Image.asset('assets/badge/'+badgeListIcon[index], color: const Color.fromRGBO(255, 255, 255, 1), colorBlendMode: BlendMode.modulate, width: 40)))
+                                      child: Stack(
+                                          children: [
+                                            Container(
+                                                width: 100,
+                                                height: 100,
+                                                margin: EdgeInsets.only(bottom: 0),
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(130),
+                                                    gradient: RadialGradient(
+                                                      colors: [
+                                                        Colors.blueAccent.withOpacity(0.7),
+                                                        Colors.blueAccent.withOpacity(0),
+                                                      ],
+                                                    )
+                                                )
+                                            ),
+                                            Container(
+                                                width: 80,
+                                                height: 80,
+                                                margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(100),
+                                                    gradient: LinearGradient(
+                                                        begin: Alignment.topLeft,
+                                                        end: Alignment.bottomRight,
+                                                        colors: [
+                                                          Colors.blueAccent.withOpacity(0.4),
+                                                          Colors.blueAccent.withOpacity(0.9),
+                                                        ]
+                                                    )
+                                                )
+                                            ),
+                                            Container(
+                                                width: 70,
+                                                height: 70,
+                                                margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(100),
+                                                    gradient: LinearGradient(
+                                                        begin: Alignment.topLeft,
+                                                        end: Alignment.bottomRight,
+                                                        colors: [
+                                                          Colors.blueAccent.withOpacity(0.4),
+                                                          Colors.blueAccent.withOpacity(0.9),
+                                                        ]
+                                                    ),
+                                                    border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
+                                                )
+                                            ),
+                                            Container(
+                                                width: 70,
+                                                height: 70,
+                                                margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(100),
+                                                    color: Colors.white.withOpacity(0.9),
+                                                    border: Border.all(width: 3, color: Colors.indigo.withOpacity(0.8))
+                                                ),
+                                                child: Center(
+                                                  child: Image.asset('assets/badge/badge${index+1}.png', width: 30),
+                                                )
+                                            ),
+                                          ]
+                                      ),)
                                   else
                                     Container(
-                                      width: 70,
-                                      height: 70,
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Color(0xffF7F7F7), ),
-                                      child: Center(child: Image.asset('assets/badge/'+badgeListIcon[index], color: const Color.fromRGBO(255, 255, 255, 0.2), colorBlendMode: BlendMode.modulate, width: 40)),
-                                    ),
+                                      child: Stack(
+                                          children: [
+                                            Container(
+                                                width: 100,
+                                                height: 100,
+                                                margin: EdgeInsets.only(bottom: 0),
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(130),
+                                                    gradient: RadialGradient(
+                                                      colors: [
+                                                        Colors.blueAccent.withOpacity(0),
+                                                        Colors.blueAccent.withOpacity(0),
+                                                      ],
+                                                    )
+                                                )
+                                            ),
+                                            Container(
+                                                width: 80,
+                                                height: 80,
+                                                margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(100),
+                                                    gradient: LinearGradient(
+                                                        begin: Alignment.topLeft,
+                                                        end: Alignment.bottomRight,
+                                                        colors: [
+                                                          Colors.blueAccent.withOpacity(0.1),
+                                                          Colors.blueAccent.withOpacity(0.3),
+                                                        ]
+                                                    )
+                                                )
+                                            ),
+                                            Container(
+                                                width: 70,
+                                                height: 70,
+                                                margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(100),
+                                                    gradient: LinearGradient(
+                                                        begin: Alignment.topLeft,
+                                                        end: Alignment.bottomRight,
+                                                        colors: [
+                                                          Colors.blueAccent.withOpacity(0.1),
+                                                          Colors.blueAccent.withOpacity(0.3),
+                                                        ]
+                                                    ),
+                                                    border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
+                                                )
+                                            ),
+                                            Container(
+                                                width: 70,
+                                                height: 70,
+                                                margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(100),
+                                                    color: Colors.white.withOpacity(0.9),
+                                                    border: Border.all(width: 3, color: Colors.indigo.withOpacity(0.3))
+                                                ),
+                                                child: Center(
+                                                  child: Image.asset('assets/badge/badge${index+1}.png', width: 30, color: const Color.fromRGBO(255, 255, 255, 0.2),colorBlendMode: BlendMode.modulate),
+                                                )
+                                            ),
+                                          ]
+                                      ),),
                                   Container(
-                                      margin: EdgeInsets.only(top: 20),
-                                      child: Column(
-                                        children: [
-                                          Text(badgelist[index], style: TextStyle(color: AllFontColor, fontSize: 15, fontWeight: FontWeight.bold),),
-                                        ],
-                                      )),
-
+                                    margin: EdgeInsets.only(top: 10),
+                                    child: Text(badgelist[index], style: TextStyle(color: Color(0xff0f1f42), fontSize: 15, fontWeight: FontWeight.bold)),
+                                  )
                                 ])
                             );
                           }
@@ -2640,6 +2954,7 @@ class BadgeApp extends StatelessWidget {
   }
 }
 
+//
 
 class StrictApp extends StatefulWidget {
   const StrictApp({Key? key}) : super(key: key);
@@ -3625,6 +3940,147 @@ class _MainchallengeButtonState extends State<MainchallengeButton> {
 }
 
 
+class NewBadgePage extends StatefulWidget {
+  const NewBadgePage({Key? key}) : super(key: key);
+
+  @override
+  State<NewBadgePage> createState() => _NewBadgePageState();
+}
+
+class _NewBadgePageState extends State<NewBadgePage> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.blueAccent.withOpacity(0),
+                Color(0xffcad1e3).withOpacity(0.5),
+              ]
+            )
+          ),
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Spacer(),
+                Container(
+                  child: Text('새로운 배지를 얻었어요!', style: TextStyle(color: Color(0xff0f1f42), fontSize: 25)),
+                ),
+                Spacer(),
+                Stack(
+                  children: [
+                    Container(
+                      width: 250,
+                      height: 250,
+                      margin: EdgeInsets.only(bottom: 30),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(130),
+                        gradient: RadialGradient(
+                          colors: [
+                            Colors.blueAccent.withOpacity(0.7),
+                            Colors.blueAccent.withOpacity(0),
+                          ],
+                        )
+                      )
+                    ),
+                    Container(
+                      width: 200,
+                      height: 200,
+                        margin: EdgeInsets.only(bottom: 30, left: 25, top: 25),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.blueAccent.withOpacity(0.4),
+                              Colors.blueAccent.withOpacity(0.9),
+                            ]
+                          )
+                        )
+                    ),
+                    Container(
+                        width: 180,
+                        height: 180,
+                        margin: EdgeInsets.only(bottom: 30, left: 35, top: 35),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.blueAccent.withOpacity(0.4),
+                                  Colors.blueAccent.withOpacity(0.9),
+                                ]
+                            ),
+                          border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
+                        )
+                    ),
+                    Container(
+                        width: 150,
+                        height: 150,
+                        margin: EdgeInsets.only(bottom: 30, left: 50, top: 50),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Colors.white.withOpacity(0.9),
+                          border: Border.all(width: 3, color: Colors.indigo.withOpacity(0.8))
+                        ),
+                        child: Center(
+                        child: Image.asset('assets/badge/badge${badgeHave + 1}.png', width: 70),
+                    )
+                    ),
+                  ]
+                ),
+                Text('${badgelist[badgeHave]}', style: TextStyle(color: Color(0xff0f1f42), fontSize: 20, fontWeight: FontWeight.bold)),
+                Spacer(),
+                Bounce(
+                  duration: Duration(milliseconds: 100),
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                      margin: EdgeInsets.fromLTRB(50, 0, 50, 50),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Color(0xff224087),
+                      ),
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white.withOpacity(0.1),
+                          border: Border.all(width: 2, color: Colors.white.withOpacity(0.3)),
+                        ),
+                        child: Row(
+                          children: [
+                            Spacer(),
+                            Text('받기', style: TextStyle(color: Color(0xffcad1e3), fontSize: 17, fontWeight: FontWeight.bold)),
+                            Spacer(),
+                          ]
+                        ),
+                      ),
+                    )
+                  ),
+                  onPressed: () async {
+                    badgeHave += 1;
+                    print('badgeHave: ${badgeHave}');
+                    Navigator.popUntil(context, ModalRoute.withName('/'));
+                  },
+                )
+              ]
+            ),
+          )
+        )
+      )
+    );
+  }
+}
+
+
 
 
 
@@ -3677,6 +4133,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
   var really = false;
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
         home: Scaffold(
             backgroundColor: Colors.white,
@@ -3725,6 +4182,21 @@ class _ChallengeModeState extends State<ChallengeMode> {
                     ])),
                     Spacer(),
                     Spacer(),
+                    Bounce(
+                      duration: Duration(milliseconds: 100),
+                      child: Container(
+                        child: Row(
+                          children: [
+                            Spacer(),
+                            Text('test'),
+                            Spacer(),
+                          ]
+                        )
+                      ),
+                      onPressed: () {
+                        newBadge = true;
+                      }
+                    ),
                     Container(
                       margin: EdgeInsets.only(bottom: 20, left: 40, right: 40),
                       child:Bounce(
@@ -3744,7 +4216,17 @@ class _ChallengeModeState extends State<ChallengeMode> {
                         onPressed: () async {
                           print('리워드 받기');
                           setDayWeek();
-                          Navigator.pop(context);
+                          if(newBadge == false){
+                            Navigator.pop(context);
+                          }
+                          else{
+                            Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => NewBadgePage()));
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            setState((){
+                              prefs.setInt('badgeHave', badgeHave + 1);
+                            });
+                          }
                           if (todayMemo[timeBlock] == false) {
                             time += 1;
                             setTime();
@@ -3856,6 +4338,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
                                 height: 100,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(75),
+                                  color: Colors.grey.withOpacity(0.3),
                                 ),
                                 child: Center(child: timeroff ? Icon(Icons.check_rounded, color: Colors.white, size: 50) : Text('${sec~/1000}', style: TextStyle(color: (sec~/1000) <= 5 ? (sec~/1000) < 1 ? Colors.white : Colors.redAccent : Colors.white, fontSize: 50))),),
                             ),
@@ -3865,7 +4348,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
                                 Navigator.pop(context);
                               },
                               child: Container(
-                                  margin: EdgeInsets.only(top: 30, left: 30),
+                                  margin: EdgeInsets.only(top: 50, left: 30),
                                   width: 50,
                                   height: 50,
                                   decoration: BoxDecoration(
@@ -3903,11 +4386,23 @@ class _ChallengeModeState extends State<ChallengeMode> {
                                   )
                               ),
                             ),
+                            Container(
+                              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.4-20),
+                              height: 20,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
+                                  color: Colors.white,
+                                ),
+                            )
                           ]),
                       Flexible(
                         fit: FlexFit.loose,
                         child: Container(
-                            padding: EdgeInsets.fromLTRB(50, 30, 50, 0),
+                            padding: EdgeInsets.fromLTRB(50, 20, 50, 0),
                             child: Center(child: Column(children:[
                               SizedBox(child: Column(children: [
                                 Container(margin: EdgeInsets.only(top: 0), child: Column(children: [
@@ -4123,6 +4618,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
                                 height: 100,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(75),
+                                  color: Colors.grey.withOpacity(0.3),
                                 ),
                                 child: Center(child: Icon(challengeListIcon[challengeNumber[timeBlock]], color: Colors.white, size: 70)),),
                             ),
@@ -4132,7 +4628,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
                                 Navigator.pop(context);
                               },
                               child: Container(
-                                  margin: EdgeInsets.only(top: 30, left: 30),
+                                  margin: EdgeInsets.only(top: 50, left: 30),
                                   width: 50,
                                   height: 50,
                                   decoration: BoxDecoration(
@@ -4170,11 +4666,23 @@ class _ChallengeModeState extends State<ChallengeMode> {
                                   )
                               ),
                             ),
+                            Container(
+                              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.4-20),
+                              height: 20,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                ),
+                                color: Colors.white,
+                              ),
+                            )
                           ]),
                       Flexible(
                         fit: FlexFit.loose,
                         child: Container(
-                            padding: EdgeInsets.fromLTRB(50, 30, 50, 0),
+                            padding: EdgeInsets.fromLTRB(50, 20, 50, 0),
                             child: Center(child: Column(children:[
                               SizedBox(child: Column(children: [
                                 Container(margin: EdgeInsets.only(top: 0), child: Column(children: [
@@ -4355,6 +4863,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
                           height: 100,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(75),
+                            color: Colors.grey.withOpacity(0.3),
                           ),
                           child: Center(child: timeAttack ? Text('30', style: TextStyle(color: Colors.white, fontSize: 50)) : Icon(challengeListIcon[challengeNumber[timeBlock]], color: Colors.white, size: 70)),
                         ),
@@ -4365,7 +4874,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
                           Navigator.pop(context);
                         },
                         child: Container(
-                            margin: EdgeInsets.only(top: 30, left: 30),
+                            margin: EdgeInsets.only(top: 50, left: 30),
                             width: 50,
                             height: 50,
                             decoration: BoxDecoration(
@@ -4403,11 +4912,23 @@ class _ChallengeModeState extends State<ChallengeMode> {
                             )
                         ),
                       ),
+                      Container(
+                        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.4-20),
+                        height: 20,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                          color: Colors.white,
+                        ),
+                      )
                       ]),
                   Flexible(
                     fit: FlexFit.loose,
                     child: Container(
-                        padding: EdgeInsets.fromLTRB(50, 30, 50, 0),
+                        padding: EdgeInsets.fromLTRB(50, 20, 50, 0),
                         child: Center(child: Column(children:[
                           SizedBox(child: Column(children: [
                             Container(margin: EdgeInsets.only(top: 0), child: Column(children: [
@@ -5111,7 +5632,17 @@ class _RememberListState extends State<RememberList> {
                         }
                         _isChallenge = false;
                         setIsChallenge();
-                        Navigator.popUntil(context, ModalRoute.withName('/'));
+                        if(newBadge == false){
+                          Navigator.popUntil(context, ModalRoute.withName('/'));
+                        }
+                        else {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => NewBadgePage()));
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          setState((){
+                            prefs.setInt('badgeHave', badgeHave + 1);
+                          });
+                        }
                         setDayWeek();
                         todayCheck = true;
                         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -5128,7 +5659,17 @@ class _RememberListState extends State<RememberList> {
                             memo: memoController.text,
                             createTime: getToday(),
                             time: getTime()));
-                        Navigator.popUntil(context, ModalRoute.withName('/'));
+                        if(newBadge == false){
+                          Navigator.popUntil(context, ModalRoute.withName('/'));
+                        }
+                        else {
+                          Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => NewBadgePage()));
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          setState((){
+                            prefs.setInt('badgeHave', badgeHave + 1);
+                          });
+                        }
                       }
                     }
                     else {
