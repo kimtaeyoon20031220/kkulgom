@@ -718,7 +718,7 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
   }
   Future _future() async {
     if(firstTime == true) {
-      await Future.delayed(Duration(milliseconds: 1000));
+      await Future.delayed(Duration(milliseconds: 2000));
     } // 5초를 강제적으로 딜레이 시킨다.
     else {
       await Future.delayed(Duration(milliseconds: 0));
@@ -744,13 +744,13 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                         end: Alignment.bottomCenter,
                       )
                   ),
-                  height: 300,
+                  height: MediaQuery.of(context).size.height*0.4,
                   child: Container(
                     margin: EdgeInsets.fromLTRB(30, 50, 30, 0),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Image.asset('assets/character.png', height: 130),
+                          Image.asset('assets/character.png', height: MediaQuery.of(context).size.height*0.15),
                           Spacer(),
                           Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -3731,7 +3731,7 @@ class WidgetBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 150,
+      height: MediaQuery.of(context).size.height*0.2,
       margin: EdgeInsets.only(bottom: 15, right: 10),
       child: Bounce(
           duration: Duration(milliseconds: 100),
@@ -3783,7 +3783,7 @@ class WidgetPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 150,
+      height: MediaQuery.of(context).size.height*0.2,
       margin: EdgeInsets.only(bottom: 15, right: 5, left: 5),
       child: Bounce(
           duration: Duration(milliseconds: 100),
@@ -3833,7 +3833,7 @@ class WidgetAll extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 150,
+        height: MediaQuery.of(context).size.height*0.2,
         margin: EdgeInsets.only(bottom: 15, left: 10),
         child: Bounce(
             duration: Duration(milliseconds: 100),
@@ -4185,10 +4185,11 @@ class _ChallengeModeState extends State<ChallengeMode> {
                     Bounce(
                       duration: Duration(milliseconds: 100),
                       child: Container(
+                          padding: EdgeInsets.all(20),
                         child: Row(
                           children: [
                             Spacer(),
-                            Text('test'),
+                            Text('배지 생성'),
                             Spacer(),
                           ]
                         )
@@ -4220,13 +4221,22 @@ class _ChallengeModeState extends State<ChallengeMode> {
                             Navigator.pop(context);
                           }
                           else{
-                            Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => NewBadgePage()));
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                            setState((){
-                              prefs.setInt('badgeHave', badgeHave + 1);
-                            });
-                          }
+                            if(badgeHave < 6) {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          NewBadgePage()));
+                                              SharedPreferences prefs =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              setState(() {
+                                                prefs.setInt(
+                                                    'badgeHave', badgeHave + 1);
+                                              });
+                                              newBadge = false;
+                                            }
+                                          }
                           if (todayMemo[timeBlock] == false) {
                             time += 1;
                             setTime();
@@ -4955,7 +4965,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children:[
                               Container(
-                                width: 120,
+                                width: MediaQuery.of(context).size.width*0.3,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10)),
                                   border: Border.all(width: 1, color: timeAttack ? Colors.indigoAccent.withOpacity(0.1) : Color(0xffDFDFDF)),
@@ -4987,7 +4997,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
                                 ),
                               ),
                               Container(
-                                width: 120,
+                                width: MediaQuery.of(context).size.width*0.3,
                                 decoration: BoxDecoration(
                                   border: Border.all(width: 1, color: timeAttack ? Color(0xffDFDFDF) : Colors.redAccent.withOpacity(0.1)),
                                   borderRadius: BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
@@ -5636,12 +5646,21 @@ class _RememberListState extends State<RememberList> {
                           Navigator.popUntil(context, ModalRoute.withName('/'));
                         }
                         else {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => NewBadgePage()));
-                          SharedPreferences prefs = await SharedPreferences.getInstance();
-                          setState((){
-                            prefs.setInt('badgeHave', badgeHave + 1);
-                          });
+                          if(badgeHave < 6) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        NewBadgePage()));
+                            SharedPreferences prefs =
+                            await SharedPreferences
+                                .getInstance();
+                            setState(() {
+                              prefs.setInt(
+                                  'badgeHave', badgeHave + 1);
+                            });
+                            newBadge = false;
+                          }
                         }
                         setDayWeek();
                         todayCheck = true;
@@ -5663,12 +5682,21 @@ class _RememberListState extends State<RememberList> {
                           Navigator.popUntil(context, ModalRoute.withName('/'));
                         }
                         else {
-                          Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => NewBadgePage()));
-                          SharedPreferences prefs = await SharedPreferences.getInstance();
-                          setState((){
-                            prefs.setInt('badgeHave', badgeHave + 1);
-                          });
+                          if(badgeHave < 6) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        NewBadgePage()));
+                            SharedPreferences prefs =
+                            await SharedPreferences
+                                .getInstance();
+                            setState(() {
+                              prefs.setInt(
+                                  'badgeHave', badgeHave + 1);
+                            });
+                            newBadge = false;
+                          }
                         }
                       }
                     }
