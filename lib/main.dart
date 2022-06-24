@@ -161,6 +161,7 @@ class _MyAppState extends State<MyApp> {
     loadNotifyMe();
     loadSavedDate();
     loadIsChallenge();
+    loadBadgeHave();
     print('저장된 날짜 savedDate: ${savedDate}');
     if (savedDate == getToday()){ //당일 재접속
       setSavedDate();
@@ -248,7 +249,6 @@ class _MyAppState extends State<MyApp> {
       setTimeBlock();
       setTimeBlockEnter();
       loadIsChallenge();
-      loadBadgeHave();
       Future.delayed(Duration(milliseconds: 400), () {
         print('future checker 실행');
         if(challengeNumber[2] != null){
