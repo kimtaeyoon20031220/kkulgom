@@ -111,8 +111,8 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 flutter_native_splash:
   color: "#FFFFFF"
-  image: assets/character.png
+  image: assets/ic_launcher.png
   fullscreen: true
   android_12:
-    image: assets/character.png
+    image: assets/ic_launcher.png
     icon_background_color: "#FFFFFF"
