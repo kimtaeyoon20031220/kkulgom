@@ -821,7 +821,7 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
                                     ),
-                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                    padding: EdgeInsets.fromLTRB(20, 17, 20, 17),
                                     child: Row(children: [
                                       Text('준비 중이에요.', style: TextStyle(fontSize: 15, color: AllFontColor, fontWeight: FontWeight.bold)),
                                       Spacer(),
@@ -851,31 +851,11 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                   child: Bounce(
                     duration: Duration(milliseconds: 100),
                     child: Container(
-                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                        padding: EdgeInsets.fromLTRB(20, 25, 20, 25),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0XFF000066).withOpacity(0.03),
-                              blurRadius: 15,
-                              spreadRadius: 10,
-                              offset: const Offset(0, 10),
-                            ),
-                            BoxShadow(
-                              color: Color(0XFF000066).withOpacity(0.0165),
-                              blurRadius: 7.5,
-                              spreadRadius: 5,
-                              offset: const Offset(0, 5),
-                            ),
-                            BoxShadow(
-                              color: Color(0XFF000066).withOpacity(0.0095),
-                              blurRadius: 5,
-                              spreadRadius: 2.5,
-                              offset: const Offset(0, 2.5),
-                            ),
-                          ],
                         ),
                         child: Row(children: [
                           Text('기록하기', style: TextStyle(
@@ -1092,27 +1072,27 @@ class _WidgetChallengeState extends State<WidgetChallenge> {
                   margin: EdgeInsets.only(top: 20, left: 20, right: 20),
                   child: Row(children: [
                     Icon(Icons.wb_twilight_rounded, size: 20, color: Colors.deepOrange),
-                    SizedBox(width: 200, child: Text(challengeHow ? '   '+ '${challengelist[challengeNumber[0]]}' : '   '+ '${question[challengeNumber[0]]}', style: TextStyle(fontSize: 15, color: Colors.black), overflow: TextOverflow.ellipsis, maxLines: 1,)),
+                    SizedBox(width: 200, child: Text(challengeHow ? '   '+ '${challengelist[challengeNumber[0]]}' : '   '+ '${question[challengeNumber[0]]}', style: TextStyle(fontSize: 15, color: timeBlock == 0 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 0 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
                     Spacer(),
-                    Text('06:00~12:00', style: TextStyle(fontSize: 15, color: Colors.grey)),
+                    Text('06:00~12:00', style: TextStyle(fontSize: 15, color: timeBlock == 0 ? Colors.blueAccent : Colors.grey)),
                   ])
               ),
               Container(
                   margin: EdgeInsets.only(top: 5, left: 20, right: 20),
                   child: Row(children: [
                     Icon(Icons.light_mode_rounded, size: 20, color: Colors.amber),
-                    SizedBox(width: 200, child: Text(challengeHow ? '   '+ '${challengelist[challengeNumber[1]]}' : '   '+ '${question[challengeNumber[1]]}', style: TextStyle(fontSize: 15, color: Colors.black), overflow: TextOverflow.ellipsis, maxLines: 1,)),
+                    SizedBox(width: 200, child: Text(challengeHow ? '   '+ '${challengelist[challengeNumber[1]]}' : '   '+ '${question[challengeNumber[1]]}', style: TextStyle(fontSize: 15, color: timeBlock == 1 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 1 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
                     Spacer(),
-                    Text('12:00~17:00', style: TextStyle(fontSize: 15, color: Colors.grey)),
+                    Text('12:00~17:00', style: TextStyle(fontSize: 15, color: timeBlock == 1 ? Colors.blueAccent : Colors.grey)),
                   ])
               ),
               Container(
                   margin: EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 20),
                   child: Row(children: [
                     Icon(Icons.dark_mode_rounded, size: 20, color: Colors.indigo),
-                    SizedBox(width: 200, child: Text(challengeHow ? '   '+ '${challengelist[challengeNumber[2]]}' : '   '+ '${question[challengeNumber[2]]}', style: TextStyle(fontSize: 15, color: Colors.black), overflow: TextOverflow.ellipsis, maxLines: 1,)),
+                    SizedBox(width: 200, child: Text(challengeHow ? '   '+ '${challengelist[challengeNumber[2]]}' : '   '+ '${question[challengeNumber[2]]}', style: TextStyle(fontSize: 15, color: timeBlock == 2 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 2 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
                     Spacer(),
-                    Text('17:00~06:00', style: TextStyle(fontSize: 15, color: Colors.grey,)),
+                    Text('17:00~06:00', style: TextStyle(fontSize: 15, color: timeBlock == 2 ? Colors.blueAccent : Colors.grey,)),
                   ])
               ),
               Container(
@@ -1127,7 +1107,7 @@ class _WidgetChallengeState extends State<WidgetChallenge> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
                         ),
-                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        padding: EdgeInsets.fromLTRB(20, 17, 20, 17),
                         child: Row(children: [
                           Text('지금 도전하기', style: TextStyle(fontSize: 15, color: AllFontColor, fontWeight: FontWeight.bold)),
                           Spacer(),
@@ -1770,7 +1750,7 @@ class _ThirdPageState extends State<ThirdPage> {
               elevation: 0.0,
               backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(20),
               ),
               title: Row(
                 children: [
@@ -1795,7 +1775,7 @@ class _ThirdPageState extends State<ThirdPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('설명\n', style: TextStyle(color: Colors.grey, fontSize: 15)),
-                      Text(challengelistHow[me][0], style: TextStyle(fontSize: 15, letterSpacing: 1, height: 1.7)),
+                      Text(challengelistHow[me][0], style: TextStyle(fontSize: 15, height: 1.7)),
                     ]
                   )
               )
@@ -1817,7 +1797,7 @@ class _ThirdPageState extends State<ThirdPage> {
                           width: MediaQuery.of(context).size.width,
                           height: 300,
                           decoration: BoxDecoration(
-                            color: Colors.indigoAccent,
+                            color: Color(0xffEFEFEF),
                             image: DecorationImage(
                               image: AssetImage('assets/thirdbackground.jpg'),
                               fit: BoxFit.cover,
