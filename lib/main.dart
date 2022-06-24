@@ -26,7 +26,6 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
 
-
 var AllFontColor = Color(0xff565445);
 var AllWidgetRadius = 30.0;
 var AllWidgetColor = Color(0xffFFFFF7);
@@ -2220,12 +2219,12 @@ class _ThirdPageState extends State<ThirdPage> {
                                           Container(
                                               margin: EdgeInsets.only(left: 10),
                                               child: Text('카테고리', style: TextStyle(color: Colors.black.withOpacity(0.7), fontWeight: FontWeight.bold, fontSize: 17))),
-                                          Text('', style: TextStyle(fontSize: 30)),
+                                          Text('', style: TextStyle(fontSize: 20)),
                                           for(var i = 0; i < categorylist.length; i++)
                                             Container(
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(10),
-                                                color: i % 2 == 0 ? Color(0xffF2F2F2) : Colors.white,
+                                                color: i % 2 == 0 ? Color(0xffF7F7F7) : Colors.white,
                                               ),
                                               padding: EdgeInsets.all(10),
                                               child: Row(
@@ -2233,8 +2232,8 @@ class _ThirdPageState extends State<ThirdPage> {
                                                   Text('${i+1}', style: TextStyle(color: Colors.grey, fontSize: 17)),
                                                   Text('  ${categorylist[i][0]}', style: TextStyle(color: Colors.black, fontSize: 15)),
                                                   Spacer(),
-                                                  Icon(categorylist[i][1] == true ? Icons.check_circle_rounded : Icons.cancel_rounded, size: 18, color: categorylist[i][1] == true ? Colors.blueAccent : Color(0xffCFCFCF)),
-                                                  Text(categorylist[i][1] == true ? '  이용 중   ' : '  추후 오픈', style: TextStyle(color: categorylist[i][1] == true ? Colors.blueAccent : Colors.grey, fontSize: 13)),
+                                                  Icon(categorylist[i][1] == true ? Icons.check_circle_rounded : Icons.cancel_rounded, size: 18, color: categorylist[i][1] == true ? Colors.indigoAccent : Color(0xffCFCFCF)),
+                                                  Text(categorylist[i][1] == true ? '  이용 중   ' : '  추후 오픈', style: TextStyle(color: categorylist[i][1] == true ? Colors.indigoAccent : Colors.grey, fontSize: 13)),
                                                 ],
                                               ),
                                             )
@@ -2919,7 +2918,7 @@ class BadgeApp extends StatelessWidget {
         home: Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-                backgroundColor: Colors.transparent,
+                backgroundColor: Colors.white,
                 elevation: 0.0,
                 leading: Padding(
                     padding: EdgeInsets.all(8.0),
@@ -2935,43 +2934,62 @@ class BadgeApp extends StatelessWidget {
               behavior: NoGlowScrollBehavior(),
               child: Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.grey.withOpacity(0),
-                          Colors.grey.withOpacity(0.2),
-                        ]
-                    ),
+                    color: Color(0xffF2F2F7),
                   ),
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: ListView(children: [
-                    Column(children:[
-                      Text('', style: TextStyle(fontSize: 30)),
-                      Text('활동 배지', style: TextStyle(color: Color(0xff0f1f42), fontSize: 25, fontWeight: FontWeight.bold)),
-                      Text('\n도전과제를 통해 배지를 얻을 수 있어요.', style: TextStyle(color: Color(0xff0f1f42).withOpacity(0.5), fontSize: 17)),
-                    ]),
                     Container(
+                      padding: EdgeInsets.fromLTRB(40, 0, 40, 20),
+                      width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      margin: EdgeInsets.only(top: 60),
-                      child: GridView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: 2/3,
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
                           ),
-                          itemCount: badgelist.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                                color: Colors.transparent,
-                                padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                                child: Column(children: <Widget>[
-                                  if (badgeHave > index)
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0XFF000066).withOpacity(0.03),
+                              blurRadius: 15,
+                              spreadRadius: 10,
+                              offset: const Offset(0, 10),
+                            ),
+                            BoxShadow(
+                              color: Color(0XFF000066).withOpacity(0.0165),
+                              blurRadius: 7.5,
+                              spreadRadius: 5,
+                              offset: const Offset(0, 5),
+                            ),
+                            BoxShadow(
+                              color: Color(0XFF000066).withOpacity(0.0095),
+                              blurRadius: 5,
+                              spreadRadius: 2.5,
+                              offset: const Offset(0, 2.5),
+                            ),
+                          ]
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                              children:[
+                                Image.asset('assets/badgeicon.png', width: 30),
+                            Text('', style: TextStyle(fontSize: 15)),
+                            Text('${badgeHave}개', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 30, fontWeight: FontWeight.bold)),
+                            Text('', style: TextStyle(fontSize:10)),
+                            Text('활동 배지', style: TextStyle(color: Colors.grey, fontSize: 17, fontWeight: FontWeight.bold)),
+                          ]),
+                          Spacer(),
+                          if(badgeHave < 6)
+                            Container(
+                              padding: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Color(0xffF2F2F7),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text('다음 배지', style: TextStyle(color: Colors.grey, fontSize: 13)),
                                     Container(
                                       child: Stack(
                                           children: [
@@ -3032,84 +3050,183 @@ class BadgeApp extends StatelessWidget {
                                                     border: Border.all(width: 3, color: Colors.amber.withOpacity(0.8))
                                                 ),
                                                 child: Center(
-                                                  child: Image.asset('assets/badge/badge${index+1}.png', width: 50),
-                                                )
-                                            ),
-                                          ]
-                                      ),)
-                                  else
-                                    Container(
-                                      child: Stack(
-                                          children: [
-                                            Container(
-                                                width: 100,
-                                                height: 100,
-                                                margin: EdgeInsets.only(bottom: 0),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(130),
-                                                    gradient: RadialGradient(
-                                                      colors: [
-                                                        Colors.amber.withOpacity(0),
-                                                        Colors.amber.withOpacity(0),
-                                                      ],
-                                                    )
-                                                )
-                                            ),
-                                            Container(
-                                                width: 80,
-                                                height: 80,
-                                                margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(100),
-                                                    gradient: LinearGradient(
-                                                        begin: Alignment.topLeft,
-                                                        end: Alignment.bottomRight,
-                                                        colors: [
-                                                          Colors.amber.withOpacity(0.1),
-                                                          Colors.amber.withOpacity(0.3),
-                                                        ]
-                                                    )
-                                                )
-                                            ),
-                                            Container(
-                                                width: 70,
-                                                height: 70,
-                                                margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(100),
-                                                    gradient: LinearGradient(
-                                                        begin: Alignment.topLeft,
-                                                        end: Alignment.bottomRight,
-                                                        colors: [
-                                                          Colors.amber.withOpacity(0.1),
-                                                          Colors.amber.withOpacity(0.3),
-                                                        ]
-                                                    ),
-                                                    border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
-                                                )
-                                            ),
-                                            Container(
-                                                width: 70,
-                                                height: 70,
-                                                margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(100),
-                                                    color: Colors.white.withOpacity(0.9),
-                                                    border: Border.all(width: 3, color: Colors.amber.withOpacity(0.3))
-                                                ),
-                                                child: Center(
-                                                  child: Image.asset('assets/badge/badge${index+1}.png', width: 50, color: const Color.fromRGBO(255, 255, 255, 0.2),colorBlendMode: BlendMode.modulate),
+                                                  child: Image.asset('assets/badge/badge${badgeHave+1}.png', width: 50),
                                                 )
                                             ),
                                           ]
                                       ),),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 10),
-                                    child: Text(badgelist[index], style: TextStyle(color: Color(0xff0f1f42), fontSize: 15, fontWeight: FontWeight.bold)),
-                                  )
-                                ])
-                            );
-                          }
+                                    Text('${badgelist[badgeHave]}', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 15, fontWeight: FontWeight.bold)),
+                                ]
+                              ),
+                            )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      margin: EdgeInsets.only(top: 40),
+                      child: Column(
+                        children: [
+                          Text('도전과제', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 17, fontWeight: FontWeight.bold)),
+                          GridView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                childAspectRatio: 2/3,
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                              ),
+                              itemCount: badgelist.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                    color: Colors.transparent,
+                                    padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                    child: Column(children: <Widget>[
+                                      if (badgeHave > index)
+                                        Container(
+                                          child: Stack(
+                                              children: [
+                                                Container(
+                                                    width: 100,
+                                                    height: 100,
+                                                    margin: EdgeInsets.only(bottom: 0),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(130),
+                                                        gradient: RadialGradient(
+                                                          colors: [
+                                                            Colors.amber.withOpacity(0.7),
+                                                            Colors.amber.withOpacity(0),
+                                                          ],
+                                                        )
+                                                    )
+                                                ),
+                                                Container(
+                                                    width: 80,
+                                                    height: 80,
+                                                    margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(100),
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment.topLeft,
+                                                            end: Alignment.bottomRight,
+                                                            colors: [
+                                                              Colors.amber.withOpacity(0.4),
+                                                              Colors.amber.withOpacity(0.9),
+                                                            ]
+                                                        )
+                                                    )
+                                                ),
+                                                Container(
+                                                    width: 70,
+                                                    height: 70,
+                                                    margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(100),
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment.topLeft,
+                                                            end: Alignment.bottomRight,
+                                                            colors: [
+                                                              Colors.amber.withOpacity(0.4),
+                                                              Colors.amber.withOpacity(0.9),
+                                                            ]
+                                                        ),
+                                                        border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
+                                                    )
+                                                ),
+                                                Container(
+                                                    width: 70,
+                                                    height: 70,
+                                                    margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(100),
+                                                        color: Colors.white.withOpacity(0.9),
+                                                        border: Border.all(width: 3, color: Colors.amber.withOpacity(0.8))
+                                                    ),
+                                                    child: Center(
+                                                      child: Image.asset('assets/badge/badge${index+1}.png', width: 50),
+                                                    )
+                                                ),
+                                              ]
+                                          ),)
+                                      else
+                                        Container(
+                                          child: Stack(
+                                              children: [
+                                                Container(
+                                                    width: 100,
+                                                    height: 100,
+                                                    margin: EdgeInsets.only(bottom: 0),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(130),
+                                                        gradient: RadialGradient(
+                                                          colors: [
+                                                            Colors.amber.withOpacity(0),
+                                                            Colors.amber.withOpacity(0),
+                                                          ],
+                                                        )
+                                                    )
+                                                ),
+                                                Container(
+                                                    width: 80,
+                                                    height: 80,
+                                                    margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(100),
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment.topLeft,
+                                                            end: Alignment.bottomRight,
+                                                            colors: [
+                                                              Colors.amber.withOpacity(0.1),
+                                                              Colors.amber.withOpacity(0.3),
+                                                            ]
+                                                        )
+                                                    )
+                                                ),
+                                                Container(
+                                                    width: 70,
+                                                    height: 70,
+                                                    margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(100),
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment.topLeft,
+                                                            end: Alignment.bottomRight,
+                                                            colors: [
+                                                              Colors.amber.withOpacity(0.1),
+                                                              Colors.amber.withOpacity(0.3),
+                                                            ]
+                                                        ),
+                                                        border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
+                                                    )
+                                                ),
+                                                Container(
+                                                    width: 70,
+                                                    height: 70,
+                                                    margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(100),
+                                                        color: Colors.white.withOpacity(0.9),
+                                                        border: Border.all(width: 3, color: Colors.amber.withOpacity(0.3))
+                                                    ),
+                                                    child: Center(
+                                                      child: Image.asset('assets/badge/badge${index+1}.png', width: 50, color: const Color.fromRGBO(255, 255, 255, 0.2),colorBlendMode: BlendMode.modulate),
+                                                    )
+                                                ),
+                                              ]
+                                          ),),
+                                      Container(
+                                        margin: EdgeInsets.only(top: 10),
+                                        child: Text(badgelist[index], style: TextStyle(color: Color(0xff0f1f42), fontSize: 15, fontWeight: FontWeight.bold)),
+                                      )
+                                    ])
+                                );
+                              }
+                          ),
+                        ],
                       ),
                     )
                   ],)
@@ -3158,11 +3275,12 @@ class _StrictAppState extends State<StrictApp> {
                 color: Colors.white,
                 margin: EdgeInsets.only(top: 30),
                 padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: ListView(children: [
+                child: Column(children: [
                   Column(children:[
                     Text('시간 제한', style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
-                    Text('\n특정 앱의 사용 시간을 제한할 수 있어요.\n\n\n\n', style: TextStyle(color: Colors.grey, fontSize: 17)),
+                    Text('\n\n\n\n\n', style: TextStyle(color: Colors.grey, fontSize: 17)),
                   ]),
+                  Spacer(),
                   Center(
                     child: Container(
                       padding: EdgeInsets.all(30),
@@ -3182,7 +3300,9 @@ class _StrictAppState extends State<StrictApp> {
                             Text('\n나중에 추가될 기능이에요.', style: TextStyle(fontSize: 15)),
                           ],
                         )),
-                  )
+                  ),
+                  Spacer(),
+                  Spacer(),
                 ],)
             ),
           ),
@@ -3945,9 +4065,9 @@ class WidgetBadge extends StatelessWidget {
                     Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text('배지', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 17)),
+                          Text('모은 배지', style: TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 17)),
                           Text(' ', style: TextStyle(fontSize: 6)),
-                          Text('${badgeHave}개', style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
+                          Text('${badgeHave}개', style: TextStyle(color: Colors.black.withOpacity(0.6), fontSize: 25, fontWeight: FontWeight.bold)),
                         ]),
                   ]),
                 ]),
@@ -4001,9 +4121,9 @@ class WidgetPoint extends StatelessWidget {
                         Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text('앱', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 17)),
+                              Text('앱 제한', style: TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 17)),
                               Text(' ', style: TextStyle(fontSize: 6)),
-                              Text('제한', style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
+                              Text('없음', style: TextStyle(color: Colors.black.withOpacity(0.6), fontSize: 25, fontWeight: FontWeight.bold)),
                             ]),
                       ]),
                 ]),
@@ -4148,12 +4268,10 @@ class _NewBadgePageState extends State<NewBadgePage> {
       home: Scaffold(
         body: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+            gradient: RadialGradient(
               colors: [
-                Colors.blueAccent.withOpacity(0),
-                Color(0xffcad1e3).withOpacity(0.5),
+                Colors.amber.withOpacity(0),
+                Colors.amber.withOpacity(0.2),
               ]
             )
           ),
@@ -4176,8 +4294,8 @@ class _NewBadgePageState extends State<NewBadgePage> {
                         borderRadius: BorderRadius.circular(130),
                         gradient: RadialGradient(
                           colors: [
-                            Colors.blueAccent.withOpacity(0.7),
-                            Colors.blueAccent.withOpacity(0),
+                            Colors.amber.withOpacity(0.7),
+                            Colors.amber.withOpacity(0),
                           ],
                         )
                       )
@@ -4192,8 +4310,8 @@ class _NewBadgePageState extends State<NewBadgePage> {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              Colors.blueAccent.withOpacity(0.4),
-                              Colors.blueAccent.withOpacity(0.9),
+                              Colors.amber.withOpacity(0.4),
+                              Colors.amber.withOpacity(0.9),
                             ]
                           )
                         )
@@ -4208,8 +4326,8 @@ class _NewBadgePageState extends State<NewBadgePage> {
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  Colors.blueAccent.withOpacity(0.4),
-                                  Colors.blueAccent.withOpacity(0.9),
+                                  Colors.amber.withOpacity(0.4),
+                                  Colors.amber.withOpacity(0.9),
                                 ]
                             ),
                           border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
@@ -4222,7 +4340,7 @@ class _NewBadgePageState extends State<NewBadgePage> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           color: Colors.white.withOpacity(0.9),
-                          border: Border.all(width: 3, color: Colors.indigo.withOpacity(0.8))
+                          border: Border.all(width: 3, color: Colors.amber.withOpacity(0.8))
                         ),
                         child: Center(
                         child: Image.asset('assets/badge/badge${badgeHave + 1}.png', width: 120),
@@ -5543,7 +5661,7 @@ class _RememberListState extends State<RememberList> {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
-          backgroundColor: Color(0xffF2F2F2),
+          backgroundColor: Color(0xffF2F2F7),
           appBar: AppBar(
               backgroundColor: Colors.white,
               elevation: 0.0,
@@ -5773,7 +5891,7 @@ class _RememberListState extends State<RememberList> {
             ),
           ),
           bottomNavigationBar: Container(
-            margin: EdgeInsets.fromLTRB(40, 0, 40, 50),
+            margin: EdgeInsets.fromLTRB(50, 0, 50, 50),
             child: Bounce(
                 duration: Duration(milliseconds: 100),
                 child: Container(
