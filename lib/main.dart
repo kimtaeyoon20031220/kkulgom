@@ -133,7 +133,6 @@ var timeTitle = [['오늘도 반가워요!\n상쾌한 아침이에요.'], ['새�
 var cardView = [false, false, false, false, false];
 
 Future<void> main() async {
-  bool data = await fetchData();
 
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -154,13 +153,14 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    FlutterNativeSplash.remove();
+    loadBadgeHave();
     checkTime();
     loadTime();
     loadChallengeHow();
     loadNotifyMe();
     loadSavedDate();
     loadIsChallenge();
-    loadBadgeHave();
     print('저장된 날짜 savedDate: ${savedDate}');
     if (savedDate == getToday()){ //당일 재접속
       setSavedDate();
@@ -178,84 +178,6 @@ class _MyAppState extends State<MyApp> {
       timeBlock = 1;
     else
       timeBlock = 2;
-    Duration duration = new Duration(seconds: 2);
-    Future.delayed(duration, () {
-      print('Challenge savedDate: $savedDate');
-      if (savedDate == getToday()){ //당일 재접속
-        print('당일 재접속-Challenge if');
-        loadTodayCheck();
-        setChallenge();
-      }
-      else { //당일 첫접속
-        print('당일 첫접속-Challenge else');
-        setTodayCheck();
-        setChallenge();
-        time = 0;
-      }
-      challengeLen = challengeNumber;
-      if(hour >= 6 && hour < 12){
-        if (savedTimeBlock == timeBlock) { //시간이 같다면
-          if(savedDate != getToday()){ //날짜가 바뀐다면
-            _isChallenge = true;
-            setIsChallenge();
-            timeBlockEnter = 0;
-            print('time0 날짜 바뀜');
-          }
-          timeBlockEnter += 1;
-          print('time0 if');
-        }
-        else { //시간이 다르다면
-          timeBlockEnter = 1;
-          _isChallenge = true;
-          setIsChallenge();
-          print('time0 else');
-        }
-      }
-      else if(hour >= 12 && hour < 17) {
-        if (savedTimeBlock == timeBlock) {
-          if(savedDate != getToday()){ //날짜가 바뀐다면
-            _isChallenge = true;
-            setIsChallenge();
-            timeBlockEnter = 0;
-            print('time1 날짜 바뀜');
-          }
-          timeBlockEnter += 1;
-          print('time1 if: $timeBlockEnter');
-        } else { //날짜가 안바뀐다면
-          timeBlockEnter = 1;
-          _isChallenge = true;
-          setIsChallenge();
-          print('time1 else');
-        }
-      }
-      else {
-        if (savedTimeBlock == timeBlock) {
-          if(savedDate != getToday()){ //날짜가 바뀐다면
-            _isChallenge = true;
-            setIsChallenge();
-            timeBlockEnter = 0;
-            print('time2 날짜 바뀜');
-          }
-          timeBlockEnter += 1;
-          print('time2 if');
-        } else {
-          _isChallenge = true;
-          setIsChallenge();
-          timeBlockEnter = 1;
-          print('time2 else');
-        }
-      }
-      setTimeBlock();
-      setTimeBlockEnter();
-      loadIsChallenge();
-      Future.delayed(Duration(milliseconds: 400), () {
-        print('future checker 실행');
-        if(challengeNumber[2] != null){
-          FlutterNativeSplash.remove();
-        }
-      });
-      firstTime = false;
-    });
   }
   @override
   loadBadgeHave() async {
@@ -466,17 +388,6 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-
-Future<bool> fetchData() async {
-  bool data = false;
-  // Change to API call
-  await Future.delayed(Duration(milliseconds: 3000), () {
-    data = true;
-  });
-
-  return data;
-}
-
 class FirstApp extends StatefulWidget {
   const FirstApp({Key? key}) : super(key: key);
 
@@ -497,6 +408,285 @@ class _FirstAppState extends State<FirstApp> {
     setState((){
       _currentIndex = index;
       print(_currentIndex);
+    });
+  }
+  void initState() {
+    super.initState();
+    Duration duration = new Duration(seconds: 2);
+    Future.delayed(duration, () {
+      print('Challenge savedDate: $savedDate');
+      if (savedDate == getToday()){ //당일 재접속
+        print('당일 재접속-Challenge if');
+        loadTodayCheck();
+        setChallenge();
+      }
+      else { //당일 첫접속
+        print('당일 첫접속-Challenge else');
+        setTodayCheck();
+        setChallenge();
+        time = 0;
+      }
+      challengeLen = challengeNumber;
+      if(hour >= 6 && hour < 12){
+        if (savedTimeBlock == timeBlock) { //시간이 같다면
+          if(savedDate != getToday()){ //날짜가 바뀐다면
+            _isChallenge = true;
+            setIsChallenge();
+            timeBlockEnter = 0;
+            print('time0 날짜 바뀜');
+          }
+          timeBlockEnter += 1;
+          print('time0 if');
+        }
+        else { //시간이 다르다면
+          timeBlockEnter = 1;
+          _isChallenge = true;
+          setIsChallenge();
+          print('time0 else');
+        }
+      }
+      else if(hour >= 12 && hour < 17) {
+        if (savedTimeBlock == timeBlock) {
+          if(savedDate != getToday()){ //날짜가 바뀐다면
+            _isChallenge = true;
+            setIsChallenge();
+            timeBlockEnter = 0;
+            print('time1 날짜 바뀜');
+          }
+          timeBlockEnter += 1;
+          print('time1 if: $timeBlockEnter');
+        } else { //날짜가 안바뀐다면
+          timeBlockEnter = 1;
+          _isChallenge = true;
+          setIsChallenge();
+          print('time1 else');
+        }
+      }
+      else {
+        if (savedTimeBlock == timeBlock) {
+          if(savedDate != getToday()){ //날짜가 바뀐다면
+            _isChallenge = true;
+            setIsChallenge();
+            timeBlockEnter = 0;
+            print('time2 날짜 바뀜');
+          }
+          timeBlockEnter += 1;
+          print('time2 if');
+        } else {
+          _isChallenge = true;
+          setIsChallenge();
+          timeBlockEnter = 1;
+          print('time2 else');
+        }
+      }
+      setTimeBlock();
+      setTimeBlockEnter();
+      loadIsChallenge();
+      Future.delayed(Duration(milliseconds: 400), () {
+        print('future checker 실행');
+        if(challengeNumber[2] != null){
+        }
+      });
+      firstTime = false;
+    });
+  }
+  @override
+  loadBadgeHave() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      badgeHave = prefs.getInt('badgeHave') ?? 0;
+    });
+    print('loadBadgeHave: ${badgeHave}');
+  }
+  @override
+  setTodayCheck() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      prefs.setBool('todayCheck', false);
+      dayWeek = prefs.getInt('dayWeek') ?? 0;
+    });
+    todayCheck = false;
+    print('setTodayCheck-todayCheck: ${todayCheck}');
+    print('setTodayCheck-dayWeek: ${dayWeek}');
+  }
+  @override
+  loadTodayCheck() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      todayCheck = prefs.getBool('todayCheck') ?? true;
+    });
+    print('loadTodayCheck 실행');
+    if(todayCheck == false){ //기록 안했다면
+      setState((){
+        dayWeek = prefs.getInt('dayWeek') ?? 0;
+      });
+      print('loadTodayCheck>todayCheck==false');
+    }
+    else { //기록 했다면
+      setState((){
+        dayWeek = prefs.getInt('dayWeek') ?? 1;
+        dayWeek -= 1;
+      });
+      print('loadTodayCheck>todayCheck==true');
+    }
+    print('loadTodayCheck: ${todayCheck}');
+    print('loadtodayCheck-dayWeek: ${dayWeek}');
+  }
+  @override
+  loadIsChallenge() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      _isChallenge = prefs.getBool('isChallenge') ?? _isChallenge;
+    });
+    print('loadIsChallenge: ${_isChallenge}');
+  }
+  @override
+  loadTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    time = prefs.getInt('time') ?? time;
+  }
+  @override
+  checkTime() {
+    hour = int.parse(getTime().split(':')[0]);
+    print('hour: $hour');
+    loadTimeBlock();
+    loadTimeBlockEnter();
+  }
+  @override
+  setIsChallenge() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      prefs.setBool('isChallenge', _isChallenge);
+      print('setIsChallenge: $_isChallenge');
+    });
+  }
+  @override
+  loadTimeBlockEnter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      timeBlockEnter = prefs.getInt('timeBlockEnter') ?? timeBlockEnter;
+      print('loadTimeBlockEnter: $timeBlockEnter');
+    });
+  }
+  setTimeBlockEnter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      prefs.setInt('timeBlockEnter', timeBlockEnter);
+      print('setTimeBlockEnter: $timeBlockEnter');
+    });
+  }
+  @override
+  loadTimeBlock() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      savedTimeBlock = prefs.getInt('timeBlock') ?? timeBlock;
+      print('loadTimeBlock: $savedTimeBlock');
+    });
+  }
+  @override
+  setTimeBlock() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      prefs.setInt('timeBlock', timeBlock);
+      print('setTimeBlock: $timeBlock');
+    });
+  }
+  @override
+  setChallenge() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      print('setChallenge Execute');
+      print('setChallenge: $savedDate');
+      print('setChallenge-todayEnter: ${todayEnter}');
+      if (todayEnter > 1) {
+        print('setChallenge>todayEnter==${todayEnter}-if.기존 도전과제 불러오기');
+        for (var i = 0; i < 3; i++) {
+          challengeNumber.add(prefs.getInt('challengeNumber$i'));
+          print('setChallenge challengeNumber: ${challengeNumber}');
+        }
+      }
+      else {
+        print('setChallenge>todayEnter==${todayEnter}-else.새로운 도전과제 추가');
+
+        if(dayWeek < 5){
+          print('setChallenge>dayWeek==${dayWeek}일차 도전과제');
+          for(var i = 0; i < 3; i++){
+            challengeNumber.add(dayWeek);
+          }
+        }
+        else {
+          while (true) {
+            // 랜덤으로 번호를 생성해준다.
+            var rnd = Random().nextInt(challengelist.length);
+
+            // 만약 리스트에 생성된 번호가 없다면
+            if (!challengeNumber.contains(rnd)) {
+              challengeNumber.add(rnd);
+            }
+
+            // 리스트의 길이가 6이면 while문을 종료한다.
+            if (challengeNumber.length == 3) break;
+          }
+        }
+        for(var j = 0; j < 3; j++){
+          prefs.setInt('challengeNumber$j', challengeNumber[j]);
+        }
+        print('setChallenge: ${challengeNumber}');
+        print('setChallenge: ${prefs.getInt('challengeNumber1')}');
+      }
+    });
+  }
+  @override
+  loadChallenge() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      for(var i = 0; i < 3; i++){
+        challengeNumber[i] = prefs.getInt('challengeNumber$i');
+      }
+    });
+  }
+  @override
+  setSavedDate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      prefs.setString('savedDate', getToday());
+      if (savedDate == getToday()){
+        todayEnter += 1;
+        print('setSavedDate with if: $savedDate');
+      }
+      else if (savedDate == false){
+        todayEnter = 1;
+      }
+      else {
+        todayEnter = 1;
+        print('setSavedDate with else: $savedDate');
+      }
+      prefs.setInt('todayEnter', todayEnter);
+    });
+  }
+  @override
+  loadSavedDate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      savedDate = prefs.getString('savedDate') ?? 'hello';
+      todayEnter = prefs.getInt('todayEnter') ?? 0;
+      print('firstapp-loadSavedDate: $savedDate');
+    });
+  }
+  @override
+  loadChallengeHow() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      challengeHow = prefs.getBool('challengeHow') ?? challengeHow;
+      print('loadChallengeHow');
+      print('loadchallengeHow: $challengeHow');
+    });
+  }
+  @override
+  loadNotifyMe() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      notifyMe = prefs.getBool('notifyMe') ?? notifyMe;
     });
   }
 
@@ -785,90 +975,339 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                     future: _future(),
                     builder: (BuildContext context, AsyncSnapshot challengeLen) {
                       if (challengeLen.hasData == false) {
-                        return Container(
-                            margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(margin:EdgeInsets.only(top: 40, left: 40, right: 40),child: Row(
+                        return Column(
+                          children: [
+                            Container(
+                                margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('오늘의 도전 과제', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AllFontColor)),
-                                      Spacer(),
-                                      Text('불러오는 중', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AllFontColor)),
+                                      Container(margin:EdgeInsets.only(top: 40, left: 40, right: 40),child: Row(
+                                        children: [
+                                          Text('오늘의 도전 과제', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AllFontColor)),
+                                          Spacer(),
+                                          Text('불러오는 중', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AllFontColor)),
+                                        ],
+                                      )),
+                                      Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(15),
+                                            color: Color(0xffF7F7F7),
+                                          ),
+                                          padding: EdgeInsets.all(10),
+                                          margin: EdgeInsets.only(top: 20, left: 30, right: 30),
+                                          child: Row(children: [
+                                            Container(
+                                                width: 25,
+                                                height: 25,
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: Colors.white,
+                                                    border: Border.all(width: 1, color: Color(0xffDFDFDF))
+                                                ),
+                                                child: Center(child: Icon(Icons.wb_twilight_rounded, size: 17, color: Colors.deepOrange))),
+                                            SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 0 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 0 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
+                                            Spacer(),
+                                            Text('06:00~12:00', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                          ])
+                                      ),
+                                      Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(15),
+                                            color: Colors.white,
+                                          ),
+                                          padding: EdgeInsets.all(10),
+                                          margin: EdgeInsets.only(top: 5, left: 30, right: 30),
+                                          child: Row(children: [
+                                            Container(
+                                                width: 25,
+                                                height: 25,
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: Colors.white,
+                                                    border: Border.all(width: 1, color: Color(0xffDFDFDF))
+                                                ),
+                                                child: Icon(Icons.light_mode_rounded, size: 17, color: Colors.amber)),
+                                            SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 1 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 1 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
+                                            Spacer(),
+                                            Text('12:00~17:00', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                          ])
+                                      ),
+                                      Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(15),
+                                            color: Color(0xffF2F2F2),
+                                          ),
+                                          padding: EdgeInsets.all(10),
+                                          margin: EdgeInsets.only(top: 5, left: 30, right: 30, bottom: 40),
+                                          child: Row(children: [
+                                            Container(
+                                                width: 25,
+                                                height: 25,
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: Colors.white,
+                                                    border: Border.all(width: 1, color: Color(0xffDFDFDF))
+                                                ),
+                                                child: Icon(Icons.dark_mode_rounded, size: 17, color: Colors.indigo)),
+                                            SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 2 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 2 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
+                                            Spacer(),
+                                            Text('17:00~06:00', style: TextStyle(fontSize: 13, color: Colors.grey,)),
+                                          ])
+                                      ),
+                                    ])
+                            ),
+                            Bounce(
+                              duration: Duration(milliseconds: 100),
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 20),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                        colors: [
+                                          Colors.white,
+                                          Colors.grey,
+                                          Colors.white,
+                                        ]
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0XFF000066).withOpacity(0.03),
+                                        blurRadius: 15,
+                                        spreadRadius: 10,
+                                        offset: const Offset(0, 10),
+                                      ),
+                                      BoxShadow(
+                                        color: Color(0XFF000066).withOpacity(0.0165),
+                                        blurRadius: 7.5,
+                                        spreadRadius: 5,
+                                        offset: const Offset(0, 5),
+                                      ),
+                                      BoxShadow(
+                                        color: Color(0XFF000066).withOpacity(0.0095),
+                                        blurRadius: 5,
+                                        spreadRadius: 2.5,
+                                        offset: const Offset(0, 2.5),
+                                      ),
                                     ],
-                                  )),
-                                  Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Color(0xffF7F7F7),
-                                      ),
-                                      padding: EdgeInsets.all(10),
-                                      margin: EdgeInsets.only(top: 20, left: 30, right: 30),
-                                      child: Row(children: [
-                                        Container(
-                                            width: 25,
-                                            height: 25,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(5),
-                                                color: Colors.white,
-                                                border: Border.all(width: 1, color: Color(0xffDFDFDF))
-                                            ),
-                                            child: Center(child: Icon(Icons.wb_twilight_rounded, size: 17, color: Colors.deepOrange))),
-                                        SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 0 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 0 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
-                                        Spacer(),
-                                        Text('06:00~12:00', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                                      ])
                                   ),
-                                  Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Colors.white,
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: BackdropFilter(
+                                          filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                          child: Stack(
+                                            children: [
+                                              Container(
+                                                  color: Colors.black.withOpacity(0.3),
+                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                                  child: Row(children: [
+                                                    Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
+                                                    Spacer(),
+                                                    Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold)),
+                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0)),
+                                                  ])
+                                              ),
+                                              Container(
+                                                  color: Colors.blueAccent.withOpacity(0.5),
+                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                                  child: Row(children: [
+                                                    Stack(
+                                                      children: [
+                                                        Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
+                                                        Container(
+                                                            width: 150,
+                                                            height: 20,
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(20),
+                                                              color: Colors.white.withOpacity(0.2),
+                                                            )
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Spacer(),
+                                                    Text('불러오는 중', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold)),
+                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
+                                                  ])
+                                              ),
+                                            ],
+                                          )
+                                      )
+                                  )
+                              ),
+                              onPressed: () {
+                                if(dayWeek == challengeNumber[0] && dayWeek < 5) {
+                                  print('도전과제 오류 없음');
+                                  print(answer);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});});
+                                }
+                                else if(dayWeek >= 5) {
+                                  print('도전과제 오류 없음, 6주차 이상');
+                                  print(answer);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});});
+                                }
+                                else {
+                                  print('setChallenge>dayWeek==${dayWeek}일차 도전과제');
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ChallengeError())
+                                  );
+                                }
+                              },
+                            ),
+                            Bounce(
+                              duration: Duration(milliseconds: 100),
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                        colors: [
+                                          Colors.white,
+                                          Colors.grey,
+                                          Colors.white,
+                                        ]
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0XFF000066).withOpacity(0.03),
+                                        blurRadius: 15,
+                                        spreadRadius: 10,
+                                        offset: const Offset(0, 10),
                                       ),
-                                      padding: EdgeInsets.all(10),
-                                      margin: EdgeInsets.only(top: 5, left: 30, right: 30),
-                                      child: Row(children: [
-                                        Container(
-                                            width: 25,
-                                            height: 25,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(5),
-                                                color: Colors.white,
-                                                border: Border.all(width: 1, color: Color(0xffDFDFDF))
-                                            ),
-                                            child: Icon(Icons.light_mode_rounded, size: 17, color: Colors.amber)),
-                                        SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 1 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 1 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
-                                        Spacer(),
-                                        Text('12:00~17:00', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                                      ])
+                                      BoxShadow(
+                                        color: Color(0XFF000066).withOpacity(0.0165),
+                                        blurRadius: 7.5,
+                                        spreadRadius: 5,
+                                        offset: const Offset(0, 5),
+                                      ),
+                                      BoxShadow(
+                                        color: Color(0XFF000066).withOpacity(0.0095),
+                                        blurRadius: 5,
+                                        spreadRadius: 2.5,
+                                        offset: const Offset(0, 2.5),
+                                      ),
+                                    ],
                                   ),
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: BackdropFilter(
+                                          filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                          child: Stack(
+                                            children: [
+                                              Container(
+                                                  color: Colors.black.withOpacity(0.3),
+                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                                  child: Row(children: [
+                                                    Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
+                                                    Spacer(),
+                                                    Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold)),
+                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0)),
+                                                  ])
+                                              ),
+                                              Container(
+                                                  color: Colors.greenAccent.withOpacity(0.5),
+                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                                  child: Row(children: [
+                                                    Text('기록하기', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
+                                                    Spacer(),
+                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
+                                                  ])
+                                              ),
+                                            ],
+                                          )
+                                      )
+                                  )
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => SecondApp()),
+                                );
+                                todayListNow = false;
+                              },
+                            ),
+                            Container(
+                                margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                child: Column(children: [
                                   Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Color(0xffF2F2F2),
-                                      ),
-                                      padding: EdgeInsets.all(10),
-                                      margin: EdgeInsets.only(top: 5, left: 30, right: 30, bottom: 40),
-                                      child: Row(children: [
-                                        Container(
-                                            width: 25,
-                                            height: 25,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(5),
-                                                color: Colors.white,
-                                                border: Border.all(width: 1, color: Color(0xffDFDFDF))
-                                            ),
-                                            child: Icon(Icons.dark_mode_rounded, size: 17, color: Colors.indigo)),
-                                        SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 2 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 2 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
-                                        Spacer(),
-                                        Text('17:00~06:00', style: TextStyle(fontSize: 13, color: Colors.grey,)),
-                                      ])
+                                    height: MediaQuery.of(context).size.height*0.2,
+                                    child: ListView(
+                                        scrollDirection: Axis.horizontal,
+                                        children: [
+                      Container(
+                      height: MediaQuery.of(context).size.height*0.17,
+                      width: MediaQuery.of(context).size.height*0.17,
+                      margin: EdgeInsets.only(bottom: 15, right: 10, left: 20),
+                      child: Bounce(
+                      duration: Duration(milliseconds: 100),
+                      child: Stack(
+                      children: [
+                      Container(
+                      decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(20),
+
+                      ),
+                      padding: EdgeInsets.all(25),
+                      child: Column(children: [
+                      Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                      Image.asset('assets/badgeicon.png', width: 45),
+                      ],
+                      ),
+                      Spacer(),
+                      Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                      Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                      Text('모은 배지', style: TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 17)),
+                      Text(' ', style: TextStyle(fontSize: 6)),
+                      Stack(
+                        children: [
+                          Text('개', style: TextStyle(color: Colors.black.withOpacity(0), fontSize: 25, fontWeight: FontWeight.bold)),
+                      Container(
+                      width: 30,
+                      height: 20,
+                      decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.black.withOpacity(0.1),
+                      )
+                      )
+                        ],
+                      ),
+                      ]),
+                      ]),
+                      ]),
+                      ),
+                      ],
+                      ),
+                      onPressed: () {}
+                      ),
+                      ),
+                                          WidgetPoint(),
+                                          WidgetAll(),
+                                        ]),
                                   ),
                                 ])
+                            ),
+                          ],
                         );
                       }
                       else if (challengeLen.hasError) {
@@ -1893,7 +2332,7 @@ class _printChallengeWidgetState extends State<printChallengeWidget> {
 Widget CalendarCellBuilder(BuildContext context, DateTime dateTime, _, int type) {
   String date = DateFormat('dd').format(dateTime);
   return Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(5),
       child: Container(
         padding: EdgeInsets.all(0),
         width: MediaQuery.of(context).size.width,
