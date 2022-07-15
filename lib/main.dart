@@ -26,6 +26,8 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
 
+import 'package:carousel_slider/carousel_slider.dart';
+
 var AllFontColor = Color(0xff565445);
 var AllWidgetRadius = 30.0;
 var AllWidgetColor = Color(0xffFFFFF7);
@@ -907,6 +909,14 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
       todayEnter = prefs.getInt('todayEnter') ?? 1;
     });
   }
+  @override
+  initBadgeHave() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.setInt('badgeHave', 0);
+      badgeHave = prefs.getInt('badgeHave') ?? 0;
+    });
+  }
   Future _future() async {
     if(firstTime == true) {
       await Future.delayed(Duration(milliseconds: 2000));
@@ -945,23 +955,21 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                     child: Column(children: [
                       Container(
                           child: Container(
-                            margin: EdgeInsets.fromLTRB(30, MediaQuery.of(context).size.height*0.13, 30, 0),
+                            margin: EdgeInsets.fromLTRB(30, MediaQuery.of(context).size.height*0.17, 30, 0),
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
-                                            Text('${timeTitle[timeBlock*2][0]}', style: TextStyle(
-                                                color: Colors.white, fontSize: 27, fontWeight: FontWeight.bold)),
-                                            Text('', style: TextStyle(fontSize: 6)),
-                                            Text('${timeTitle[timeBlock*2+1][0]}',
+                                            Text('${dayWeek+1}일차', style: TextStyle(
+                                                color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold)),
+                                            Text('${getToday().split('-')[0]}년 ${getToday().split('-')[1]}월 ${getToday().split('-')[2]}일',
                                                 style: TextStyle(
-                                                    color: Colors.white.withOpacity(0.5), fontSize: 15)),
-                                            Text('', style: TextStyle(fontSize: 10)),
+                                                    color: Colors.white.withOpacity(0.7), fontSize: 17)),
                                           ],
                                         ),
                                       ]
@@ -978,11 +986,31 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                         return Column(
                           children: [
                             Container(
-                                margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
+                                margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   shape: BoxShape.rectangle,
                                   borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.03),
+                                      blurRadius: 15,
+                                      spreadRadius: 10,
+                                      offset: const Offset(0, 10),
+                                    ),
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.0165),
+                                      blurRadius: 7.5,
+                                      spreadRadius: 5,
+                                      offset: const Offset(0, 5),
+                                    ),
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.0095),
+                                      blurRadius: 5,
+                                      spreadRadius: 2.5,
+                                      offset: const Offset(0, 2.5),
+                                    ),
+                                  ],
                                 ),
                                 child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1582,6 +1610,7 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
               Bounce(
                 duration: Duration(milliseconds: 100),
                 child: Container(
+                  margin: EdgeInsets.only(bottom: 20),
                   padding: EdgeInsets.all(20),
                   color: AllTonedownColor,
                   child: Row(
@@ -1595,6 +1624,25 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                 onPressed: () {
                   setState((){
                     todayMemo[timeBlock] = false;
+                  });
+                },
+              ),
+              Bounce(
+                duration: Duration(milliseconds: 100),
+                child: Container(
+                    color: AllTonedownColor,
+                    padding: EdgeInsets.all(20),
+                    margin: EdgeInsets.only(bottom: 20),
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        Text('배지 개수 초기화'),
+                        Spacer(),
+                      ],
+                    )),
+                onPressed: () {
+                  setState((){
+                    initBadgeHave();
                   });
                 },
               ),
@@ -1671,11 +1719,31 @@ class _WidgetChallengeState extends State<WidgetChallenge> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+        margin: EdgeInsets.fromLTRB(20, 30, 20, 20),
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0XFF000066).withOpacity(0.03),
+              blurRadius: 15,
+              spreadRadius: 10,
+              offset: const Offset(0, 10),
+            ),
+            BoxShadow(
+              color: Color(0XFF000066).withOpacity(0.0165),
+              blurRadius: 7.5,
+              spreadRadius: 5,
+              offset: const Offset(0, 5),
+            ),
+            BoxShadow(
+              color: Color(0XFF000066).withOpacity(0.0095),
+              blurRadius: 5,
+              spreadRadius: 2.5,
+              offset: const Offset(0, 2.5),
+            ),
+          ],
         ),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2537,7 +2605,7 @@ class _ThirdPageState extends State<ThirdPage> {
                                           duration: Duration(milliseconds: 100),
                                           onPressed: () {
                                             setState((){
-                                              cardView[index] ? cardView[index] = false : cardView[index] = true;
+                                              Navigator.push(context, MaterialPageRoute(builder: (context) => thirdInfo(index: index)));
                                             });
                                             print(cardView[index]);
                                           },
@@ -2581,64 +2649,80 @@ class _ThirdPageState extends State<ThirdPage> {
                                                 ),
                                               ],
                                             ),
-                                            child: cardView[index] ?
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.circular(20),
-                                              child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                            child: Stack(
+                                              children: [
+                                                Hero(
+                                                  tag: 'infoImage',
                                                   child: Container(
-                                                      padding: EdgeInsets.all(20),
                                                       decoration: BoxDecoration(
-                                                        color: Colors.black.withOpacity(0.5),
-                                                      ),
-                                                      child: AnimatedOpacity(
-                                                        duration: Duration(milliseconds: 50),
-                                                        opacity: cardView[index] ? 1.0 : 0.0,
-                                                        child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Center(
-                                                                child: Text(challengelist[index], style: TextStyle(
-                                                                    color: Colors.white.withOpacity(0.7),
-                                                                    fontSize: 20,
-                                                                    fontWeight: FontWeight.bold)),
-                                                              ),
-                                                              Text('', style: TextStyle(fontSize: 10)),
-                                                              Text(challengelistHow[index][0], style: TextStyle(color: Colors.white, fontSize: 15, height: 1.7,),),
-                                                            ]
-                                                        ),
-                                                      ))
-                                              ),
-                                            ):
-                                            Container(
-                                              padding: EdgeInsets.all(20),
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  gradient: LinearGradient(
-                                                      begin: Alignment.topCenter,
-                                                      end: Alignment.bottomCenter,
-                                                      colors: [
-                                                        Colors.black.withOpacity(0.3),
-                                                        Colors.black.withOpacity(0.7),
-                                                      ]
-                                                  )
-                                              ),
-                                              child:
-                                              AnimatedOpacity(
-                                                duration: Duration(milliseconds: 50),
-                                                opacity: cardView[index] ? 0.0 : 1.0,
-                                                child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Spacer(),
-                                                      Text(challengelist[index], style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 20,
-                                                          fontWeight: FontWeight.bold)),
-                                                      Text('', style: TextStyle(fontSize: 6)),
-                                                      Text(challengelistHow[index][0], style: TextStyle(color: Colors.white, fontSize: 15, height: 1.7,), overflow: TextOverflow.ellipsis, maxLines: 3),
-                                                    ]
+                                                          borderRadius: BorderRadius.circular(20),
+                                                          image: DecorationImage(
+                                                            image: AssetImage('assets/neck${index}.jpeg'),
+                                                            fit: BoxFit.cover,
+                                                          )
+                                                      )
+                                                  ),
                                                 ),
-                                              ),
+                                                cardView[index] ?
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                                      child: Container(
+                                                          padding: EdgeInsets.all(20),
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.black.withOpacity(0.5),
+                                                          ),
+                                                          child: AnimatedOpacity(
+                                                            duration: Duration(milliseconds: 50),
+                                                            opacity: cardView[index] ? 1.0 : 0.0,
+                                                            child: Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Center(
+                                                                    child: Text(challengelist[index], style: TextStyle(
+                                                                        color: Colors.white.withOpacity(0.7),
+                                                                        fontSize: 20,
+                                                                        fontWeight: FontWeight.bold)),
+                                                                  ),
+                                                                  Text('', style: TextStyle(fontSize: 10)),
+                                                                  Text(challengelistHow[index][0], style: TextStyle(color: Colors.white, fontSize: 15, height: 1.7,),),
+                                                                ]
+                                                            ),
+                                                          ))
+                                                  ),
+                                                ):
+                                                Container(
+                                                  padding: EdgeInsets.all(20),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      gradient: LinearGradient(
+                                                          begin: Alignment.topCenter,
+                                                          end: Alignment.bottomCenter,
+                                                          colors: [
+                                                            Colors.black.withOpacity(0.3),
+                                                            Colors.black.withOpacity(0.7),
+                                                          ]
+                                                      )
+                                                  ),
+                                                  child:
+                                                  AnimatedOpacity(
+                                                    duration: Duration(milliseconds: 50),
+                                                    opacity: cardView[index] ? 0.0 : 1.0,
+                                                    child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Spacer(),
+                                                          Text(challengelist[index], style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 20,
+                                                              fontWeight: FontWeight.bold)),
+                                                          Text('', style: TextStyle(fontSize: 6)),
+                                                          Text(challengelistHow[index][0], style: TextStyle(color: Colors.white, fontSize: 15, height: 1.7,), overflow: TextOverflow.ellipsis, maxLines: 3),
+                                                        ]
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         );
@@ -2694,6 +2778,137 @@ class _ThirdPageState extends State<ThirdPage> {
   }
 }
 
+class thirdInfo extends StatefulWidget {
+  final index;
+  const thirdInfo({Key? key, @required this.index}) : super(key: key);
+
+  @override
+  State<thirdInfo> createState() => _thirdInfoState();
+}
+
+class _thirdInfoState extends State<thirdInfo> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.fromLTRB(40, 40, 40, 0),
+                height: 140,
+                color: Colors.white,
+                child: Row(
+                  children: [
+                    Bounce(
+                      duration: Duration(milliseconds: 100),
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Color(0xffEFEFEF),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.navigate_before_rounded, color: Color(0xff5F5F5F), size: 20),
+                          ]
+                        )
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      }
+                    ),
+                    Spacer(),
+                    Container(
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(topLeft: Radius.circular(15), bottomLeft: Radius.circular(15)),
+                              color: Colors.blueAccent.withOpacity(0.1),
+                            ),
+                            child: Text('카테고리', style: TextStyle(color: Colors.blueAccent, fontSize: 15)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(topRight: Radius.circular(15), bottomRight: Radius.circular(15)),
+                        color: Colors.blueAccent,
+                      ),
+                      child: Text('${categorylist[0][0]}', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    )
+                  ]
+                )
+              ),
+              Spacer(),
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: MediaQuery.of(context).size.height*0.6,
+                  initialPage: widget.index,
+                  enlargeCenterPage: true,
+                ),
+                items: [0, 1, 2, 3, 4].map((i) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Column(
+                        children: [
+                          //Text('', style: TextStyle(fontSize: 100)),
+                          Expanded(
+                            child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(width: 1, color: Color(0xffEFEFEF)),
+                                  image: DecorationImage(
+                                  image: AssetImage('assets/neck${i}.jpeg'),
+                                  fit: BoxFit.cover,
+                                ),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              child: Hero(
+                                tag: 'infoImage',
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    image: DecorationImage(
+                                      image: AssetImage('assets/neck${i}.jpeg'),
+                                      fit: BoxFit.cover,
+                                    )
+                                  )
+                                ),
+                              )
+                            ),
+                          ),
+                          Text('', style: TextStyle(fontSize: 40)),
+                          Text(challengelist[i], style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,)),
+                          Container(
+                            padding: EdgeInsets.all(25),
+                              child: Text(challengelistHow[i][0], style: TextStyle(fontSize: 17, height: 1.2))),
+                        ],
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
+              Container(
+              ),
+              Spacer(),
+            ]
+          )
+        )
+      )
+    );
+  }
+}
+
+
 
 class AboutUs extends StatefulWidget {
   const AboutUs({Key? key}) : super(key: key);
@@ -2714,340 +2929,355 @@ class _AboutUsState extends State<AboutUs> {
               Container(
                   margin: EdgeInsets.only(top: 30),
                   child: ListView(children: [
-                    Container(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('', style: TextStyle(fontSize: 30)),
-                              Text('    \u{1F36F} about 꿀곰', style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold)),
-                              Container(
-                                margin: EdgeInsets.only(top: 70, right: 40, left: 40),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('꿀곰의 시작', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                    Text('', style: TextStyle(fontSize: 15)),
-                                    Text('안녕하세요, 꿀곰 프로젝트 팀 입니다! 요즘 거의 대부분의 사람들은 휴대폰 사용으로 본인의 할 일을 못하고 미룬 경험이 몇 번 있을 거예요. 물론 저희 팀원들도 그런 경험이 있었죠.', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
-                                    Text('', style: TextStyle(fontSize: 15)),
-                                    Text('꿀곰 팀은 장기간의 코로나 사태로 인해 늘어난 휴대폰 사용시간, 할 일을 못하면서 생기는 무기력증과 우울증 등이 중요한 사회적 문제라고 인식했어요. 그래서 저희 팀은 휴대폰 때문에 생기는 게으름을 방지하기 위한 앱을 만들기로 했답니다.', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(top: 50, right: 40, left: 40),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('꿀곰은 어떤 서비스를 하나요?', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                    Text('', style: TextStyle(fontSize: 15)),
-                                    Text('꿀곰은 휴대폰 제한 사용 시간 도달 시 알람을 통해 자신이 수행할 도전 과제를 제공해 중독을 방지하고 게으름 악순환의 과정을 끊을 수 있도록 도움을 주는 서비스를 제공해요. 지속적으로 업데이트를 진행하여 더 많은 도전 과제와 다양한 기능을 추가할 예정입니다!', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(top: 50, right: 40, left: 40),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('캐릭터 소개', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                    Text('', style: TextStyle(fontSize: 15)),
-                                    Container(
-                                      width: 261,
-                                      height: 131,
-                                      decoration:BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(width: 0.5, color: Colors.black.withOpacity(0.1)),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            width: 130,
-                                            height: 130,
-                                            decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            bottomLeft: Radius.circular(20),
-                                          ),
-                                border: Border.all(width: 0.5, color: Colors.black.withOpacity(0.1)),
-                                      ),
-                                              child: Center(child: Image.asset('assets/character.png', height: 100))),
-                                          Container(
-                                            width: 130,
-                                              height: 130,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(20),
-                                                  bottomRight: Radius.circular(20),
-                                                ),
-                                                border: Border.all(width: 0.5, color: Colors.black.withOpacity(0.1)),
-                                              ),
-                                              child: Image.asset('assets/CharacterTime.png', height: 70)),
-                                        ],
-                                      ),
-                                    ),
-                                    Text('\n꿀곰이', style: TextStyle(fontSize: 20, height: 1.7, letterSpacing: 1.2, wordSpacing: 1.2, fontWeight: FontWeight.bold)),
-                                    Text('\n꿀곰이는 누워서 꿀 먹는 것을 좋아하는 게으른 곰이에요. 꿀곰이도 게으르게 누워서 꿀만 먹어 살이 많이 찐 탓인지, 자신의 게으름을 고치고 싶다고 하네요! 꿀곰이와 함께 차근차근 도전 과제를 깨며 게으름을 이겨내 볼까요?', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(top: 50, bottom: 30, right: 30, left: 30),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('  팀원', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                    Text('', style: TextStyle(fontSize: 15)),
-                                    Bounce(
-                                      duration: Duration(milliseconds: 100),
-                                      onPressed: () {},
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.rectangle,
-                                            borderRadius: BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Color(0XFF000066).withOpacity(0.03),
-                                                blurRadius: 15,
-                                                spreadRadius: 10,
-                                                offset: const Offset(0, 10),
-                                              ),
-                                              BoxShadow(
-                                                color: Color(0XFF000066).withOpacity(0.0165),
-                                                blurRadius: 7.5,
-                                                spreadRadius: 5,
-                                                offset: const Offset(0, 5),
-                                              ),
-                                              BoxShadow(
-                                                color: Color(0XFF000066).withOpacity(0.0095),
-                                                blurRadius: 5,
-                                                spreadRadius: 2.5,
-                                                offset: const Offset(0, 2.5),
-                                              ),
-                                            ],
-                                          ),
-                                          padding: EdgeInsets.all(20),
-                                          margin: EdgeInsets.only(top: 20),
-                                          child: Column(
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    SizedBox(
-                                                      child: Column(
-                                                        children: [
-                                                          Text('\u{1F4E2}', style: TextStyle(fontSize: 30)),
-                                                          Text('', style: TextStyle(fontSize: 10)),
-                                                          Text('강원중', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
-                                                          Text('', style: TextStyle(fontSize: 10)),
-                                                          Text('가천대학교\n경영학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                                                        ],
-                                                      ),
-                                                      width: MediaQuery.of(context).size.width*0.25,
-                                                    ),
-                                                    SizedBox(
-                                                        width: MediaQuery.of(context).size.width*0.5,
-                                                        child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text('PM', style: TextStyle(fontSize: 20)),
-                                                              Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
-                                                              Text('하고 싶은 말', style: TextStyle(fontSize: 17))
-                                                            ]
-                                                        )
-                                                    )
-                                                  ],
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                )
-                                              ]
-                                          )
-                                      ),
-                                    ),
-                                    Bounce(
-                                      duration: Duration(milliseconds: 100),
-                                      onPressed: () {},
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.rectangle,
-                                            borderRadius: BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Color(0XFF000066).withOpacity(0.03),
-                                                blurRadius: 15,
-                                                spreadRadius: 10,
-                                                offset: const Offset(0, 10),
-                                              ),
-                                              BoxShadow(
-                                                color: Color(0XFF000066).withOpacity(0.0165),
-                                                blurRadius: 7.5,
-                                                spreadRadius: 5,
-                                                offset: const Offset(0, 5),
-                                              ),
-                                              BoxShadow(
-                                                color: Color(0XFF000066).withOpacity(0.0095),
-                                                blurRadius: 5,
-                                                spreadRadius: 2.5,
-                                                offset: const Offset(0, 2.5),
-                                              ),
-                                            ],
-                                          ),
-                                          padding: EdgeInsets.all(20),
-                                          margin: EdgeInsets.only(top: 20),
-                                          child: Column(
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    SizedBox(
-                                                      child: Column(
-                                                        children: [
-                                                          Text('\u{1F4DD}', style: TextStyle(fontSize: 30)),
-                                                          Text('', style: TextStyle(fontSize: 10)),
-                                                          Text('이기용', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
-                                                          Text('', style: TextStyle(fontSize: 10)),
-                                                          Text('가천대학교\n경영학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                                                        ],
-                                                      ),
-                                                      width: MediaQuery.of(context).size.width*0.25,
-                                                    ),
-                                                    SizedBox(
-                                                        width: MediaQuery.of(context).size.width*0.5,
-                                                        child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text('기획, 마케팅', style: TextStyle(fontSize: 20)),
-                                                              Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
-                                                              Text('하고 싶은 말', style: TextStyle(fontSize: 17))
-                                                            ]
-                                                        )
-                                                    )
-                                                  ],
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                )
-                                              ]
-                                          )
-                                      ),
-                                    ),
-                                    Bounce(
-                                      duration: Duration(milliseconds: 100),
-                                      onPressed: () {},
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.rectangle,
-                                            borderRadius: BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Color(0XFF000066).withOpacity(0.03),
-                                                blurRadius: 15,
-                                                spreadRadius: 10,
-                                                offset: const Offset(0, 10),
-                                              ),
-                                              BoxShadow(
-                                                color: Color(0XFF000066).withOpacity(0.0165),
-                                                blurRadius: 7.5,
-                                                spreadRadius: 5,
-                                                offset: const Offset(0, 5),
-                                              ),
-                                              BoxShadow(
-                                                color: Color(0XFF000066).withOpacity(0.0095),
-                                                blurRadius: 5,
-                                                spreadRadius: 2.5,
-                                                offset: const Offset(0, 2.5),
-                                              ),
-                                            ],
-                                          ),
-                                          padding: EdgeInsets.all(20),
-                                          margin: EdgeInsets.only(top: 20),
-                                          child: Column(
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    SizedBox(
-                                                      child: Column(
-                                                        children: [
-                                                          Text('\u{1F528}', style: TextStyle(fontSize: 30)),
-                                                          Text('', style: TextStyle(fontSize: 10)),
-                                                          Text('김태윤', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
-                                                          Text('', style: TextStyle(fontSize: 10)),
-                                                          Text('가천대학교\n컴퓨터공학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                                                        ],
-                                                      ),
-                                                      width: MediaQuery.of(context).size.width*0.25,
-                                                    ),
-                                                    SizedBox(
-                                                        width: MediaQuery.of(context).size.width*0.5,
-                                                        child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text('개발, 디자인', style: TextStyle(fontSize: 20)),
-                                                              Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
-                                                              Text('하고 싶은 말', style: TextStyle(fontSize: 17))
-                                                            ]
-                                                        )
-                                                    )
-                                                  ],
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                )
-                                              ]
-                                          )
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(top: 50, right: 40, left: 40, bottom: 100),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
+                    Stack(
+                      children: [
+                        Transform.rotate(
+                      angle: 60 * 3.141592 / 180,
+                          child: Container(
+                            height: 150,
+                            width: 150,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(60),
+                              color: Colors.amber.withOpacity(0.1),
+                            )
+                          ),
+                        ),
+                        Container(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('', style: TextStyle(fontSize: 30)),
+                                  Text('    \u{1F36F} about 꿀곰', style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold)),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 70, right: 40, left: 40),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text('팀 블로그', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                        Spacer(),
-                                        Bounce(
-                                            duration: Duration(milliseconds: 100),
-                                            onPressed: () async {
-                                              final url = Uri.parse(
-                                                'https://waytogo2.tistory.com/',
-                                              );
-                                              if (await canLaunchUrl(url)) {
-                                                launchUrl(url);
-                                              }
-                                              else {
-                                                print('페이지를 열 수 없어요.');
-                                              }
-                                            },
-                                            child: Container(
-                                              padding: EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(10),
-                                                color: Color(0xffF2F2F2),
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  Text('팀 블로그 구경가기', style: TextStyle(color: Colors.black, fontSize: 15)),
-                                                  Icon(Icons.navigate_next_rounded, color: Colors.grey, size: 20),
-                                                ],
-                                              ),
-                                            )
-                                        )
+                                        Text('꿀곰의 시작', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                        Text('', style: TextStyle(fontSize: 15)),
+                                        Text('안녕하세요, 꿀곰 프로젝트 팀 입니다! 요즘 거의 대부분의 사람들은 휴대폰 사용으로 본인의 할 일을 못하고 미룬 경험이 몇 번 있을 거예요. 물론 저희 팀원들도 그런 경험이 있었죠.', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
+                                        Text('', style: TextStyle(fontSize: 15)),
+                                        Text('꿀곰 팀은 장기간의 코로나 사태로 인해 늘어난 휴대폰 사용시간, 할 일을 못하면서 생기는 무기력증과 우울증 등이 중요한 사회적 문제라고 인식했어요. 그래서 저희 팀은 휴대폰 때문에 생기는 게으름을 방지하기 위한 앱을 만들기로 했답니다.', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
                                       ],
                                     ),
-                                    Text('', style: TextStyle(fontSize: 15)),
-                                    Text('꿀곰 프로젝트의 팀 블로그예요. 꿀곰이 만들어지는 과정과 꿀곰에 들어간 생각이 궁금하시다면 한번 방문해봐요.', style: TextStyle(fontSize: 15, height: 1.7, letterSpacing: 1.1, wordSpacing: 1.2)),
-                                  ],
-                                ),
-                              ),
-                              Center(
-                                  child: Column(children: [
-                                    Text('꿀곰 프로젝트', style: TextStyle(color: Colors.grey, fontSize: 20)),
-                                    Text('', style: TextStyle(fontSize: 10)),
-                                    Text('가천대학교 TMI 프로젝트 2022', style: TextStyle(color: Colors.grey, fontSize: 15)),
-                                    Text('', style: TextStyle(fontSize: 60)),
-                                  ])
-                              )
-                            ])
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 50, right: 40, left: 40),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('꿀곰은 어떤 서비스를 하나요?', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                        Text('', style: TextStyle(fontSize: 15)),
+                                        Text('꿀곰은 휴대폰 제한 사용 시간 도달 시 알람을 통해 자신이 수행할 도전 과제를 제공해 중독을 방지하고 게으름 악순환의 과정을 끊을 수 있도록 도움을 주는 서비스를 제공해요. 지속적으로 업데이트를 진행하여 더 많은 도전 과제와 다양한 기능을 추가할 예정입니다!', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 50, right: 40, left: 40),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('캐릭터 소개', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                        Text('', style: TextStyle(fontSize: 15)),
+                                        Container(
+                                          width: 261,
+                                          height: 131,
+                                          decoration:BoxDecoration(
+                                            borderRadius: BorderRadius.circular(20),
+                                            border: Border.all(width: 0.5, color: Colors.black.withOpacity(0.1)),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                width: 130,
+                                                height: 130,
+                                                decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(20),
+                                                bottomLeft: Radius.circular(20),
+                                              ),
+                                    border: Border.all(width: 0.5, color: Colors.black.withOpacity(0.1)),
+                                          ),
+                                                  child: Center(child: Image.asset('assets/character.png', height: 100))),
+                                              Container(
+                                                width: 130,
+                                                  height: 130,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.only(
+                                                      topRight: Radius.circular(20),
+                                                      bottomRight: Radius.circular(20),
+                                                    ),
+                                                    border: Border.all(width: 0.5, color: Colors.black.withOpacity(0.1)),
+                                                  ),
+                                                  child: Image.asset('assets/CharacterTime.png', height: 70)),
+                                            ],
+                                          ),
+                                        ),
+                                        Text('\n꿀곰이', style: TextStyle(fontSize: 20, height: 1.7, letterSpacing: 1.2, wordSpacing: 1.2, fontWeight: FontWeight.bold)),
+                                        Text('\n꿀곰이는 누워서 꿀 먹는 것을 좋아하는 게으른 곰이에요. 꿀곰이도 게으르게 누워서 꿀만 먹어 살이 많이 찐 탓인지, 자신의 게으름을 고치고 싶다고 하네요! 꿀곰이와 함께 차근차근 도전 과제를 깨며 게으름을 이겨내 볼까요?', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 50, bottom: 30, right: 30, left: 30),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('  팀원', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                        Text('', style: TextStyle(fontSize: 15)),
+                                        Bounce(
+                                          duration: Duration(milliseconds: 100),
+                                          onPressed: () {},
+                                          child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                shape: BoxShape.rectangle,
+                                                borderRadius: BorderRadius.circular(20),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(0XFF000066).withOpacity(0.03),
+                                                    blurRadius: 15,
+                                                    spreadRadius: 10,
+                                                    offset: const Offset(0, 10),
+                                                  ),
+                                                  BoxShadow(
+                                                    color: Color(0XFF000066).withOpacity(0.0165),
+                                                    blurRadius: 7.5,
+                                                    spreadRadius: 5,
+                                                    offset: const Offset(0, 5),
+                                                  ),
+                                                  BoxShadow(
+                                                    color: Color(0XFF000066).withOpacity(0.0095),
+                                                    blurRadius: 5,
+                                                    spreadRadius: 2.5,
+                                                    offset: const Offset(0, 2.5),
+                                                  ),
+                                                ],
+                                              ),
+                                              padding: EdgeInsets.all(20),
+                                              margin: EdgeInsets.only(top: 20),
+                                              child: Column(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(
+                                                          child: Column(
+                                                            children: [
+                                                              Text('\u{1F4E2}', style: TextStyle(fontSize: 30)),
+                                                              Text('', style: TextStyle(fontSize: 10)),
+                                                              Text('강원중', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
+                                                              Text('', style: TextStyle(fontSize: 10)),
+                                                              Text('가천대학교\n경영학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                                            ],
+                                                          ),
+                                                          width: MediaQuery.of(context).size.width*0.25,
+                                                        ),
+                                                        SizedBox(
+                                                            width: MediaQuery.of(context).size.width*0.5,
+                                                            child: Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Text('PM', style: TextStyle(fontSize: 20)),
+                                                                  Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
+                                                                  Text('하고 싶은 말', style: TextStyle(fontSize: 17))
+                                                                ]
+                                                            )
+                                                        )
+                                                      ],
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                    )
+                                                  ]
+                                              )
+                                          ),
+                                        ),
+                                        Bounce(
+                                          duration: Duration(milliseconds: 100),
+                                          onPressed: () {},
+                                          child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                shape: BoxShape.rectangle,
+                                                borderRadius: BorderRadius.circular(20),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(0XFF000066).withOpacity(0.03),
+                                                    blurRadius: 15,
+                                                    spreadRadius: 10,
+                                                    offset: const Offset(0, 10),
+                                                  ),
+                                                  BoxShadow(
+                                                    color: Color(0XFF000066).withOpacity(0.0165),
+                                                    blurRadius: 7.5,
+                                                    spreadRadius: 5,
+                                                    offset: const Offset(0, 5),
+                                                  ),
+                                                  BoxShadow(
+                                                    color: Color(0XFF000066).withOpacity(0.0095),
+                                                    blurRadius: 5,
+                                                    spreadRadius: 2.5,
+                                                    offset: const Offset(0, 2.5),
+                                                  ),
+                                                ],
+                                              ),
+                                              padding: EdgeInsets.all(20),
+                                              margin: EdgeInsets.only(top: 20),
+                                              child: Column(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(
+                                                          child: Column(
+                                                            children: [
+                                                              Text('\u{1F4DD}', style: TextStyle(fontSize: 30)),
+                                                              Text('', style: TextStyle(fontSize: 10)),
+                                                              Text('이기용', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
+                                                              Text('', style: TextStyle(fontSize: 10)),
+                                                              Text('가천대학교\n경영학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                                            ],
+                                                          ),
+                                                          width: MediaQuery.of(context).size.width*0.25,
+                                                        ),
+                                                        SizedBox(
+                                                            width: MediaQuery.of(context).size.width*0.5,
+                                                            child: Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Text('기획, 마케팅', style: TextStyle(fontSize: 20)),
+                                                                  Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
+                                                                  Text('하고 싶은 말', style: TextStyle(fontSize: 17))
+                                                                ]
+                                                            )
+                                                        )
+                                                      ],
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                    )
+                                                  ]
+                                              )
+                                          ),
+                                        ),
+                                        Bounce(
+                                          duration: Duration(milliseconds: 100),
+                                          onPressed: () {},
+                                          child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                shape: BoxShape.rectangle,
+                                                borderRadius: BorderRadius.circular(20),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(0XFF000066).withOpacity(0.03),
+                                                    blurRadius: 15,
+                                                    spreadRadius: 10,
+                                                    offset: const Offset(0, 10),
+                                                  ),
+                                                  BoxShadow(
+                                                    color: Color(0XFF000066).withOpacity(0.0165),
+                                                    blurRadius: 7.5,
+                                                    spreadRadius: 5,
+                                                    offset: const Offset(0, 5),
+                                                  ),
+                                                  BoxShadow(
+                                                    color: Color(0XFF000066).withOpacity(0.0095),
+                                                    blurRadius: 5,
+                                                    spreadRadius: 2.5,
+                                                    offset: const Offset(0, 2.5),
+                                                  ),
+                                                ],
+                                              ),
+                                              padding: EdgeInsets.all(20),
+                                              margin: EdgeInsets.only(top: 20),
+                                              child: Column(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(
+                                                          child: Column(
+                                                            children: [
+                                                              Text('\u{1F528}', style: TextStyle(fontSize: 30)),
+                                                              Text('', style: TextStyle(fontSize: 10)),
+                                                              Text('김태윤', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
+                                                              Text('', style: TextStyle(fontSize: 10)),
+                                                              Text('가천대학교\n컴퓨터공학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                                            ],
+                                                          ),
+                                                          width: MediaQuery.of(context).size.width*0.25,
+                                                        ),
+                                                        SizedBox(
+                                                            width: MediaQuery.of(context).size.width*0.5,
+                                                            child: Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Text('개발, 디자인', style: TextStyle(fontSize: 20)),
+                                                                  Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
+                                                                  Text('하고 싶은 말', style: TextStyle(fontSize: 17))
+                                                                ]
+                                                            )
+                                                        )
+                                                      ],
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                    )
+                                                  ]
+                                              )
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 50, right: 40, left: 40, bottom: 100),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text('팀 블로그', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                            Spacer(),
+                                            Bounce(
+                                                duration: Duration(milliseconds: 100),
+                                                onPressed: () async {
+                                                  final url = Uri.parse(
+                                                    'https://waytogo2.tistory.com/',
+                                                  );
+                                                  if (await canLaunchUrl(url)) {
+                                                    launchUrl(url);
+                                                  }
+                                                  else {
+                                                    print('페이지를 열 수 없어요.');
+                                                  }
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.all(10),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: Color(0xffF2F2F2),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Text('팀 블로그 구경가기', style: TextStyle(color: Colors.black, fontSize: 15)),
+                                                      Icon(Icons.navigate_next_rounded, color: Colors.grey, size: 20),
+                                                    ],
+                                                  ),
+                                                )
+                                            )
+                                          ],
+                                        ),
+                                        Text('', style: TextStyle(fontSize: 15)),
+                                        Text('꿀곰 프로젝트의 팀 블로그예요. 꿀곰이 만들어지는 과정과 꿀곰에 들어간 생각이 궁금하시다면 한번 방문해봐요.', style: TextStyle(fontSize: 15, height: 1.7, letterSpacing: 1.1, wordSpacing: 1.2)),
+                                      ],
+                                    ),
+                                  ),
+                                  Center(
+                                      child: Column(children: [
+                                        Text('꿀곰 프로젝트', style: TextStyle(color: Colors.grey, fontSize: 20)),
+                                        Text('', style: TextStyle(fontSize: 10)),
+                                        Text('가천대학교 TMI 프로젝트 2022', style: TextStyle(color: Colors.grey, fontSize: 15)),
+                                        Text('', style: TextStyle(fontSize: 60)),
+                                      ])
+                                  )
+                                ])
+                        ),
+                      ],
                     ),
                   ])
               )
@@ -3356,28 +3586,12 @@ class BadgeApp extends StatelessWidget {
     return MaterialApp(
         home: Scaffold(
             backgroundColor: Colors.white,
-            appBar: AppBar(
-                backgroundColor: Colors.white,
-                elevation: 0.0,
-                leading: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () => {
-                        Navigator.pop(context),
-                      },
-                      child: Icon(Icons.navigate_before_rounded, color: AllFontColor, size: 40),
-                    )
-                )
-            ),
-            body: ScrollConfiguration(
-              behavior: NoGlowScrollBehavior(),
-              child: Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xffF2F2F7),
-                  ),
-                  child: ListView(children: [
+            body: Column(
+              children: [
+                Column(
+                  children: [
                     Container(
-                      padding: EdgeInsets.fromLTRB(40, 0, 40, 20),
+                      padding: EdgeInsets.fromLTRB(40, 50, 40, 20),
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                           color: Colors.white,
@@ -3410,266 +3624,236 @@ class BadgeApp extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children:[
-                                Image.asset('assets/badgeicon.png', width: 30),
-                            Text('', style: TextStyle(fontSize: 15)),
-                            Text('${badgeHave}개', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 30, fontWeight: FontWeight.bold)),
-                            Text('', style: TextStyle(fontSize:10)),
-                            Text('활동 배지', style: TextStyle(color: Colors.grey, fontSize: 17, fontWeight: FontWeight.bold)),
-                          ]),
-                          Spacer(),
-                          if(badgeHave < 6)
-                            Container(
-                              padding: EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Color(0xffF2F2F7),
-                              ),
-                              child: Column(
-                                children: [
-                                  Text('다음 배지', style: TextStyle(color: Colors.grey, fontSize: 13)),
-                                    Container(
-                                      child: Stack(
-                                          children: [
-                                            Container(
-                                                width: 100,
-                                                height: 100,
-                                                margin: EdgeInsets.only(bottom: 0),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(130),
-                                                    gradient: RadialGradient(
-                                                      colors: [
-                                                        Colors.amber.withOpacity(0.7),
-                                                        Colors.amber.withOpacity(0),
-                                                      ],
-                                                    )
-                                                )
-                                            ),
-                                            Container(
-                                                width: 80,
-                                                height: 80,
-                                                margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
+                                Container(
+                                  width: MediaQuery.of(context).size.width-80,
+                                    margin: EdgeInsets.fromLTRB(0, 0, 0, 40),
+                                    child: Row(
+                                        children: [
+                                          Bounce(
+                                            duration: Duration(milliseconds: 100),
+                                            child: Container(
+                                                height: 50,
+                                                width: 50,
                                                 decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(100),
-                                                    gradient: LinearGradient(
-                                                        begin: Alignment.topLeft,
-                                                        end: Alignment.bottomRight,
-                                                        colors: [
-                                                          Colors.amber.withOpacity(0.4),
-                                                          Colors.amber.withOpacity(0.9),
-                                                        ]
-                                                    )
-                                                )
-                                            ),
-                                            Container(
-                                                width: 70,
-                                                height: 70,
-                                                margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(100),
-                                                    gradient: LinearGradient(
-                                                        begin: Alignment.topLeft,
-                                                        end: Alignment.bottomRight,
-                                                        colors: [
-                                                          Colors.amber.withOpacity(0.4),
-                                                          Colors.amber.withOpacity(0.9),
-                                                        ]
-                                                    ),
-                                                    border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
-                                                )
-                                            ),
-                                            Container(
-                                                width: 70,
-                                                height: 70,
-                                                margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(100),
-                                                    color: Colors.white.withOpacity(0.9),
-                                                    border: Border.all(width: 3, color: Colors.amber.withOpacity(0.8))
+                                                    border: Border.all(width: 1, color: Color(0xffEFEFEF)),
+                                                  color: Color(0xffEFEFEF),
                                                 ),
-                                                child: Center(
-                                                  child: Image.asset('assets/badge/badge${badgeHave+1}.png', width: 50),
-                                                )
+                                                  child: Icon(Icons.navigate_before_rounded, color: AllFontColor, size: 40),
                                             ),
-                                          ]
-                                      ),),
-                                    Text('${badgelist[badgeHave]}', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 15, fontWeight: FontWeight.bold)),
-                                ]
-                              ),
-                            )
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            }
+                                          ),
+                                          Spacer(),
+                                          Text('활동 배지', style: TextStyle(color: Color(0xff5F5F5F), fontWeight: FontWeight.bold, fontSize: 17)),
+                                          Spacer(),
+                                          Container(
+                                            height: 50,
+                                            width: 50,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(100),
+                                              border: Border.all(width: 1, color: Color(0xffEFEFEF)),
+                                              color: Color(0xffEFEFEF),
+                                            ),
+                                            child: badgeHave == 6 ? Icon(Icons.close_rounded) : Image.asset('assets/badge/badge${badgeHave+1}.png', width: 20),
+                                          ),
+                                        ]
+                                    )
+                                ),
+                                Image.asset('assets/badgeicon.png', width: 30),
+                                Text('', style: TextStyle(fontSize: 15)),
+                                Text('${badgeHave}개', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 30, fontWeight: FontWeight.bold)),
+                                Text('', style: TextStyle(fontSize:10)),
+                              ]),
+                          Spacer(),
                         ],
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      margin: EdgeInsets.only(top: 40),
-                      child: Column(
-                        children: [
-                          Text('도전과제', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 17, fontWeight: FontWeight.bold)),
-                          GridView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                childAspectRatio: 2/3,
-                                crossAxisCount: 3,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                              ),
-                              itemCount: badgelist.length,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                    color: Colors.transparent,
-                                    padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                                    child: Column(children: <Widget>[
-                                      if (badgeHave > index)
-                                        Container(
-                                          child: Stack(
-                                              children: [
-                                                Container(
-                                                    width: 100,
-                                                    height: 100,
-                                                    margin: EdgeInsets.only(bottom: 0),
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(130),
-                                                        gradient: RadialGradient(
-                                                          colors: [
-                                                            Colors.amber.withOpacity(0.7),
-                                                            Colors.amber.withOpacity(0),
-                                                          ],
-                                                        )
-                                                    )
-                                                ),
-                                                Container(
-                                                    width: 80,
-                                                    height: 80,
-                                                    margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(100),
-                                                        gradient: LinearGradient(
-                                                            begin: Alignment.topLeft,
-                                                            end: Alignment.bottomRight,
-                                                            colors: [
-                                                              Colors.amber.withOpacity(0.4),
-                                                              Colors.amber.withOpacity(0.9),
-                                                            ]
-                                                        )
-                                                    )
-                                                ),
-                                                Container(
-                                                    width: 70,
-                                                    height: 70,
-                                                    margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(100),
-                                                        gradient: LinearGradient(
-                                                            begin: Alignment.topLeft,
-                                                            end: Alignment.bottomRight,
-                                                            colors: [
-                                                              Colors.amber.withOpacity(0.4),
-                                                              Colors.amber.withOpacity(0.9),
-                                                            ]
-                                                        ),
-                                                        border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
-                                                    )
-                                                ),
-                                                Container(
-                                                    width: 70,
-                                                    height: 70,
-                                                    margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(100),
-                                                        color: Colors.white.withOpacity(0.9),
-                                                        border: Border.all(width: 3, color: Colors.amber.withOpacity(0.8))
-                                                    ),
-                                                    child: Center(
-                                                      child: Image.asset('assets/badge/badge${index+1}.png', width: 50),
-                                                    )
-                                                ),
-                                              ]
-                                          ),)
-                                      else
-                                        Container(
-                                          child: Stack(
-                                              children: [
-                                                Container(
-                                                    width: 100,
-                                                    height: 100,
-                                                    margin: EdgeInsets.only(bottom: 0),
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(130),
-                                                        gradient: RadialGradient(
-                                                          colors: [
-                                                            Colors.amber.withOpacity(0),
-                                                            Colors.amber.withOpacity(0),
-                                                          ],
-                                                        )
-                                                    )
-                                                ),
-                                                Container(
-                                                    width: 80,
-                                                    height: 80,
-                                                    margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(100),
-                                                        gradient: LinearGradient(
-                                                            begin: Alignment.topLeft,
-                                                            end: Alignment.bottomRight,
-                                                            colors: [
-                                                              Colors.amber.withOpacity(0.1),
-                                                              Colors.amber.withOpacity(0.3),
-                                                            ]
-                                                        )
-                                                    )
-                                                ),
-                                                Container(
-                                                    width: 70,
-                                                    height: 70,
-                                                    margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(100),
-                                                        gradient: LinearGradient(
-                                                            begin: Alignment.topLeft,
-                                                            end: Alignment.bottomRight,
-                                                            colors: [
-                                                              Colors.amber.withOpacity(0.1),
-                                                              Colors.amber.withOpacity(0.3),
-                                                            ]
-                                                        ),
-                                                        border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
-                                                    )
-                                                ),
-                                                Container(
-                                                    width: 70,
-                                                    height: 70,
-                                                    margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(100),
-                                                        color: Colors.white.withOpacity(0.9),
-                                                        border: Border.all(width: 3, color: Colors.amber.withOpacity(0.3))
-                                                    ),
-                                                    child: Center(
-                                                      child: Image.asset('assets/badge/badge${index+1}.png', width: 50, color: const Color.fromRGBO(255, 255, 255, 0.2),colorBlendMode: BlendMode.modulate),
-                                                    )
-                                                ),
-                                              ]
-                                          ),),
-                                      Container(
-                                        margin: EdgeInsets.only(top: 10),
-                                        child: Text(badgelist[index], style: TextStyle(color: Color(0xff0f1f42), fontSize: 15, fontWeight: FontWeight.bold)),
-                                      )
-                                    ])
-                                );
-                              }
-                          ),
-                        ],
-                      ),
-                    )
-                  ],)
-              ),
+                  ]
+                ),
+                Expanded(
+                  child: ScrollConfiguration(
+                    behavior: NoGlowScrollBehavior(),
+                    child: Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xffF2F2F7),
+                        ),
+                        child: ListView(children: [
+                          Container(
+                            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            margin: EdgeInsets.only(top: 40),
+                            child: Column(
+                              children: [
+                                Text('도전과제', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 17, fontWeight: FontWeight.bold)),
+                                GridView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                      childAspectRatio: 2/3,
+                                      crossAxisCount: 3,
+                                      crossAxisSpacing: 10,
+                                      mainAxisSpacing: 10,
+                                    ),
+                                    itemCount: badgelist.length,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                          color: Colors.transparent,
+                                          padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                          child: Column(children: <Widget>[
+                                            if (badgeHave > index)
+                                              Container(
+                                                child: Stack(
+                                                    children: [
+                                                      Container(
+                                                          width: 100,
+                                                          height: 100,
+                                                          margin: EdgeInsets.only(bottom: 0),
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(130),
+                                                              gradient: RadialGradient(
+                                                                colors: [
+                                                                  Colors.amber.withOpacity(0.7),
+                                                                  Colors.amber.withOpacity(0),
+                                                                ],
+                                                              )
+                                                          )
+                                                      ),
+                                                      Container(
+                                                          width: 80,
+                                                          height: 80,
+                                                          margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(100),
+                                                              gradient: LinearGradient(
+                                                                  begin: Alignment.topLeft,
+                                                                  end: Alignment.bottomRight,
+                                                                  colors: [
+                                                                    Colors.amber.withOpacity(0.4),
+                                                                    Colors.amber.withOpacity(0.9),
+                                                                  ]
+                                                              )
+                                                          )
+                                                      ),
+                                                      Container(
+                                                          width: 70,
+                                                          height: 70,
+                                                          margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(100),
+                                                              gradient: LinearGradient(
+                                                                  begin: Alignment.topLeft,
+                                                                  end: Alignment.bottomRight,
+                                                                  colors: [
+                                                                    Colors.amber.withOpacity(0.4),
+                                                                    Colors.amber.withOpacity(0.9),
+                                                                  ]
+                                                              ),
+                                                              border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
+                                                          )
+                                                      ),
+                                                      Container(
+                                                          width: 70,
+                                                          height: 70,
+                                                          margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(100),
+                                                              color: Colors.white.withOpacity(0.9),
+                                                              border: Border.all(width: 3, color: Colors.amber.withOpacity(0.8))
+                                                          ),
+                                                          child: Center(
+                                                            child: Image.asset('assets/badge/badge${index+1}.png', width: 50),
+                                                          )
+                                                      ),
+                                                    ]
+                                                ),)
+                                            else
+                                              Container(
+                                                child: Stack(
+                                                    children: [
+                                                      Container(
+                                                          width: 100,
+                                                          height: 100,
+                                                          margin: EdgeInsets.only(bottom: 0),
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(130),
+                                                              gradient: RadialGradient(
+                                                                colors: [
+                                                                  Colors.amber.withOpacity(0),
+                                                                  Colors.amber.withOpacity(0),
+                                                                ],
+                                                              )
+                                                          )
+                                                      ),
+                                                      Container(
+                                                          width: 80,
+                                                          height: 80,
+                                                          margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(100),
+                                                              gradient: LinearGradient(
+                                                                  begin: Alignment.topLeft,
+                                                                  end: Alignment.bottomRight,
+                                                                  colors: [
+                                                                    Colors.amber.withOpacity(0.1),
+                                                                    Colors.amber.withOpacity(0.3),
+                                                                  ]
+                                                              )
+                                                          )
+                                                      ),
+                                                      Container(
+                                                          width: 70,
+                                                          height: 70,
+                                                          margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(100),
+                                                              gradient: LinearGradient(
+                                                                  begin: Alignment.topLeft,
+                                                                  end: Alignment.bottomRight,
+                                                                  colors: [
+                                                                    Colors.amber.withOpacity(0.1),
+                                                                    Colors.amber.withOpacity(0.3),
+                                                                  ]
+                                                              ),
+                                                              border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
+                                                          )
+                                                      ),
+                                                      Container(
+                                                          width: 70,
+                                                          height: 70,
+                                                          margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(100),
+                                                              color: Colors.white.withOpacity(0.9),
+                                                              border: Border.all(width: 3, color: Colors.amber.withOpacity(0.3))
+                                                          ),
+                                                          child: Center(
+                                                            child: Image.asset('assets/badge/badge${index+1}.png', width: 50, color: const Color.fromRGBO(255, 255, 255, 0.2),colorBlendMode: BlendMode.modulate),
+                                                          )
+                                                      ),
+                                                    ]
+                                                ),),
+                                            Container(
+                                              margin: EdgeInsets.only(top: 10),
+                                              child: Text(badgelist[index], style: TextStyle(color: Color(0xff0f1f42), fontSize: 15, fontWeight: FontWeight.bold)),
+                                            )
+                                          ])
+                                      );
+                                    }
+                                ),
+                              ],
+                            ),
+                          )
+                        ],)
+                    ),
+                  ),
+                ),
+              ],
             )
         )
     );
@@ -5239,6 +5423,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
                         ),
                         padding: EdgeInsets.all(20),
                         width: MediaQuery.of(context).size.width*0.35,
+                        height: MediaQuery.of(context).size.height*0.07,
                         margin: EdgeInsets.only(bottom: 50),
                         child: Center(child: Text(really ? '정말 포기하기':'포기하기', style: TextStyle(color: really ? Colors.white : Colors.redAccent, fontSize: 15)))),
                   ),
@@ -5246,7 +5431,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
             children: [
         Container(
         width: MediaQuery.of(context).size.width*0.35,
-        height: 55,
+        height: MediaQuery.of(context).size.height*0.07,
 
         margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width*0.04, 0, 0, 50),
         child: ClipRRect(
@@ -5287,6 +5472,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
     }
     },
         child: Container(
+          height: MediaQuery.of(context).size.height*0.07,
             width: MediaQuery.of(context).size.width*0.35,
             margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width*0.04, 0, 0, 50),
             padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -5299,9 +5485,9 @@ class _ChallengeModeState extends State<ChallengeMode> {
                   Spacer(),
                   timerset ? Row(
                       children: [
-                        Text(timeroff ? '완료했어요' : '${sec~/1000}',style: TextStyle(color: timeroff ? Colors.white : (sec/1000) > 15 == true ? Colors.grey : Colors.white, fontSize: 15)),
+                        Text(timeroff ? '완료했어요' : '${sec~/1000}',style: TextStyle(color: timeroff ? Colors.white : (sec/1000) > 15 == true ? Colors.grey : Colors.white, fontSize: 15, fontWeight: timeroff ? FontWeight.bold : FontWeight.normal)),
                       ]
-                  ) : Text(timeroff ? '완료했어요' : timerset ? '${sec~/1000}' : '타이머 시작', style: TextStyle(color: timeroff ? Colors.white : timerset ? Colors.grey : Colors.black, fontSize: 15)),
+                  ) : Text(timeroff ? '완료했어요' : timerset ? '${sec~/1000}' : '타이머 시작', style: TextStyle(color: timeroff ? Colors.white : timerset ? Colors.grey : Colors.black, fontSize: 15, fontWeight: timeroff ? FontWeight.bold : FontWeight.normal)),
                   Spacer(),
                 ]
             )
