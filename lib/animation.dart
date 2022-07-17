@@ -10,11 +10,17 @@ class challengeAnimationContainer extends StatefulWidget {
 }
 
 class _challengeAnimationContainerState extends State<challengeAnimationContainer> {
+  bool _start = false;
   bool _check = false;
   bool _title = true;
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 1500), () {
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState((){
+        _start = true;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 1600), () {
       setState((){
         _title = false;
       });
@@ -33,7 +39,7 @@ class _challengeAnimationContainerState extends State<challengeAnimationContaine
       width: MediaQuery.of(context).size.width,
       height: _check ? 0 : MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
-        color: Color(0xffdceafc),
+        color: _check ? Color(0xff516b8c) : Color(0xffdceafc),
         borderRadius: BorderRadius.only(bottomLeft: _check ? Radius.circular(30) : Radius.circular(0), bottomRight: _check ? Radius.circular(30) : Radius.circular(0))
       ),
       curve: Curves.fastOutSlowIn,
@@ -43,48 +49,57 @@ class _challengeAnimationContainerState extends State<challengeAnimationContaine
           width: MediaQuery.of(context).size.width,
           child: Stack(
             children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+              AnimatedAlign(
+                duration: Duration(milliseconds: 1300),
                 alignment: _title ? Alignment.center : Alignment.topCenter,
-                child: AnimatedOpacity(
-                  opacity: _title ? 1 : 0,
-                  duration: Duration(milliseconds: 150),
-                    child: AnimatedDefaultTextStyle(
-                      duration: Duration(seconds: 4),
-                        curve: Curves.easeIn,
-                        child: Text('${dayWeek}일차'),
-                        style: TextStyle(color: Color(0xff516b8c), fontSize: 60, fontWeight: FontWeight.bold),
-                    )),
-                curve: Curves.fastOutSlowIn,
-              ),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                alignment: _title ? Alignment.bottomCenter : Alignment.center,
-                child: AnimatedOpacity(
-                    opacity: _title ? 0 : _check ? 0 : 1,
+                curve: Curves.easeInCirc,
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: _title ? 300 : 200),
+                  alignment: _title ? Alignment.center : Alignment.topCenter,
+                  child: AnimatedOpacity(
+                    opacity: _title ? _start ? 1 : 0 : 0,
                     duration: Duration(milliseconds: 150),
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '#${categorylist[0][0]}\n',
-                        style: TextStyle(
-                          color: Color(0xff516b8c), fontSize: 25, fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      TextSpan(
-                        text: '${challengelist[challengeNumber[timeBlock]]}',
-                        style: TextStyle(
-                          color: Color(0xff516b8c), fontWeight: FontWeight.bold, fontSize: 40,
-                        )
-                      )
-                    ]
-                  )
+                      child: AnimatedDefaultTextStyle(
+                        duration: Duration(seconds: 4),
+                          curve: Curves.easeIn,
+                          child: Text('${dayWeek+1}일차'),
+                          style: TextStyle(color: Color(0xff516b8c), fontSize: 60, fontWeight: FontWeight.bold),
+                      )),
+                  curve: Curves.easeInQuart,
                 ),
-                curve: Curves.fastOutSlowIn,
               ),
+              AnimatedAlign(
+                duration: Duration(milliseconds: 1300),
+                alignment: _title ? Alignment.bottomCenter : Alignment.center,
+                curve: Curves.ease,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 400),
+                  child: AnimatedOpacity(
+                      opacity: _title ? 0 : _check ? 0 : 1,
+                      duration: Duration(milliseconds: 150),
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '#${categorylist[0][0]}\n',
+                          style: TextStyle(
+                            color: Color(0xff516b8c), fontSize: 25, fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: '${challengelist[challengeNumber[timeBlock]]}',
+                          style: TextStyle(
+                            color: Color(0xff516b8c), fontWeight: FontWeight.bold, fontSize: 40,
+                          )
+                        )
+                      ]
+                    )
+                  ),
+                  curve: Curves.elasticOut,
+                ),
           ),
+              ),
               /*Container(
                 margin: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.1),
                 child: Transform.rotate(
