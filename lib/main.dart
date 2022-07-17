@@ -42,7 +42,7 @@ var AllTonedownColor = Color(0xffE3E3D3);
 var backgroundColor = Colors.amber;
 
 var newBadge = false;
-
+bool _testvisible = true;
 var dayList;
 var dayListToday;
 var dayListAll;
@@ -149,7 +149,6 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -186,6 +185,14 @@ class _MyAppState extends State<MyApp> {
       timeBlock = 1;
     else
       timeBlock = 2;
+  }
+
+  @override
+  load_testvisible() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState((){
+      _testvisible = prefs.getBool('_testvisible') ?? false;
+    });
   }
   @override
   loadBadgeHave() async {
@@ -390,6 +397,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
+      theme: CupertinoThemeData(
+          brightness: Brightness.light
+      ),
       debugShowCheckedModeBanner: false,
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
@@ -722,6 +732,9 @@ class _FirstAppState extends State<FirstApp> {
         highlightColor: Colors.transparent,
       ),
       child: CupertinoApp(
+        theme: CupertinoThemeData(
+            brightness: Brightness.light
+        ),
             home: CupertinoTabScaffold(
               backgroundColor: Color(0xffF2F2F7),
               tabBar: CupertinoTabBar(items: items, activeColor: Color(0xff3F3F3F), inactiveColor: Color(0xffBFBFBF),),
@@ -1123,15 +1136,16 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                               duration: Duration(milliseconds: 100),
                               child: Container(
                                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 20),
+                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     gradient: LinearGradient(
                                         begin: Alignment.centerLeft,
                                         end: Alignment.centerRight,
                                         colors: [
-                                          Colors.white,
-                                          Colors.grey,
-                                          Colors.white,
+                                          Color(0xff7497D4),
+                                          Color(0xff698DC9),
+                                          Color(0xff7497D4),
                                         ]
                                     ),
                                     boxShadow: [
@@ -1155,73 +1169,14 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                                       ),
                                     ],
                                   ),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: BackdropFilter(
-                                          filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-                                          child: Stack(
-                                            children: [
-                                              Container(
-                                                  color: Colors.black.withOpacity(0.3),
-                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                                  child: Row(children: [
-                                                    Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
-                                                    Spacer(),
-                                                    Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold)),
-                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0)),
-                                                  ])
-                                              ),
-                                              Container(
-                                                  color: Colors.blueAccent.withOpacity(0.5),
-                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                                  child: Row(children: [
-                                                    Stack(
-                                                      children: [
-                                                        Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
-                                                        Container(
-                                                            width: 150,
-                                                            height: 20,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(20),
-                                                              color: Colors.white.withOpacity(0.2),
-                                                            )
-                                                        )
-                                                      ],
-                                                    ),
-                                                    Spacer(),
-                                                    Text('불러오는 중', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold)),
-                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
-                                                  ])
-                                              ),
-                                            ],
-                                          )
-                                      )
-                                  )
+                                  child: Row(children: [
+                                    Text('-', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
+                                    Spacer(),
+                                    Text('준비 중', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold)),
+                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
+                                  ])
                               ),
-                              onPressed: () {
-                                if(dayWeek == challengeNumber[0] && dayWeek < 5) {
-                                  print('도전과제 오류 없음');
-                                  print(answer);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});}
-                                  );
-                                }
-                                else if(dayWeek >= 5) {
-                                  print('도전과제 오류 없음, 6주차 이상');
-                                  print(answer);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});});
-                                }
-                                else {
-                                  print('setChallenge>dayWeek==${dayWeek}일차 도전과제');
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => ChallengeError())
-                                  );
-                                }
-                              },
+                              onPressed: () {},
                             ),
                           ),
                           AnimatedScale(
@@ -1232,15 +1187,16 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                               duration: Duration(milliseconds: 100),
                               child: Container(
                                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     gradient: LinearGradient(
                                         begin: Alignment.centerLeft,
                                         end: Alignment.centerRight,
                                         colors: [
-                                          Colors.white,
-                                          Colors.grey,
-                                          Colors.white,
+                                          Color(0xff83C7A9),
+                                          Color(0xff76BB9E),
+                                          Color(0xff83C7A9),
                                         ]
                                     ),
                                     boxShadow: [
@@ -1264,35 +1220,11 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                                       ),
                                     ],
                                   ),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: BackdropFilter(
-                                          filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-                                          child: Stack(
-                                            children: [
-                                              Container(
-                                                  color: Colors.black.withOpacity(0.3),
-                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                                  child: Row(children: [
-                                                    Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
-                                                    Spacer(),
-                                                    Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold)),
-                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0)),
-                                                  ])
-                                              ),
-                                              Container(
-                                                  color: Colors.greenAccent.withOpacity(0.5),
-                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                                  child: Row(children: [
-                                                    Text('기록하기', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
-                                                    Spacer(),
-                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
-                                                  ])
-                                              ),
-                                            ],
-                                          )
-                                      )
-                                  )
+                                  child: Row(children: [
+                                    Text('기록하기', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
+                                    Spacer(),
+                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
+                                  ])
                               ),
                               onPressed: () {
                                 Navigator.push(
@@ -1572,171 +1504,174 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
         ]
       ),
 
-      Container(
-        margin: EdgeInsets.only(top: 50),
-        padding: EdgeInsets.only(top: 30),
-        decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: AllFontColor, width: 1)),
-          color: AllBackgroundColor,
-        ),
-        child: Column(
-          children: [
-            Text('테스트 화면\n', style: TextStyle(fontSize: 40, color: AllFontColor, fontWeight: FontWeight.bold),),
-            Bounce(
-              duration: Duration(milliseconds: 100),
-              child: Container(
-                  color: AllTonedownColor,
-                  padding: EdgeInsets.all(20),
-                  margin: EdgeInsets.only(bottom: 20),
-                  child: Row(
-                    children: [
-                      Spacer(),
-                      Text('도전과제 에러 발생'),
-                      Spacer(),
-                    ],
-                  )),
-              onPressed: () {
-                setState((){
-                  if(challengeNumber != null){
-                    print('에러 발생!');
-                    for(var i = 0; i < 3; i++){
-                      challengeNumber[i] = null;
-                      challengeNumber[i] = 3;
+      Visibility(
+        visible: _testvisible ? true : false,
+        child: Container(
+          margin: EdgeInsets.only(top: 50),
+          padding: EdgeInsets.only(top: 30),
+          decoration: BoxDecoration(
+            border: Border(top: BorderSide(color: AllFontColor, width: 1)),
+            color: AllBackgroundColor,
+          ),
+          child: Column(
+            children: [
+              Text('테스트 화면\n', style: TextStyle(fontSize: 40, color: AllFontColor, fontWeight: FontWeight.bold),),
+              Bounce(
+                duration: Duration(milliseconds: 100),
+                child: Container(
+                    color: AllTonedownColor,
+                    padding: EdgeInsets.all(20),
+                    margin: EdgeInsets.only(bottom: 20),
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        Text('도전과제 에러 발생'),
+                        Spacer(),
+                      ],
+                    )),
+                onPressed: () {
+                  setState((){
+                    if(challengeNumber != null){
+                      print('에러 발생!');
+                      for(var i = 0; i < 3; i++){
+                        challengeNumber[i] = null;
+                        challengeNumber[i] = 3;
+                      }
                     }
-                  }
-                });
-              },
-            ),
-            Bounce(
-              duration: Duration(milliseconds: 100),
-              child: Container(
-                  color: AllTonedownColor,
-                  padding: EdgeInsets.all(20),
-                  child: Row(
-                    children: [
-                      Spacer(),
-                      Text('today'),
-                      Spacer(),
-                    ],
-                  )),
-              onPressed: () {
-                setState((){
-                  todayEnter = 2;
-                });
-              },
-            ),
-            Bounce(
-              duration: Duration(milliseconds: 100),
-              child: Container(
-                  margin: EdgeInsets.only(top: 20, bottom: 20),
-                  padding: EdgeInsets.all(20),
-                  color: AllTonedownColor,
-                  child: Row(
-                    children: [
-                      Spacer(),
-                      Text('시간 당 Enter 초기화'),
-                      Spacer(),
-                    ],
-                  )),
-              onPressed: () {
-                setState((){
-                  todayEnter = 1;
-                });
-              },
-            ),
-            Bounce(
-              duration: Duration(milliseconds: 100),
-              child: Container(
-                margin: EdgeInsets.only(bottom: 20),
-                padding: EdgeInsets.all(20),
-                color: AllTonedownColor,
-                child: Row(
-                  children: [
-                    Spacer(),
-                    Text('todayMemo'),
-                    Spacer(),
-                  ],
-                ),
+                  });
+                },
               ),
-              onPressed: () {
-                setState((){
-                  todayMemo[timeBlock] = false;
-                });
-              },
-            ),
-            Bounce(
-              duration: Duration(milliseconds: 100),
-              child: Container(
-                  color: AllTonedownColor,
-                  padding: EdgeInsets.all(20),
+              Bounce(
+                duration: Duration(milliseconds: 100),
+                child: Container(
+                    color: AllTonedownColor,
+                    padding: EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        Text('today'),
+                        Spacer(),
+                      ],
+                    )),
+                onPressed: () {
+                  setState((){
+                    todayEnter = 2;
+                  });
+                },
+              ),
+              Bounce(
+                duration: Duration(milliseconds: 100),
+                child: Container(
+                    margin: EdgeInsets.only(top: 20, bottom: 20),
+                    padding: EdgeInsets.all(20),
+                    color: AllTonedownColor,
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        Text('시간 당 Enter 초기화'),
+                        Spacer(),
+                      ],
+                    )),
+                onPressed: () {
+                  setState((){
+                    todayEnter = 1;
+                  });
+                },
+              ),
+              Bounce(
+                duration: Duration(milliseconds: 100),
+                child: Container(
                   margin: EdgeInsets.only(bottom: 20),
+                  padding: EdgeInsets.all(20),
+                  color: AllTonedownColor,
                   child: Row(
                     children: [
                       Spacer(),
-                      Text('배지 개수 초기화'),
+                      Text('todayMemo'),
                       Spacer(),
                     ],
-                  )),
-              onPressed: () {
-                setState((){
-                  initBadgeHave();
-                });
-              },
-            ),
-            Container(
-                margin: EdgeInsets.only(bottom: 30, top: 20, left: 10),
-                child: Row(
-                  children: [
-                    Image.asset('assets/logo.png', height: 30),
-                    Text('$todayEnter'),
-                    Spacer(),
-                    Text('시간 당 Enter:$timeBlockEnter, '),
-                    Text('savedTimeBlock:$savedTimeBlock ?= '),
-                    Text('$timeBlock'),
-                    Spacer(),
-                    Text('time: $time  '),
-                  ],
-                )
-            ),
-            Bounce(
-                duration: Duration(milliseconds: 100),
-                child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: AllWidgetColor,
-                    ),
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                    child: Center(
-                        child: Text('날짜 재지정', style: TextStyle(fontSize: 20)))
+                  ),
                 ),
                 onPressed: () {
-                  setState(() {
-                    setSavedDate();
+                  setState((){
+                    todayMemo[timeBlock] = false;
                   });
-                }
-            ),
-            Bounce(
+                },
+              ),
+              Bounce(
                 duration: Duration(milliseconds: 100),
                 child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: AllWidgetColor,
-                    ),
-                    margin: EdgeInsets.only(top: 15, bottom: 15),
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                    child: Center(
-                        child: Text('챌린지 생성', style: TextStyle(fontSize: 20)))
-                ),
+                    color: AllTonedownColor,
+                    padding: EdgeInsets.all(20),
+                    margin: EdgeInsets.only(bottom: 20),
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        Text('배지 개수 초기화'),
+                        Spacer(),
+                      ],
+                    )),
                 onPressed: () {
-                  setState(() {
-                    _isChallenge = true;
-                    _nowChallenge = false;
-                    todayChallenge = false;
-                    setIsChallenge();
+                  setState((){
+                    initBadgeHave();
                   });
-                }
-            ),
-          ],
+                },
+              ),
+              Container(
+                  margin: EdgeInsets.only(bottom: 30, top: 20, left: 10),
+                  child: Row(
+                    children: [
+                      Image.asset('assets/logo.png', height: 30),
+                      Text('$todayEnter'),
+                      Spacer(),
+                      Text('시간 당 Enter:$timeBlockEnter, '),
+                      Text('savedTimeBlock:$savedTimeBlock ?= '),
+                      Text('$timeBlock'),
+                      Spacer(),
+                      Text('time: $time  '),
+                    ],
+                  )
+              ),
+              Bounce(
+                  duration: Duration(milliseconds: 100),
+                  child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: AllWidgetColor,
+                      ),
+                      padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                      child: Center(
+                          child: Text('날짜 재지정', style: TextStyle(fontSize: 20)))
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      setSavedDate();
+                    });
+                  }
+              ),
+              Bounce(
+                  duration: Duration(milliseconds: 100),
+                  child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: AllWidgetColor,
+                      ),
+                      margin: EdgeInsets.only(top: 15, bottom: 15),
+                      padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                      child: Center(
+                          child: Text('챌린지 생성', style: TextStyle(fontSize: 20)))
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isChallenge = true;
+                      _nowChallenge = false;
+                      todayChallenge = false;
+                      setIsChallenge();
+                    });
+                  }
+              ),
+            ],
+          ),
         ),
       ),
     ]);
@@ -1873,6 +1808,9 @@ class _ChallengeErrorState extends State<ChallengeError> {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
+      theme: CupertinoThemeData(
+          brightness: Brightness.light
+      ),
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Row(
@@ -2858,6 +2796,9 @@ class _thirdInfoState extends State<thirdInfo> {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
+        theme: CupertinoThemeData(
+            brightness: Brightness.light
+        ),
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Container(
@@ -3370,6 +3311,9 @@ class _SecondAppState extends State<SecondApp> {
         highlightColor: Colors.transparent,
       ),
       child: CupertinoApp(
+        theme: CupertinoThemeData(
+          brightness: Brightness.light
+        ),
           home: Scaffold(
             backgroundColor: Colors.white,
             body:
@@ -3531,6 +3475,9 @@ class _RememberTodayState extends State<RememberToday> {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
+      theme: CupertinoThemeData(
+        brightness: Brightness.light
+      ),
         home: Localizations(
           locale: const Locale('en', 'US'),
           delegates: const <LocalizationsDelegate<dynamic>>[
@@ -3709,6 +3656,9 @@ class _BadgeAppState extends State<BadgeApp> {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
+        theme: CupertinoThemeData(
+            brightness: Brightness.light
+        ),
         home: Scaffold(
             backgroundColor: Colors.white,
             body: Stack(
@@ -4066,6 +4016,9 @@ class _StrictAppState extends State<StrictApp> {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
+        theme: CupertinoThemeData(
+            brightness: Brightness.light
+        ),
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Container(
@@ -4579,6 +4532,9 @@ class _AllAppState extends State<AllApp> with WidgetsBindingObserver{
   Widget build(BuildContext context) {
     print('challengeHow: $challengeHow');
     return CupertinoApp(
+        theme: CupertinoThemeData(
+            brightness: Brightness.light
+        ),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
@@ -4697,6 +4653,15 @@ class _AllAppState extends State<AllApp> with WidgetsBindingObserver{
                                 onTap: () {
                                 },
                               ),
+                            ]
+                          ),
+                          CupertinoListSection.insetGrouped(
+                            children: [
+                              CupertinoListTile.notched(
+                                title: Text('테스트 화면'),
+                                leading: _DummyIcon(Colors.grey, Icon(Icons.code, color: Colors.white, size: 17)),
+                                additionalInfo: Text(_testvisible ? '켜짐' : '꺼짐'),
+                              )
                             ]
                           ),
                           Container(
@@ -5137,6 +5102,9 @@ class _NewBadgePageState extends State<NewBadgePage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
+        theme: CupertinoThemeData(
+            brightness: Brightness.light
+        ),
       home: Scaffold(
         body: Container(
           decoration: BoxDecoration(
@@ -5334,6 +5302,9 @@ class _ChallengeModeState extends State<ChallengeMode> {
   Widget build(BuildContext context) {
 
     return CupertinoApp(
+        theme: CupertinoThemeData(
+            brightness: Brightness.light
+        ),
         home: Scaffold(
             backgroundColor: Colors.white,
             body: WillPopScope(
@@ -6562,6 +6533,9 @@ class _RememberListState extends State<RememberList> {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
+        theme: CupertinoThemeData(
+            brightness: Brightness.light
+        ),
         home: Localizations(
           locale: const Locale('en', 'US'),
           delegates: const <LocalizationsDelegate<dynamic>>[
@@ -7086,6 +7060,9 @@ class _ChallengeTipState extends State<ChallengeTip> {
   Widget build(BuildContext context) {
     var i = 1;
     return CupertinoApp(
+        theme: CupertinoThemeData(
+            brightness: Brightness.light
+        ),
         home: Scaffold(
           backgroundColor: Color(0xff1F1F1F),
           body:

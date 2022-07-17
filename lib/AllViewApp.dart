@@ -17,6 +17,7 @@ class _AllViewAppState extends State<AllViewApp> {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
+      theme: CupertinoThemeData(brightness: Brightness.light),
         home: Scaffold(
             backgroundColor: Color(0xffF2F2F7),
             body: Container(
