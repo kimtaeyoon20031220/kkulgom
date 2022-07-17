@@ -55,6 +55,8 @@ dependencies:
   transition: ^2.0.2
   cupertino_back_gesture: ^0.1.0
   cupertino_lists: ^1.0.1
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:

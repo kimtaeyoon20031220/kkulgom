@@ -15,7 +15,7 @@ class _challengeAnimationContainerState extends State<challengeAnimationContaine
   bool _title = true;
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 100), () {
+    Future.delayed(Duration(milliseconds: 0), () {
       setState((){
         _start = true;
       });
@@ -53,19 +53,24 @@ class _challengeAnimationContainerState extends State<challengeAnimationContaine
                 duration: Duration(milliseconds: 1300),
                 alignment: _title ? Alignment.center : Alignment.topCenter,
                 curve: Curves.easeInCirc,
-                child: AnimatedContainer(
-                  duration: Duration(milliseconds: _title ? 300 : 200),
-                  alignment: _title ? Alignment.center : Alignment.topCenter,
-                  child: AnimatedOpacity(
-                    opacity: _title ? _start ? 1 : 0 : 0,
-                    duration: Duration(milliseconds: 150),
-                      child: AnimatedDefaultTextStyle(
-                        duration: Duration(seconds: 4),
-                          curve: Curves.easeIn,
-                          child: Text('${dayWeek+1}일차'),
-                          style: TextStyle(color: Color(0xff516b8c), fontSize: 60, fontWeight: FontWeight.bold),
-                      )),
-                  curve: Curves.easeInQuart,
+                child: AnimatedScale(
+                  duration: Duration(milliseconds: 1000),
+                  curve: Curves.easeInOutBack,
+                  scale: _start ? 1 : 0.8,
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: _title ? 300 : 200),
+                    alignment: _title ? Alignment.center : Alignment.topCenter,
+                    child: AnimatedOpacity(
+                      opacity: _title ? _start ? 1 : 0 : 0,
+                      duration: Duration(milliseconds: 150),
+                        child: AnimatedDefaultTextStyle(
+                          duration: Duration(seconds: 4),
+                            curve: Curves.easeIn,
+                            child: Text('${dayWeek+1}일차'),
+                            style: TextStyle(color: Color(0xff516b8c), fontSize: 60, fontWeight: FontWeight.bold),
+                        )),
+                    curve: Curves.easeInQuart,
+                  ),
                 ),
               ),
               AnimatedAlign(

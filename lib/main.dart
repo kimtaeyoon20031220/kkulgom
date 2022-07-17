@@ -1,6 +1,7 @@
 import 'dart:ui';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 import './AllViewApp.dart';
+import 'package:cupertino_lists/cupertino_lists.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,7 @@ var questionPoint = [10, 20, 30, 20, 10, 20];
 
 var AllTop = [false, false, false];
 
-var CalendarBorder = [Colors.transparent, Color(0xffEFEFEF), AllFontColor];
+var CalendarBorder = [Colors.transparent, Color(0xffEFEFEF), Color(0xff83C7A9)];
 var CalendarText = [AllFontColor, AllFontColor, AllWidgetColor];
 var CalendarFontWeight = [FontWeight.normal, FontWeight.normal, FontWeight.bold];
 var BackColor = [Color(0xffF2F2F7), Color(0xffF2F2F7), Color(0xffF2F2F7), Colors.white];
@@ -388,8 +389,16 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('ko', ''),
+        Locale('en', ''),
+      ],
       home: FirstApp(),
     );
   }
@@ -699,39 +708,28 @@ class _FirstAppState extends State<FirstApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
+    List<BottomNavigationBarItem> items = [
+      BottomNavigationBarItem(icon: Icon(Icons.home_rounded, size: 25), label: '홈'),
+      BottomNavigationBarItem(icon: Icon(Icons.article_rounded, size: 25), label: '기록'),
+      BottomNavigationBarItem(icon: Icon(Icons.pending_rounded, size: 25), label: '단계'),
+      BottomNavigationBarItem(icon: Icon(Icons.info_rounded, size: 25), label: '우리'),
+    ];
+
+    return Theme(
+      data: ThemeData(
         fontFamily: 'Noto_Serif_KR',
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),
-      home: Scaffold(
-        backgroundColor: BackColor[_currentIndex],
-        body: _children[_currentIndex],
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(color: Color(0xffEFEFEF), width: 1.0),
-              )
-          ),
-          child: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Color(0xffFAFAFA),
-            selectedItemColor: Colors.black.withOpacity(0.7),
-            unselectedItemColor: Color(0xffB1B1B1).withOpacity(0.7),
-            selectedFontSize: 13,
-            unselectedFontSize: 13,
-            currentIndex: _currentIndex,
-            onTap: _onTap,
-            items: [
-              BottomNavigationBarItem(icon: Icon(Icons.home_rounded, size: 25), label: '홈'),
-              BottomNavigationBarItem(icon: Icon(Icons.article_rounded, size: 25), label: '기록'),
-              BottomNavigationBarItem(icon: Icon(Icons.pending_rounded, size: 25), label: '단계'),
-              BottomNavigationBarItem(icon: Icon(Icons.info_rounded, size: 25), label: '우리'),
-            ],
-          ),
+      child: CupertinoApp(
+            home: CupertinoTabScaffold(
+              backgroundColor: Color(0xffF2F2F7),
+              tabBar: CupertinoTabBar(items: items, activeColor: Color(0xff3F3F3F), inactiveColor: Color(0xffBFBFBF),),
+              tabBuilder: (context, index) {
+                return _children[index];
+              }
+            ),
         ),
-      ),
     );
   }
 }
@@ -942,68 +940,180 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return ScrollConfiguration(
-      behavior: NoGlowScrollBehavior(),
-      child: ListView(children: [
-        Stack(
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height*0.3,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(dayWeek < 5 ? 'assets/neck${dayWeek}.jpeg' : 'assets/thirdbackground.jpg'),
-                  fit: BoxFit.cover,
-                )
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.3),
-                )
+    return ListView(children: [
+      Stack(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height*0.3,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(dayWeek < 5 ? 'assets/neck${dayWeek}.jpeg' : 'assets/thirdbackground.jpg'),
+                fit: BoxFit.cover,
               )
             ),
-            Column(
-              children: [
-                FutureBuilder(
-                    future: _future(),
-                    builder: (BuildContext context, AsyncSnapshot challengeLen) {
-                      if (challengeLen.hasData == false) {
-                        return Column(
-                          children: [
-                            Container(
-                                child: Column(children: [
-                                  Container(
-                                      child: Container(
-                                        margin: EdgeInsets.fromLTRB(30, MediaQuery.of(context).size.height*0.17, 30, 0),
-                                        child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children: [
-                                              Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        Text('-일차', style: TextStyle(
-                                                            color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold)),
-                                                        Text('-년 -월 -일',
-                                                            style: TextStyle(
-                                                                color: Colors.white.withOpacity(0.7), fontSize: 17)),
-                                                      ],
-                                                    ),
-                                                  ]
-                                              )
-                                            ]),
-                                      )
-                                  )
-                                ])
-                            ),
-                            Container(
-                                margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.3),
+              )
+            )
+          ),
+          Column(
+            children: [
+              FutureBuilder(
+                  future: _future(),
+                  builder: (BuildContext context, AsyncSnapshot challengeLen) {
+                    if (challengeLen.hasData == false) {
+                      return Column(
+                        children: [
+                          Container(
+                              child: Column(children: [
+                                Container(
+                                    child: Container(
+                                      margin: EdgeInsets.fromLTRB(30, MediaQuery.of(context).size.height*0.17, 30, 0),
+                                      child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Text('-일차', style: TextStyle(
+                                                          color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold)),
+                                                      Text('-년 -월 -일',
+                                                          style: TextStyle(
+                                                              color: Colors.white.withOpacity(0.7), fontSize: 17)),
+                                                    ],
+                                                  ),
+                                                ]
+                                            )
+                                          ]),
+                                    )
+                                )
+                              ])
+                          ),
+                          Container(
+                              margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0XFF000066).withOpacity(0.03),
+                                    blurRadius: 15,
+                                    spreadRadius: 10,
+                                    offset: const Offset(0, 10),
+                                  ),
+                                  BoxShadow(
+                                    color: Color(0XFF000066).withOpacity(0.0165),
+                                    blurRadius: 7.5,
+                                    spreadRadius: 5,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                  BoxShadow(
+                                    color: Color(0XFF000066).withOpacity(0.0095),
+                                    blurRadius: 5,
+                                    spreadRadius: 2.5,
+                                    offset: const Offset(0, 2.5),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(margin:EdgeInsets.only(top: 40, left: 40, right: 40),child: Row(
+                                      children: [
+                                        Text('오늘의 도전 과제', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AllFontColor)),
+                                        Spacer(),
+                                        Text('불러오는 중', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AllFontColor)),
+                                      ],
+                                    )),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          color: Color(0xffF7F7F7),
+                                        ),
+                                        padding: EdgeInsets.all(10),
+                                        margin: EdgeInsets.only(top: 20, left: 30, right: 30),
+                                        child: Row(children: [
+                                          Container(
+                                              width: 25,
+                                              height: 25,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                  color: Colors.white,
+                                                  border: Border.all(width: 1, color: Color(0xffDFDFDF))
+                                              ),
+                                              child: Center(child: Icon(Icons.wb_twilight_rounded, size: 17, color: Colors.deepOrange))),
+                                          SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 0 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 0 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
+                                          Spacer(),
+                                          Text('06:00~12:00', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                        ])
+                                    ),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          color: Colors.white,
+                                        ),
+                                        padding: EdgeInsets.all(10),
+                                        margin: EdgeInsets.only(top: 5, left: 30, right: 30),
+                                        child: Row(children: [
+                                          Container(
+                                              width: 25,
+                                              height: 25,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                  color: Colors.white,
+                                                  border: Border.all(width: 1, color: Color(0xffDFDFDF))
+                                              ),
+                                              child: Icon(Icons.light_mode_rounded, size: 17, color: Colors.amber)),
+                                          SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 1 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 1 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
+                                          Spacer(),
+                                          Text('12:00~17:00', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                        ])
+                                    ),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          color: Color(0xffF2F2F2),
+                                        ),
+                                        padding: EdgeInsets.all(10),
+                                        margin: EdgeInsets.only(top: 5, left: 30, right: 30, bottom: 40),
+                                        child: Row(children: [
+                                          Container(
+                                              width: 25,
+                                              height: 25,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                  color: Colors.white,
+                                                  border: Border.all(width: 1, color: Color(0xffDFDFDF))
+                                              ),
+                                              child: Icon(Icons.dark_mode_rounded, size: 17, color: Colors.indigo)),
+                                          SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 2 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 2 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
+                                          Spacer(),
+                                          Text('17:00~06:00', style: TextStyle(fontSize: 13, color: Colors.grey,)),
+                                        ])
+                                    ),
+                                  ])
+                          ),
+                          Bounce(
+                            duration: Duration(milliseconds: 100),
+                            child: Container(
+                                margin: EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 20),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.rectangle,
                                   borderRadius: BorderRadius.circular(20),
+                                  gradient: LinearGradient(
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                      colors: [
+                                        Colors.white,
+                                        Colors.grey,
+                                        Colors.white,
+                                      ]
+                                  ),
                                   boxShadow: [
                                     BoxShadow(
                                       color: Color(0XFF000066).withOpacity(0.03),
@@ -1025,683 +1135,568 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                                     ),
                                   ],
                                 ),
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(margin:EdgeInsets.only(top: 40, left: 40, right: 40),child: Row(
-                                        children: [
-                                          Text('오늘의 도전 과제', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AllFontColor)),
-                                          Spacer(),
-                                          Text('불러오는 중', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AllFontColor)),
-                                        ],
-                                      )),
-                                      Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15),
-                                            color: Color(0xffF7F7F7),
-                                          ),
-                                          padding: EdgeInsets.all(10),
-                                          margin: EdgeInsets.only(top: 20, left: 30, right: 30),
-                                          child: Row(children: [
-                                            Container(
-                                                width: 25,
-                                                height: 25,
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5),
-                                                    color: Colors.white,
-                                                    border: Border.all(width: 1, color: Color(0xffDFDFDF))
-                                                ),
-                                                child: Center(child: Icon(Icons.wb_twilight_rounded, size: 17, color: Colors.deepOrange))),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 0 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 0 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
-                                            Spacer(),
-                                            Text('06:00~12:00', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                                          ])
-                                      ),
-                                      Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15),
-                                            color: Colors.white,
-                                          ),
-                                          padding: EdgeInsets.all(10),
-                                          margin: EdgeInsets.only(top: 5, left: 30, right: 30),
-                                          child: Row(children: [
-                                            Container(
-                                                width: 25,
-                                                height: 25,
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5),
-                                                    color: Colors.white,
-                                                    border: Border.all(width: 1, color: Color(0xffDFDFDF))
-                                                ),
-                                                child: Icon(Icons.light_mode_rounded, size: 17, color: Colors.amber)),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 1 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 1 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
-                                            Spacer(),
-                                            Text('12:00~17:00', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                                          ])
-                                      ),
-                                      Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15),
-                                            color: Color(0xffF2F2F2),
-                                          ),
-                                          padding: EdgeInsets.all(10),
-                                          margin: EdgeInsets.only(top: 5, left: 30, right: 30, bottom: 40),
-                                          child: Row(children: [
-                                            Container(
-                                                width: 25,
-                                                height: 25,
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5),
-                                                    color: Colors.white,
-                                                    border: Border.all(width: 1, color: Color(0xffDFDFDF))
-                                                ),
-                                                child: Icon(Icons.dark_mode_rounded, size: 17, color: Colors.indigo)),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 2 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 2 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
-                                            Spacer(),
-                                            Text('17:00~06:00', style: TextStyle(fontSize: 13, color: Colors.grey,)),
-                                          ])
-                                      ),
-                                    ])
-                            ),
-                            Bounce(
-                              duration: Duration(milliseconds: 100),
-                              child: Container(
-                                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 20),
-                                  decoration: BoxDecoration(
+                                child: ClipRRect(
                                     borderRadius: BorderRadius.circular(20),
-                                    gradient: LinearGradient(
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                        colors: [
-                                          Colors.white,
-                                          Colors.grey,
-                                          Colors.white,
-                                        ]
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0XFF000066).withOpacity(0.03),
-                                        blurRadius: 15,
-                                        spreadRadius: 10,
-                                        offset: const Offset(0, 10),
-                                      ),
-                                      BoxShadow(
-                                        color: Color(0XFF000066).withOpacity(0.0165),
-                                        blurRadius: 7.5,
-                                        spreadRadius: 5,
-                                        offset: const Offset(0, 5),
-                                      ),
-                                      BoxShadow(
-                                        color: Color(0XFF000066).withOpacity(0.0095),
-                                        blurRadius: 5,
-                                        spreadRadius: 2.5,
-                                        offset: const Offset(0, 2.5),
-                                      ),
-                                    ],
-                                  ),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: BackdropFilter(
-                                          filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-                                          child: Stack(
-                                            children: [
-                                              Container(
-                                                  color: Colors.black.withOpacity(0.3),
-                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                                  child: Row(children: [
-                                                    Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
-                                                    Spacer(),
-                                                    Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold)),
-                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0)),
-                                                  ])
-                                              ),
-                                              Container(
-                                                  color: Colors.blueAccent.withOpacity(0.5),
-                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                                  child: Row(children: [
-                                                    Stack(
-                                                      children: [
-                                                        Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
-                                                        Container(
-                                                            width: 150,
-                                                            height: 20,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(20),
-                                                              color: Colors.white.withOpacity(0.2),
-                                                            )
-                                                        )
-                                                      ],
-                                                    ),
-                                                    Spacer(),
-                                                    Text('불러오는 중', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold)),
-                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
-                                                  ])
-                                              ),
-                                            ],
-                                          )
-                                      )
-                                  )
-                              ),
-                              onPressed: () {
-                                if(dayWeek == challengeNumber[0] && dayWeek < 5) {
-                                  print('도전과제 오류 없음');
-                                  print(answer);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});}
-                                  );
-                                }
-                                else if(dayWeek >= 5) {
-                                  print('도전과제 오류 없음, 6주차 이상');
-                                  print(answer);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});});
-                                }
-                                else {
-                                  print('setChallenge>dayWeek==${dayWeek}일차 도전과제');
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => ChallengeError())
-                                  );
-                                }
-                              },
+                                    child: BackdropFilter(
+                                        filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                                color: Colors.black.withOpacity(0.3),
+                                                padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                                child: Row(children: [
+                                                  Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
+                                                  Spacer(),
+                                                  Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold)),
+                                                  Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0)),
+                                                ])
+                                            ),
+                                            Container(
+                                                color: Colors.blueAccent.withOpacity(0.5),
+                                                padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                                child: Row(children: [
+                                                  Stack(
+                                                    children: [
+                                                      Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
+                                                      Container(
+                                                          width: 150,
+                                                          height: 20,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(20),
+                                                            color: Colors.white.withOpacity(0.2),
+                                                          )
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Spacer(),
+                                                  Text('불러오는 중', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold)),
+                                                  Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
+                                                ])
+                                            ),
+                                          ],
+                                        )
+                                    )
+                                )
                             ),
-                            Bounce(
-                              duration: Duration(milliseconds: 100),
-                              child: Container(
-                                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    gradient: LinearGradient(
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                        colors: [
-                                          Colors.white,
-                                          Colors.grey,
-                                          Colors.white,
-                                        ]
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0XFF000066).withOpacity(0.03),
-                                        blurRadius: 15,
-                                        spreadRadius: 10,
-                                        offset: const Offset(0, 10),
-                                      ),
-                                      BoxShadow(
-                                        color: Color(0XFF000066).withOpacity(0.0165),
-                                        blurRadius: 7.5,
-                                        spreadRadius: 5,
-                                        offset: const Offset(0, 5),
-                                      ),
-                                      BoxShadow(
-                                        color: Color(0XFF000066).withOpacity(0.0095),
-                                        blurRadius: 5,
-                                        spreadRadius: 2.5,
-                                        offset: const Offset(0, 2.5),
-                                      ),
-                                    ],
-                                  ),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: BackdropFilter(
-                                          filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-                                          child: Stack(
-                                            children: [
-                                              Container(
-                                                  color: Colors.black.withOpacity(0.3),
-                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                                  child: Row(children: [
-                                                    Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
-                                                    Spacer(),
-                                                    Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold)),
-                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0)),
-                                                  ])
-                                              ),
-                                              Container(
-                                                  color: Colors.greenAccent.withOpacity(0.5),
-                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                                  child: Row(children: [
-                                                    Text('기록하기', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
-                                                    Spacer(),
-                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
-                                                  ])
-                                              ),
-                                            ],
-                                          )
-                                      )
-                                  )
-                              ),
-                              onPressed: () {
+                            onPressed: () {
+                              if(dayWeek == challengeNumber[0] && dayWeek < 5) {
+                                print('도전과제 오류 없음');
+                                print(answer);
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => SecondApp()),
+                                  MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});}
                                 );
-                                todayListNow = false;
-                              },
+                              }
+                              else if(dayWeek >= 5) {
+                                print('도전과제 오류 없음, 6주차 이상');
+                                print(answer);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});});
+                              }
+                              else {
+                                print('setChallenge>dayWeek==${dayWeek}일차 도전과제');
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ChallengeError())
+                                );
+                              }
+                            },
+                          ),
+                          Bounce(
+                            duration: Duration(milliseconds: 100),
+                            child: Container(
+                                margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  gradient: LinearGradient(
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                      colors: [
+                                        Colors.white,
+                                        Colors.grey,
+                                        Colors.white,
+                                      ]
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.03),
+                                      blurRadius: 15,
+                                      spreadRadius: 10,
+                                      offset: const Offset(0, 10),
+                                    ),
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.0165),
+                                      blurRadius: 7.5,
+                                      spreadRadius: 5,
+                                      offset: const Offset(0, 5),
+                                    ),
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.0095),
+                                      blurRadius: 5,
+                                      spreadRadius: 2.5,
+                                      offset: const Offset(0, 2.5),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: BackdropFilter(
+                                        filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                                color: Colors.black.withOpacity(0.3),
+                                                padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                                child: Row(children: [
+                                                  Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
+                                                  Spacer(),
+                                                  Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold)),
+                                                  Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0)),
+                                                ])
+                                            ),
+                                            Container(
+                                                color: Colors.greenAccent.withOpacity(0.5),
+                                                padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                                child: Row(children: [
+                                                  Text('기록하기', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
+                                                  Spacer(),
+                                                  Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
+                                                ])
+                                            ),
+                                          ],
+                                        )
+                                    )
+                                )
                             ),
-                            Container(
-                                margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                child: Column(children: [
-                                  Container(
-                                    height: MediaQuery.of(context).size.height*0.2,
-                                    child: ListView(
-                                        scrollDirection: Axis.horizontal,
-                                        children: [
-                      Container(
-                      height: MediaQuery.of(context).size.height*0.17,
-                      width: MediaQuery.of(context).size.height*0.17,
-                      margin: EdgeInsets.only(bottom: 15, right: 10, left: 20),
-                      child: Bounce(
-                      duration: Duration(milliseconds: 100),
-                      child: Stack(
-                      children: [
-                      Container(
-                      decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(20),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => SecondApp()),
+                              );
+                              todayListNow = false;
+                            },
+                          ),
+                          Container(
+                              margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              child: Column(children: [
+                                Container(
+                                  height: MediaQuery.of(context).size.height*0.2,
+                                  child: ListView(
+                                      scrollDirection: Axis.horizontal,
+                                      children: [
+                    Container(
+                    height: MediaQuery.of(context).size.height*0.17,
+                    width: MediaQuery.of(context).size.height*0.17,
+                    margin: EdgeInsets.only(bottom: 15, right: 10, left: 20),
+                    child: Bounce(
+                    duration: Duration(milliseconds: 100),
+                    child: Stack(
+                    children: [
+                    Container(
+                    decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(20),
 
-                      ),
-                      padding: EdgeInsets.all(25),
-                      child: Column(children: [
-                      Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    ),
+                    padding: EdgeInsets.all(25),
+                    child: Column(children: [
+                    Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                    Image.asset('assets/badgeicon.png', width: 45),
+                    ],
+                    ),
+                    Spacer(),
+                    Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                    Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                    Text('모은 배지', style: TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 17)),
+                    Text(' ', style: TextStyle(fontSize: 6)),
+                    Stack(
                       children: [
-                      Image.asset('assets/badgeicon.png', width: 45),
+                        Text('개', style: TextStyle(color: Colors.black.withOpacity(0), fontSize: 25, fontWeight: FontWeight.bold)),
+                    Container(
+                    width: 30,
+                    height: 20,
+                    decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.black.withOpacity(0.1),
+                    )
+                    )
                       ],
-                      ),
-                      Spacer(),
-                      Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                      Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                      Text('모은 배지', style: TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 17)),
-                      Text(' ', style: TextStyle(fontSize: 6)),
-                      Stack(
-                        children: [
-                          Text('개', style: TextStyle(color: Colors.black.withOpacity(0), fontSize: 25, fontWeight: FontWeight.bold)),
-                      Container(
-                      width: 30,
-                      height: 20,
-                      decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Colors.black.withOpacity(0.1),
-                      )
-                      )
+                    ),
+                    ]),
+                    ]),
+                    ]),
+                    ),
+                    ],
+                    ),
+                    onPressed: () {}
+                    ),
+                    ),
+                                        WidgetPoint(),
+                                        WidgetSettings(),
+                                        WidgetAll(),
+                                      ]),
+                                ),
+                              ])
+                          ),
                         ],
-                      ),
-                      ]),
-                      ]),
-                      ]),
-                      ),
-                      ],
-                      ),
-                      onPressed: () {}
-                      ),
-                      ),
-                                          WidgetPoint(),
-                                          WidgetSettings(),
-                                          WidgetAll(),
-                                        ]),
+                      );
+                    }
+                    else if (challengeLen.hasError) {
+                      return Text('에러');
+                    }
+                    else {
+                      return Column(
+                        children: [
+                          Container(
+                              child: Column(children: [
+                                Container(
+                                    child: Container(
+                                      margin: EdgeInsets.fromLTRB(30, MediaQuery.of(context).size.height*0.17, 30, 0),
+                                      child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Text('${dayWeek+1}일차', style: TextStyle(
+                                                          color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold)),
+                                                      Text('${getToday().split('-')[0]}년 ${getToday().split('-')[1]}월 ${getToday().split('-')[2]}일',
+                                                          style: TextStyle(
+                                                              color: Colors.white.withOpacity(0.7), fontSize: 17)),
+                                                    ],
+                                                  ),
+                                                ]
+                                            )
+                                          ]),
+                                    )
+                                )
+                              ])
+                          ),
+                          WidgetChallenge(),
+                          Bounce(
+                            duration: Duration(milliseconds: 100),
+                            child: Container(
+                                margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                              padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  gradient: LinearGradient(
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                      colors: [
+                                        Color(0xff7497D4),
+                                        Color(0xff698DC9),
+                                        Color(0xff7497D4),
+                                      ]
                                   ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.03),
+                                      blurRadius: 15,
+                                      spreadRadius: 10,
+                                      offset: const Offset(0, 10),
+                                    ),
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.0165),
+                                      blurRadius: 7.5,
+                                      spreadRadius: 5,
+                                      offset: const Offset(0, 5),
+                                    ),
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.0095),
+                                      blurRadius: 5,
+                                      spreadRadius: 2.5,
+                                      offset: const Offset(0, 2.5),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(children: [
+                                  Text('${challengelist[challengeNumber[timeBlock]]}', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
+                                  Spacer(),
+                                  Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold)),
+                                  Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
                                 ])
                             ),
-                          ],
-                        );
-                      }
-                      else if (challengeLen.hasError) {
-                        return Text('에러');
-                      }
-                      else {
-                        return Column(
-                          children: [
-                            Container(
-                                child: Column(children: [
-                                  Container(
-                                      child: Container(
-                                        margin: EdgeInsets.fromLTRB(30, MediaQuery.of(context).size.height*0.17, 30, 0),
-                                        child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children: [
-                                              Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        Text('${dayWeek+1}일차', style: TextStyle(
-                                                            color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold)),
-                                                        Text('${getToday().split('-')[0]}년 ${getToday().split('-')[1]}월 ${getToday().split('-')[2]}일',
-                                                            style: TextStyle(
-                                                                color: Colors.white.withOpacity(0.7), fontSize: 17)),
-                                                      ],
-                                                    ),
-                                                  ]
-                                              )
-                                            ]),
-                                      )
-                                  )
-                                ])
-                            ),
-                            WidgetChallenge(),
-                            Bounce(
-                              duration: Duration(milliseconds: 100),
-                              child: Container(
-                                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                                padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    gradient: LinearGradient(
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                        colors: [
-                                          Color(0xff7497D4),
-                                          Color(0xff698DC9),
-                                          Color(0xff7497D4),
-                                        ]
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0XFF000066).withOpacity(0.03),
-                                        blurRadius: 15,
-                                        spreadRadius: 10,
-                                        offset: const Offset(0, 10),
-                                      ),
-                                      BoxShadow(
-                                        color: Color(0XFF000066).withOpacity(0.0165),
-                                        blurRadius: 7.5,
-                                        spreadRadius: 5,
-                                        offset: const Offset(0, 5),
-                                      ),
-                                      BoxShadow(
-                                        color: Color(0XFF000066).withOpacity(0.0095),
-                                        blurRadius: 5,
-                                        spreadRadius: 2.5,
-                                        offset: const Offset(0, 2.5),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(children: [
-                                    Text('${challengelist[challengeNumber[timeBlock]]}', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
-                                    Spacer(),
-                                    Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold)),
-                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
-                                  ])
-                              ),
-                              onPressed: () {
-                                if(dayWeek == challengeNumber[0] && dayWeek < 5) {
-                                  print('도전과제 오류 없음');
-                                  print(answer);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});});
-                                }
-                                else if(dayWeek >= 5) {
-                                  print('도전과제 오류 없음, 6주차 이상');
-                                  print(answer);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});});
-                                }
-                                else {
-                                  print('setChallenge>dayWeek==${dayWeek}일차 도전과제');
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => ChallengeError())
-                                  );
-                                }
-                              },
-                            ),
-                            Bounce(
-                              duration: Duration(milliseconds: 100),
-                              child: Container(
-                                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    gradient: LinearGradient(
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                        colors: [
-                                          Color(0xff83C7A9),
-                                          Color(0xff76BB9E),
-                                          Color(0xff83C7A9),
-                                        ]
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0XFF000066).withOpacity(0.03),
-                                        blurRadius: 15,
-                                        spreadRadius: 10,
-                                        offset: const Offset(0, 10),
-                                      ),
-                                      BoxShadow(
-                                        color: Color(0XFF000066).withOpacity(0.0165),
-                                        blurRadius: 7.5,
-                                        spreadRadius: 5,
-                                        offset: const Offset(0, 5),
-                                      ),
-                                      BoxShadow(
-                                        color: Color(0XFF000066).withOpacity(0.0095),
-                                        blurRadius: 5,
-                                        spreadRadius: 2.5,
-                                        offset: const Offset(0, 2.5),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(children: [
-                                    Text('기록하기', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
-                                    Spacer(),
-                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
-                                  ])
-                              ),
-                              onPressed: () {
+                            onPressed: () {
+                              if(dayWeek == challengeNumber[0] && dayWeek < 5) {
+                                print('도전과제 오류 없음');
+                                print(answer);
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => SecondApp()),
+                                  MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});});
+                              }
+                              else if(dayWeek >= 5) {
+                                print('도전과제 오류 없음, 6주차 이상');
+                                print(answer);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});});
+                              }
+                              else {
+                                print('setChallenge>dayWeek==${dayWeek}일차 도전과제');
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ChallengeError())
                                 );
-                                todayListNow = false;
-                              },
-                            ),
-                            Container(
-                                margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                child: Column(children: [
-                                  Container(
-                                    height: MediaQuery.of(context).size.height*0.2,
-                                    child: ListView(
-                                        scrollDirection: Axis.horizontal,
-                                        children: [
-                                          WidgetBadge(),
-                                          WidgetPoint(),
-                                          WidgetSettings(),
-                                          WidgetAll(),
-                                        ]),
+                              }
+                            },
+                          ),
+                          Bounce(
+                            duration: Duration(milliseconds: 100),
+                            child: Container(
+                                margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                                padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  gradient: LinearGradient(
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                      colors: [
+                                        Color(0xff83C7A9),
+                                        Color(0xff76BB9E),
+                                        Color(0xff83C7A9),
+                                      ]
                                   ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.03),
+                                      blurRadius: 15,
+                                      spreadRadius: 10,
+                                      offset: const Offset(0, 10),
+                                    ),
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.0165),
+                                      blurRadius: 7.5,
+                                      spreadRadius: 5,
+                                      offset: const Offset(0, 5),
+                                    ),
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.0095),
+                                      blurRadius: 5,
+                                      spreadRadius: 2.5,
+                                      offset: const Offset(0, 2.5),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(children: [
+                                  Text('기록하기', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
+                                  Spacer(),
+                                  Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
                                 ])
                             ),
-                          ],
-                        );
-                      }
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => SecondApp()),
+                              );
+                              todayListNow = false;
+                            },
+                          ),
+                          Container(
+                              margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              child: Column(children: [
+                                Container(
+                                  height: MediaQuery.of(context).size.height*0.2,
+                                  child: ListView(
+                                      scrollDirection: Axis.horizontal,
+                                      children: [
+                                        WidgetBadge(),
+                                        WidgetPoint(),
+                                        WidgetSettings(),
+                                        WidgetAll(),
+                                      ]),
+                                ),
+                              ])
+                          ),
+                        ],
+                      );
                     }
-                ),
-              ],
-            ),
-          ]
-        ),
-
-        Container(
-          margin: EdgeInsets.only(top: 50),
-          padding: EdgeInsets.only(top: 30),
-          decoration: BoxDecoration(
-            border: Border(top: BorderSide(color: AllFontColor, width: 1)),
-            color: AllBackgroundColor,
+                  }
+              ),
+            ],
           ),
-          child: Column(
-            children: [
-              Text('테스트 화면\n', style: TextStyle(fontSize: 40, color: AllFontColor, fontWeight: FontWeight.bold),),
-              Bounce(
-                duration: Duration(milliseconds: 100),
-                child: Container(
-                    color: AllTonedownColor,
-                    padding: EdgeInsets.all(20),
-                    margin: EdgeInsets.only(bottom: 20),
-                    child: Row(
-                      children: [
-                        Spacer(),
-                        Text('도전과제 에러 발생'),
-                        Spacer(),
-                      ],
-                    )),
-                onPressed: () {
-                  setState((){
-                    if(challengeNumber != null){
-                      print('에러 발생!');
-                      for(var i = 0; i < 3; i++){
-                        challengeNumber[i] = null;
-                        challengeNumber[i] = 3;
-                      }
-                    }
-                  });
-                },
-              ),
-              Bounce(
-                duration: Duration(milliseconds: 100),
-                child: Container(
-                    color: AllTonedownColor,
-                    padding: EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        Spacer(),
-                        Text('today'),
-                        Spacer(),
-                      ],
-                    )),
-                onPressed: () {
-                  setState((){
-                    todayEnter = 2;
-                  });
-                },
-              ),
-              Bounce(
-                duration: Duration(milliseconds: 100),
-                child: Container(
-                    margin: EdgeInsets.only(top: 20, bottom: 20),
-                    padding: EdgeInsets.all(20),
-                    color: AllTonedownColor,
-                    child: Row(
-                      children: [
-                        Spacer(),
-                        Text('시간 당 Enter 초기화'),
-                        Spacer(),
-                      ],
-                    )),
-                onPressed: () {
-                  setState((){
-                    todayEnter = 1;
-                  });
-                },
-              ),
-              Bounce(
-                duration: Duration(milliseconds: 100),
-                child: Container(
+        ]
+      ),
+
+      Container(
+        margin: EdgeInsets.only(top: 50),
+        padding: EdgeInsets.only(top: 30),
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: AllFontColor, width: 1)),
+          color: AllBackgroundColor,
+        ),
+        child: Column(
+          children: [
+            Text('테스트 화면\n', style: TextStyle(fontSize: 40, color: AllFontColor, fontWeight: FontWeight.bold),),
+            Bounce(
+              duration: Duration(milliseconds: 100),
+              child: Container(
+                  color: AllTonedownColor,
+                  padding: EdgeInsets.all(20),
                   margin: EdgeInsets.only(bottom: 20),
+                  child: Row(
+                    children: [
+                      Spacer(),
+                      Text('도전과제 에러 발생'),
+                      Spacer(),
+                    ],
+                  )),
+              onPressed: () {
+                setState((){
+                  if(challengeNumber != null){
+                    print('에러 발생!');
+                    for(var i = 0; i < 3; i++){
+                      challengeNumber[i] = null;
+                      challengeNumber[i] = 3;
+                    }
+                  }
+                });
+              },
+            ),
+            Bounce(
+              duration: Duration(milliseconds: 100),
+              child: Container(
+                  color: AllTonedownColor,
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      Spacer(),
+                      Text('today'),
+                      Spacer(),
+                    ],
+                  )),
+              onPressed: () {
+                setState((){
+                  todayEnter = 2;
+                });
+              },
+            ),
+            Bounce(
+              duration: Duration(milliseconds: 100),
+              child: Container(
+                  margin: EdgeInsets.only(top: 20, bottom: 20),
                   padding: EdgeInsets.all(20),
                   color: AllTonedownColor,
                   child: Row(
                     children: [
                       Spacer(),
-                      Text('todayMemo'),
+                      Text('시간 당 Enter 초기화'),
                       Spacer(),
                     ],
-                  ),
+                  )),
+              onPressed: () {
+                setState((){
+                  todayEnter = 1;
+                });
+              },
+            ),
+            Bounce(
+              duration: Duration(milliseconds: 100),
+              child: Container(
+                margin: EdgeInsets.only(bottom: 20),
+                padding: EdgeInsets.all(20),
+                color: AllTonedownColor,
+                child: Row(
+                  children: [
+                    Spacer(),
+                    Text('todayMemo'),
+                    Spacer(),
+                  ],
                 ),
-                onPressed: () {
-                  setState((){
-                    todayMemo[timeBlock] = false;
-                  });
-                },
               ),
-              Bounce(
-                duration: Duration(milliseconds: 100),
-                child: Container(
-                    color: AllTonedownColor,
-                    padding: EdgeInsets.all(20),
-                    margin: EdgeInsets.only(bottom: 20),
-                    child: Row(
-                      children: [
-                        Spacer(),
-                        Text('배지 개수 초기화'),
-                        Spacer(),
-                      ],
-                    )),
-                onPressed: () {
-                  setState((){
-                    initBadgeHave();
-                  });
-                },
-              ),
-              Container(
-                  margin: EdgeInsets.only(bottom: 30, top: 20, left: 10),
+              onPressed: () {
+                setState((){
+                  todayMemo[timeBlock] = false;
+                });
+              },
+            ),
+            Bounce(
+              duration: Duration(milliseconds: 100),
+              child: Container(
+                  color: AllTonedownColor,
+                  padding: EdgeInsets.all(20),
+                  margin: EdgeInsets.only(bottom: 20),
                   child: Row(
                     children: [
-                      Image.asset('assets/logo.png', height: 30),
-                      Text('$todayEnter'),
                       Spacer(),
-                      Text('시간 당 Enter:$timeBlockEnter, '),
-                      Text('savedTimeBlock:$savedTimeBlock ?= '),
-                      Text('$timeBlock'),
+                      Text('배지 개수 초기화'),
                       Spacer(),
-                      Text('time: $time  '),
                     ],
-                  )
-              ),
-              Bounce(
-                  duration: Duration(milliseconds: 100),
-                  child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: AllWidgetColor,
-                      ),
-                      padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                      child: Center(
-                          child: Text('날짜 재지정', style: TextStyle(fontSize: 20)))
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      setSavedDate();
-                    });
-                  }
-              ),
-              Bounce(
-                  duration: Duration(milliseconds: 100),
-                  child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: AllWidgetColor,
-                      ),
-                      margin: EdgeInsets.only(top: 15, bottom: 15),
-                      padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                      child: Center(
-                          child: Text('챌린지 생성', style: TextStyle(fontSize: 20)))
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isChallenge = true;
-                      _nowChallenge = false;
-                      todayChallenge = false;
-                      setIsChallenge();
-                    });
-                  }
-              ),
-            ],
-          ),
+                  )),
+              onPressed: () {
+                setState((){
+                  initBadgeHave();
+                });
+              },
+            ),
+            Container(
+                margin: EdgeInsets.only(bottom: 30, top: 20, left: 10),
+                child: Row(
+                  children: [
+                    Image.asset('assets/logo.png', height: 30),
+                    Text('$todayEnter'),
+                    Spacer(),
+                    Text('시간 당 Enter:$timeBlockEnter, '),
+                    Text('savedTimeBlock:$savedTimeBlock ?= '),
+                    Text('$timeBlock'),
+                    Spacer(),
+                    Text('time: $time  '),
+                  ],
+                )
+            ),
+            Bounce(
+                duration: Duration(milliseconds: 100),
+                child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: AllWidgetColor,
+                    ),
+                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                    child: Center(
+                        child: Text('날짜 재지정', style: TextStyle(fontSize: 20)))
+                ),
+                onPressed: () {
+                  setState(() {
+                    setSavedDate();
+                  });
+                }
+            ),
+            Bounce(
+                duration: Duration(milliseconds: 100),
+                child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: AllWidgetColor,
+                    ),
+                    margin: EdgeInsets.only(top: 15, bottom: 15),
+                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                    child: Center(
+                        child: Text('챌린지 생성', style: TextStyle(fontSize: 20)))
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isChallenge = true;
+                    _nowChallenge = false;
+                    todayChallenge = false;
+                    setIsChallenge();
+                  });
+                }
+            ),
+          ],
         ),
-      ]),
-    );
+      ),
+    ]);
   }
 }
 
@@ -1834,26 +1829,9 @@ class ChallengeError extends StatefulWidget {
 class _ChallengeErrorState extends State<ChallengeError> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
       home: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-            iconTheme: IconThemeData(
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.white,
-            elevation: 0.0,
-            centerTitle: true,
-            leading: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () => {
-                    Navigator.pop(context),
-                  },
-                  child: Icon(Icons.navigate_before, color: AllFontColor, size: 40),
-                )
-            )
-        ),
         body: Row(
           children: [
             Spacer(),
@@ -1961,86 +1939,305 @@ class _SecondPageState extends State<SecondPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScrollConfiguration(
-        behavior: NoGlowScrollBehavior(),
-        child:
-        Column(children: [
-          Container(
-              padding: EdgeInsets.only(bottom: 20, right: 30, left: 30, top: 60),
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                border: Border(
-                  bottom: BorderSide(
-                    color: AllFontColor.withOpacity(0.2),
-                    width: 1.0,
-                  ),
-                ),
-                color: Colors.white,
+    return Column(children: [
+      Container(
+          padding: EdgeInsets.only(bottom: 20, right: 30, left: 30, top: 60),
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            border: Border(
+              bottom: BorderSide(
+                color: AllFontColor.withOpacity(0.2),
+                width: 1.0,
               ),
-              margin: EdgeInsets.only(bottom: 0, top: 0, left: 0, right: 0),
-              child: Column(children: [
-                TableCalendar(
-                  headerStyle: HeaderStyle(
-                    formatButtonVisible: false,
-                    leftChevronVisible: false,
-                    rightChevronVisible: false,
-                    titleCentered: true,
-                    titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    headerMargin: EdgeInsets.only(bottom: 30),
-                  ),
-                  locale: 'ko-KR',
-                  focusedDay: _focusedDay,
-                  firstDay: DateTime.now().subtract(Duration(days:365*10+2)),
-                  lastDay: DateTime.now().add(Duration(days: 365*10+2)),
-                  selectedDayPredicate: (day) {
-                    return isSameDay(_selectedDay, day);
-                  },
-                  onDaySelected: (selectedDay, focusedDay) {
-                    setState(() {
-                      _selectedDay = selectedDay;
-                      _focusedDay = focusedDay;
-                    });
-                    setState(() async {
-                      dayList = await DBHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
-                      dayListToday = await DBTMHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
-                      dayListAll = await DBTHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
-                      dayLen = dayList;
-                      dayTLen = dayListToday;
-                      dayALen = dayListAll;
-                    });
-                  },
-                  onPageChanged: (focusedDay){
-                    _focusedDay = focusedDay;
-                  },
-                  calendarFormat: _calendarFormat,
-                  onFormatChanged: (format){
-                    setState((){
-                      _calendarFormat = format;
-                    });
-                  },
-                  calendarBuilders: CalendarBuilders(
-                    defaultBuilder: (context, dateTime, _) {
-                      return CalendarCellBuilder(context, dateTime, _, 0);
-                    },
-                    todayBuilder: (context, dateTime, _) {
-                      return CalendarCellBuilder(context, dateTime, _, 1);
-                    },
-                    selectedBuilder: (context, dateTime, _) {
-                      return CalendarCellBuilder(context, dateTime, _, 2);
-                    },
-                  ),
-                ),
-              ])
+            ),
+            color: Colors.white,
           ),
-          Expanded(
-              child: SingleChildScrollView(
-                  child: Column(
-                      children: [
-                        FutureBuilder(
-                            future: _future(),
-                            builder: (BuildContext context, AsyncSnapshot dayLen) {
-                              if (dayLen.hasData == false || dayTLen == null || dayALen == null || dayListToday.length == 0 && dayLen.hasData == false) {
-                                return Container(
+          margin: EdgeInsets.only(bottom: 0, top: 0, left: 0, right: 0),
+          child: Column(children: [
+            TableCalendar(
+              headerStyle: HeaderStyle(
+                formatButtonVisible: false,
+                leftChevronVisible: false,
+                rightChevronVisible: false,
+                titleCentered: true,
+                titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                headerMargin: EdgeInsets.only(bottom: 30),
+              ),
+              locale: 'ko-KR',
+              focusedDay: _focusedDay,
+              firstDay: DateTime.now().subtract(Duration(days:365*10+2)),
+              lastDay: DateTime.now().add(Duration(days: 365*10+2)),
+              selectedDayPredicate: (day) {
+                return isSameDay(_selectedDay, day);
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                });
+                setState(() async {
+                  dayList = await DBHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
+                  dayListToday = await DBTMHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
+                  dayListAll = await DBTHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
+                  dayLen = dayList;
+                  dayTLen = dayListToday;
+                  dayALen = dayListAll;
+                });
+              },
+              onPageChanged: (focusedDay){
+                _focusedDay = focusedDay;
+              },
+              calendarFormat: _calendarFormat,
+              onFormatChanged: (format){
+                setState((){
+                  _calendarFormat = format;
+                });
+              },
+              calendarBuilders: CalendarBuilders(
+                defaultBuilder: (context, dateTime, _) {
+                  return CalendarCellBuilder(context, dateTime, _, 0);
+                },
+                todayBuilder: (context, dateTime, _) {
+                  return CalendarCellBuilder(context, dateTime, _, 1);
+                },
+                selectedBuilder: (context, dateTime, _) {
+                  return CalendarCellBuilder(context, dateTime, _, 2);
+                },
+              ),
+            ),
+          ])
+      ),
+      Expanded(
+          child: Column(
+              children: [
+                FutureBuilder(
+                    future: _future(),
+                    builder: (BuildContext context, AsyncSnapshot dayLen) {
+                      if (dayLen.hasData == false || dayTLen == null || dayALen == null || dayListToday.length == 0 && dayLen.hasData == false) {
+                        return Container(
+                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: Colors.transparent,
+                            ),
+                            child: Column(children: [
+                              Stack(
+                                children: [
+                                  Column(
+                                    children: [
+                                      Container(
+                                          height: 100,
+                                          margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.white,
+                                          ),
+                                          child: Row(
+                                              children: [
+                                                Spacer(),
+                                                Text(''),
+                                                Spacer(),
+                                              ]
+                                          )
+                                      ),
+                                      Container(
+                                          height: 100,
+                                          margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.white.withOpacity(0.7),
+                                          ),
+                                          child: Row(
+                                              children: [
+                                                Spacer(),
+                                                Text(''),
+                                                Spacer(),
+                                              ]
+                                          )
+                                      ),
+                                      Container(
+                                          height: 100,
+                                          margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.white.withOpacity(0.4),
+                                          ),
+                                          child: Row(
+                                              children: [
+                                                Spacer(),
+                                                Text(''),
+                                                Spacer(),
+                                              ]
+                                          )
+                                      ),
+                                    ],
+                                  ),
+                                  Center(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: Color(0xffe6eef7).withOpacity(1),
+                                      ),
+                                      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2),
+                                      padding: EdgeInsets.all(30),
+                                      width: MediaQuery.of(context).size.width*0.6,
+                                      child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                                width: 70,
+                                                height: 70,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(75),
+                                                  color: Color(0xffFFFFFF),
+                                                ),
+                                                child: Center(child: Icon(Icons.calendar_today_rounded, size: 30, color: Colors.blueAccent))),
+                                            Text(' ', style: TextStyle(fontSize: 20)),
+                                            Text('날짜를 선택해주세요', style: TextStyle(color: Color(0xff4c4e52), fontSize: 15, fontWeight: FontWeight.bold)),
+                                          ]
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ])
+                        );
+                      }
+                      else if (dayLen.hasError) {
+                        return Text('에러');
+                      }
+                      else {
+                        return Container(
+                            child: Column(children: [
+                              if(dayListToday.length != 0)
+                                Container(
+                                  margin: EdgeInsets.only(top: 15, left: 20, right: 20),
+                                  padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(Icons.doorbell_rounded, color: Colors.blueAccent, size: 20),
+                                          Text('  오늘 기록', style: TextStyle(color: Colors.blueAccent, fontSize: 15, fontWeight: FontWeight.bold)),
+                                        ]
+                                      ),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width*0.2,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10))
+                                        )
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('', style: TextStyle(fontSize: 15)),
+                                          Text(dayListToday[0].memo, style: TextStyle(fontSize: 17, letterSpacing:1, wordSpacing: 1, height: 1.2)),
+                                          Container(
+                                              margin: EdgeInsets.only(top: 20),
+                                              child: Wrap(
+                                                  children: [
+                                                    if(dayListAll.length != 0)
+                                                      if(dayListAll[0].memo.toString().length > 1)
+                                                        for(var i = dayListAll[0].memo.toString().length - 1; i > 0; i--)
+                                                          Container(
+                                                            padding: EdgeInsets.all(5),
+                                                            margin: EdgeInsets.all(5),
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(7),
+                                                              color: Colors.blueAccent.withOpacity(0.1),
+                                                            ),
+                                                            child: Text('# ' + todayListName[int.parse(dayListAll[0].memo.toString().substring(i-1, i))], style: TextStyle(color: Colors.blueAccent, fontSize: 14)),
+                                                          )
+                                                    else if(dayListAll[0].memo.toString().length == 1)
+                                                      Container(
+                                                        padding: EdgeInsets.all(5),
+                                                        margin: EdgeInsets.all(5),
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(7),
+                                                          color: Colors.blueAccent.withOpacity(0.1),
+                                                        ),
+                                                        child: Text('# ' + todayListName[0], style: TextStyle(color: Colors.blueAccent, fontSize: 14)),
+                                                      )
+                                                  ]
+                                              )
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              if(dayList.length != 0)
+                                for(var i = 0; i < dayList.length; i++)
+                                  if (dayList[i].memo != null)
+                                    Container(
+                                        margin: EdgeInsets.only(top: 15, left: 20, right: 20),
+                                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(children: [
+                                              Container(
+                                                  width: 10,
+                                                  height: 10,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: dayList[i].emotion == 0 ? Colors.redAccent : dayList[i].emotion == 1 ? Colors.amber : dayList[i].emotion == 2 ? Colors.green : Colors.grey,
+                                                  )
+                                              ),
+                                              Container(
+                                                  width: MediaQuery.of(context).size.width*0.5,
+                                                  child: Text('  '+dayList[i].title + ' ', style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis))),
+                                              Spacer(),
+                                              Text(' ' + '${dayList[i].time}', style: TextStyle(color: Colors.grey, fontSize: 15)),
+                                            ]),
+                                            Container(
+                                                margin: EdgeInsets.only(top: 20),
+                                                child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text('소감', style: TextStyle(color: Colors.grey, fontSize: 15)),
+                                                      Text('', style: TextStyle(fontSize: 5)),
+                                                      Text('${dayList[i].memo}', style: TextStyle(color: Colors.black, fontSize: 17)),
+                                                    ])
+                                            )
+                                          ],
+                                        ))
+                                  else
+                                    Container(
+                                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                        margin: EdgeInsets.only(top: 15, right: 20, left: 20),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Row(children: [
+                                          Container(
+                                            width: 10,
+                                            height: 10,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(5),
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          Container(
+                                              width: MediaQuery.of(context).size.width*0.5,
+                                              child: Text('  '+dayList[i].title + ' ', style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis))),                                    Spacer(),
+                                          Text(' ' + '${dayList[i].time}', style: TextStyle(color: Colors.grey, fontSize: 15)),
+                                        ]))
+                              else
+                                Container(
                                     padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(30),
@@ -2052,19 +2249,19 @@ class _SecondPageState extends State<SecondPage> {
                                           Column(
                                             children: [
                                               Container(
-                                                  height: 100,
-                                                  margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    color: Colors.white,
-                                                  ),
-                                                  child: Row(
-                                                      children: [
-                                                        Spacer(),
-                                                        Text(''),
-                                                        Spacer(),
-                                                      ]
-                                                  )
+                                                height: 100,
+                                                margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  color: Colors.white,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Spacer(),
+                                                    Text(''),
+                                                    Spacer(),
+                                                  ]
+                                                )
                                               ),
                                               Container(
                                                   height: 100,
@@ -2102,266 +2299,41 @@ class _SecondPageState extends State<SecondPage> {
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(20),
-                                                color: Color(0xffe6eef7).withOpacity(1),
+                                                color: Color(0xfff5eae9).withOpacity(1),
                                               ),
                                               margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2),
                                               padding: EdgeInsets.all(30),
                                               width: MediaQuery.of(context).size.width*0.6,
                                               child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                        width: 70,
-                                                        height: 70,
-                                                        decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(75),
-                                                          color: Color(0xffFFFFFF),
-                                                        ),
-                                                        child: Center(child: Icon(Icons.calendar_today_rounded, size: 30, color: Colors.blueAccent))),
-                                                    Text(' ', style: TextStyle(fontSize: 20)),
-                                                    Text('날짜를 선택해주세요', style: TextStyle(color: Color(0xff4c4e52), fontSize: 15, fontWeight: FontWeight.bold)),
-                                                  ]
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                      width: 70,
+                                                      height: 70,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(75),
+                                                        color: Color(0xffFFFFFF),
+                                                      ),
+                                                      child: Center(child: Icon(Icons.close_rounded, size: 40, color: Colors.redAccent))),
+                                                  Text(' ', style: TextStyle(fontSize: 20)),
+                                                  Text('도전과제 기록이 없어요', style: TextStyle(color: Color(0xff523A27), fontSize: 15, fontWeight: FontWeight.bold)),
+                                                ]
                                               ),
                                             ),
                                           )
                                         ],
                                       ),
                                     ])
-                                );
-                              }
-                              else if (dayLen.hasError) {
-                                return Text('에러');
-                              }
-                              else {
-                                return Container(
-                                    child: Column(children: [
-                                      if(dayListToday.length != 0)
-                                        Container(
-                                          margin: EdgeInsets.only(top: 15, left: 20, right: 20),
-                                          padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.rectangle,
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Icon(Icons.doorbell_rounded, color: Colors.blueAccent, size: 20),
-                                                  Text('  오늘 기록', style: TextStyle(color: Colors.blueAccent, fontSize: 15, fontWeight: FontWeight.bold)),
-                                                ]
-                                              ),
-                                              Container(
-                                                width: MediaQuery.of(context).size.width*0.2,
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10))
-                                                )
-                                              ),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text('', style: TextStyle(fontSize: 15)),
-                                                  Text(dayListToday[0].memo, style: TextStyle(fontSize: 17, letterSpacing:1, wordSpacing: 1, height: 1.2)),
-                                                  Container(
-                                                      margin: EdgeInsets.only(top: 20),
-                                                      child: Wrap(
-                                                          children: [
-                                                            if(dayListAll.length != 0)
-                                                              if(dayListAll[0].memo.toString().length > 1)
-                                                                for(var i = dayListAll[0].memo.toString().length - 1; i > 0; i--)
-                                                                  Container(
-                                                                    padding: EdgeInsets.all(5),
-                                                                    margin: EdgeInsets.all(5),
-                                                                    decoration: BoxDecoration(
-                                                                      borderRadius: BorderRadius.circular(7),
-                                                                      color: Colors.blueAccent.withOpacity(0.1),
-                                                                    ),
-                                                                    child: Text('# ' + todayListName[int.parse(dayListAll[0].memo.toString().substring(i-1, i))], style: TextStyle(color: Colors.blueAccent, fontSize: 14)),
-                                                                  )
-                                                            else if(dayListAll[0].memo.toString().length == 1)
-                                                              Container(
-                                                                padding: EdgeInsets.all(5),
-                                                                margin: EdgeInsets.all(5),
-                                                                decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(7),
-                                                                  color: Colors.blueAccent.withOpacity(0.1),
-                                                                ),
-                                                                child: Text('# ' + todayListName[0], style: TextStyle(color: Colors.blueAccent, fontSize: 14)),
-                                                              )
-                                                          ]
-                                                      )
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      if(dayList.length != 0)
-                                        for(var i = 0; i < dayList.length; i++)
-                                          if (dayList[i].memo != null)
-                                            Container(
-                                                margin: EdgeInsets.only(top: 15, left: 20, right: 20),
-                                                padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  shape: BoxShape.rectangle,
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(children: [
-                                                      Container(
-                                                          width: 10,
-                                                          height: 10,
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(5),
-                                                            color: dayList[i].emotion == 0 ? Colors.redAccent : dayList[i].emotion == 1 ? Colors.amber : dayList[i].emotion == 2 ? Colors.green : Colors.grey,
-                                                          )
-                                                      ),
-                                                      Container(
-                                                          width: MediaQuery.of(context).size.width*0.5,
-                                                          child: Text('  '+dayList[i].title + ' ', style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis))),
-                                                      Spacer(),
-                                                      Text(' ' + '${dayList[i].time}', style: TextStyle(color: Colors.grey, fontSize: 15)),
-                                                    ]),
-                                                    Container(
-                                                        margin: EdgeInsets.only(top: 20),
-                                                        child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text('소감', style: TextStyle(color: Colors.grey, fontSize: 15)),
-                                                              Text('', style: TextStyle(fontSize: 5)),
-                                                              Text('${dayList[i].memo}', style: TextStyle(color: Colors.black, fontSize: 17)),
-                                                            ])
-                                                    )
-                                                  ],
-                                                ))
-                                          else
-                                            Container(
-                                                padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                                margin: EdgeInsets.only(top: 15, right: 20, left: 20),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  shape: BoxShape.rectangle,
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
-                                                child: Row(children: [
-                                                  Container(
-                                                    width: 10,
-                                                    height: 10,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(5),
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                      width: MediaQuery.of(context).size.width*0.5,
-                                                      child: Text('  '+dayList[i].title + ' ', style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis))),                                    Spacer(),
-                                                  Text(' ' + '${dayList[i].time}', style: TextStyle(color: Colors.grey, fontSize: 15)),
-                                                ]))
-                                      else
-                                        Container(
-                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(30),
-                                              color: Colors.transparent,
-                                            ),
-                                            child: Column(children: [
-                                              Stack(
-                                                children: [
-                                                  Column(
-                                                    children: [
-                                                      Container(
-                                                        height: 100,
-                                                        margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                                        decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          color: Colors.white,
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            Spacer(),
-                                                            Text(''),
-                                                            Spacer(),
-                                                          ]
-                                                        )
-                                                      ),
-                                                      Container(
-                                                          height: 100,
-                                                          margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(10),
-                                                            color: Colors.white.withOpacity(0.7),
-                                                          ),
-                                                          child: Row(
-                                                              children: [
-                                                                Spacer(),
-                                                                Text(''),
-                                                                Spacer(),
-                                                              ]
-                                                          )
-                                                      ),
-                                                      Container(
-                                                          height: 100,
-                                                          margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(10),
-                                                            color: Colors.white.withOpacity(0.4),
-                                                          ),
-                                                          child: Row(
-                                                              children: [
-                                                                Spacer(),
-                                                                Text(''),
-                                                                Spacer(),
-                                                              ]
-                                                          )
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Center(
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(20),
-                                                        color: Color(0xfff5eae9).withOpacity(1),
-                                                      ),
-                                                      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.2),
-                                                      padding: EdgeInsets.all(30),
-                                                      width: MediaQuery.of(context).size.width*0.6,
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        children: [
-                                                          Container(
-                                                              width: 70,
-                                                              height: 70,
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(75),
-                                                                color: Color(0xffFFFFFF),
-                                                              ),
-                                                              child: Center(child: Icon(Icons.close_rounded, size: 40, color: Colors.redAccent))),
-                                                          Text(' ', style: TextStyle(fontSize: 20)),
-                                                          Text('도전과제 기록이 없어요', style: TextStyle(color: Color(0xff523A27), fontSize: 15, fontWeight: FontWeight.bold)),
-                                                        ]
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ])
-                                        )
-                                    ])
-                                );
-                              }
-                            }
-                        ),
-                      ]
-                  )
-              )
+                                )
+                            ])
+                        );
+                      }
+                    }
+                ),
+              ]
           )
-        ])
-    );
+      )
+    ]);
   }
   Future _future() async {
     await Future.delayed(Duration(milliseconds: 70));
@@ -2475,313 +2447,358 @@ class _ThirdPageState extends State<ThirdPage> {
   }
   @override
   Widget build(BuildContext context) {
-    return ScrollConfiguration(
-        behavior: NoGlowScrollBehavior(),
-        child: Column(children: [
-            Expanded(
-              child: ListView(
+    return Column(children: [
+        Expanded(
+          child: ListView(
+              children: [
+                Stack(
                   children: [
-                    Stack(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height*0.3,
-                          decoration: BoxDecoration(
-                            color: Color(0xffEFEFEF),
-                            image: DecorationImage(
-                              image: AssetImage('assets/thirdbackground.jpg'),
-                              fit: BoxFit.cover,
-                            )
-                          ),
-                          child: Container(color: Colors.black.withOpacity(0.3)),
-                        ),
-                        Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0XFF000066).withOpacity(0.03),
-                                  blurRadius: 15,
-                                  spreadRadius: 10,
-                                  offset: const Offset(0, 10),
-                                ),
-                                BoxShadow(
-                                  color: Color(0XFF000066).withOpacity(0.0165),
-                                  blurRadius: 7.5,
-                                  spreadRadius: 5,
-                                  offset: const Offset(0, 5),
-                                ),
-                                BoxShadow(
-                                  color: Color(0XFF000066).withOpacity(0.0095),
-                                  blurRadius: 5,
-                                  spreadRadius: 2.5,
-                                  offset: const Offset(0, 2.5),
-                                ),
-                              ],
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height*0.3,
+                      decoration: BoxDecoration(
+                        color: Color(0xffEFEFEF),
+                        image: DecorationImage(
+                          image: AssetImage('assets/thirdbackground.jpg'),
+                          fit: BoxFit.cover,
+                        )
+                      ),
+                      child: Container(color: Colors.black.withOpacity(0.3)),
+                    ),
+                    Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0XFF000066).withOpacity(0.03),
+                              blurRadius: 15,
+                              spreadRadius: 10,
+                              offset: const Offset(0, 10),
+                            ),
+                            BoxShadow(
+                              color: Color(0XFF000066).withOpacity(0.0165),
+                              blurRadius: 7.5,
+                              spreadRadius: 5,
+                              offset: const Offset(0, 5),
+                            ),
+                            BoxShadow(
+                              color: Color(0XFF000066).withOpacity(0.0095),
+                              blurRadius: 5,
+                              spreadRadius: 2.5,
+                              offset: const Offset(0, 2.5),
+                            ),
+                          ],
     ),
-                            child: Column(
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17, /*left: MediaQuery.of(context).size.width*0.05+40*/),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Text('${dayWeek + 1}일차', style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold)),
-                                        Text('${getToday().split('-')[0]}년 ${getToday().split('-')[1]}월 ${getToday().split('-')[2]}일', style: TextStyle(color: Colors.white.withOpacity(0.7
-                                        ), fontSize: 17))
-                                      ],
-                                    )),
-                                Container(
-                                  margin: EdgeInsets.only(top: 30),
-                                  width: MediaQuery.of(context).size.width*0.9,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(20),
-                                        topLeft: Radius.circular(20),
-                                      ),
-                                      color: Colors.white,
-                                    ),
-                                    padding: EdgeInsets.fromLTRB(40, 0, 0, 20),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('\n\n모든 도전과제', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 17, fontWeight: FontWeight.bold)),
-                                      ],
-                                    )
+                        child: Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.17, /*left: MediaQuery.of(context).size.width*0.05+40*/),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text('${dayWeek + 1}일차', style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold)),
+                                    Text('${getToday().split('-')[0]}년 ${getToday().split('-')[1]}월 ${getToday().split('-')[2]}일', style: TextStyle(color: Colors.white.withOpacity(0.7
+                                    ), fontSize: 17))
+                                  ],
+                                )),
+                            Container(
+                              margin: EdgeInsets.only(top: 30),
+                              width: MediaQuery.of(context).size.width*0.9,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(20),
+                                    topLeft: Radius.circular(20),
+                                  ),
+                                  color: Colors.white,
                                 ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width*0.9,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(20),
-                                        bottomRight: Radius.circular(20),
-                                      ),
-                                    ),
-                                    padding: EdgeInsets.only(bottom:50),
-                                    child: Column(
-                                        children: [
-                                          for(var i = 0; i < challengelist.length; i++)
-                                            Bounce(
-                                              duration: Duration(milliseconds: 100),
-                                              child: Container(
-                                                  margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                                                  padding: EdgeInsets.all(10),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(15),
-                                                    color: (i+1)%2 == 0 ? Colors.white : Color(0xffF7F7F7),
-                                                  ),
-                                                  child: Row(
-                                                      children: [
-                                                        Icon(dayWeek >= i ? dayWeek == i ? Icons.lens : Icons.lock_open : Icons.lock, color: dayWeek >= i ? dayWeek == i ? Colors.indigoAccent.withOpacity(0.5) : Colors.indigoAccent : Colors.grey, size: 13),
-                                                        Text('   '),
-                                                        Container(
-                                                            width: 25,
-                                                            height: 25,
+                                padding: EdgeInsets.fromLTRB(40, 0, 0, 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('\n\n모든 도전과제', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 17, fontWeight: FontWeight.bold)),
+                                  ],
+                                )
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width*0.9,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(20),
+                                    bottomRight: Radius.circular(20),
+                                  ),
+                                ),
+                                padding: EdgeInsets.only(bottom:50),
+                                child: Column(
+                                    children: [
+                                      for(var i = 0; i < challengelist.length; i++)
+                                        Bounce(
+                                          duration: Duration(milliseconds: 100),
+                                          child: Container(
+                                              margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                                              padding: EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(15),
+                                                color: (i+1)%2 == 0 ? Colors.white : Color(0xffF7F7F7),
+                                              ),
+                                              child: Row(
+                                                  children: [
+                                                    Icon(dayWeek >= i ? dayWeek == i ? Icons.lens : Icons.lock_open : Icons.lock, color: dayWeek >= i ? dayWeek == i ? Colors.indigoAccent.withOpacity(0.5) : Colors.indigoAccent : Colors.grey, size: 13),
+                                                    Text('   '),
+                                                    Container(
+                                                        width: 25,
+                                                        height: 25,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(5),
+                                                          color: dayWeek >= i ? dayWeek == i ? Colors.white : Colors.white : Colors.white,
+                                                          border: Border.all(width: 1, color: dayWeek >= i ? dayWeek == i ? Color(0xffDFDFDF) : Color(0xffDFDFDF) : Color(0xffDFDFDF)),
+                                                        ),
+                                                        child: Center(child: Icon(challengeListIcon[i], color: dayWeek >= i ? dayWeek == i ? Colors.indigoAccent : Colors.indigoAccent : Color(0xffBFBFBF), size: 17))),
+                                                    Text('  '+challengelist[i], style: TextStyle(color: dayWeek >= i ? dayWeek == i ? Colors.indigoAccent : Colors.black : Colors.grey, fontSize: 15, fontWeight: dayWeek == i ? FontWeight.bold : FontWeight.normal)),
+                                                    Spacer(),
+                                                    Text('${i+1}일차', style: TextStyle(color: dayWeek >= i ? dayWeek == i ? Colors.indigoAccent : Colors.black : Colors.grey, fontSize: 13)),
+                                                  ]
+                                              )
+                                          ),
+                                          onPressed: () {
+                                            showCupertinoModalPopup(context: context, builder: (BuildContext context) => CupertinoPopupSurface(
+                                                child: Container(
+                                                    padding: EdgeInsets.all(40),
+                                                    height: MediaQuery.of(context).size.height*0.6,
+                                                    width: MediaQuery.of(context).size.width,
+                                                    child: Column(
+                                                        children: [
+                                                          Row(
+                                                              children: [
+                                                                Spacer(),
+                                                                Bounce(
+                                                                    duration: Duration(milliseconds: 100),
+                                                                    onPressed: () {
+                                                                      Navigator.pop(context, 1);
+                                                                    },
+                                                                    child: Container(
+                                                                        width: 50,
+                                                                        height: 50,
+                                                                        decoration: BoxDecoration(
+                                                                          borderRadius: BorderRadius.circular(50),
+                                                                          color: Colors.white,
+                                                                        ),
+                                                                        child: Center(
+                                                                          child: Icon(Icons.close_rounded, size: 30, color: Colors.black),
+                                                                        )
+                                                                    )
+                                                                )
+                                                              ]
+                                                          ),
+                                                          Container(
+                                                            width: MediaQuery.of(context).size.width*0.2,
+                                                            height: MediaQuery.of(context).size.width*0.2,
                                                             decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(5),
-                                                              color: dayWeek >= i ? dayWeek == i ? Colors.white : Colors.white : Colors.white,
-                                                              border: Border.all(width: 1, color: dayWeek >= i ? dayWeek == i ? Color(0xffDFDFDF) : Color(0xffDFDFDF) : Color(0xffDFDFDF)),
-                                                            ),
-                                                            child: Center(child: Icon(challengeListIcon[i], color: dayWeek >= i ? dayWeek == i ? Colors.indigoAccent : Colors.indigoAccent : Color(0xffBFBFBF), size: 17))),
-                                                        Text('  '+challengelist[i], style: TextStyle(color: dayWeek >= i ? dayWeek == i ? Colors.indigoAccent : Colors.black : Colors.grey, fontSize: 15, fontWeight: dayWeek == i ? FontWeight.bold : FontWeight.normal)),
-                                                        Spacer(),
-                                                        Text('${i+1}일차', style: TextStyle(color: dayWeek >= i ? dayWeek == i ? Colors.indigoAccent : Colors.black : Colors.grey, fontSize: 13)),
+                                                              borderRadius: BorderRadius.circular(30),
+                                                              border: Border.all(width: 1, color: Colors.black.withOpacity(0.07)),
+                                                              image: DecorationImage(
+                                                                image: AssetImage('assets/neck${i}.jpeg'),
+                                                                fit: BoxFit.cover,
+                                                              )
+                                                            )
+                                                          ),
+                                                          Text('', style: TextStyle(fontSize: 30)),
+                                                          Text('${challengelist[i]}', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                                          Text('', style: TextStyle(fontSize: 10)),
+                                                          Text('${challengelistHow[i][0]}', style: TextStyle(fontSize: 17, color: Colors.grey, height: 1.5)),
+                                                        ]
+                                                    )
+                                                )
+                                            ));
+                                          },
+                                        ),
+                                      Text('\n\n6일차 이후에는 도전과제가 랜덤으로 지정돼요.', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                                    ]
+                                )
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 0, bottom: 0),
+                              height:MediaQuery.of(context).size.height*0.4,
+                              color: Colors.transparent,
+                              padding: EdgeInsets.only(),
+                              // 리스트뷰 추가
+                              child: ListView.builder(
+                                // 스크롤 방향 설정. 수평적으로 스크롤되도록 설정
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: 5,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return Bounce(
+                                      duration: Duration(milliseconds: 100),
+                                      onPressed: () {
+                                        setState((){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => thirdInfo(index: index)));
+                                        });
+                                        print(cardView[index]);
+                                      },
+                                      child: Container(
+                                        width: MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width * 0.7,
+                                        margin: EdgeInsets.fromLTRB(index == 0 ? MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width * 0.05 : 10, 20, index == 4 ? MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width * 0.15 : 10, 20),
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage('assets/neck${index}.jpeg'),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: BorderRadius.circular(20),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Color(0XFF000066).withOpacity(0.03),
+                                              blurRadius: 15,
+                                              spreadRadius: 10,
+                                              offset: const Offset(0, 10),
+                                            ),
+                                            BoxShadow(
+                                              color: Color(0XFF000066).withOpacity(0.0165),
+                                              blurRadius: 7.5,
+                                              spreadRadius: 5,
+                                              offset: const Offset(0, 5),
+                                            ),
+                                            BoxShadow(
+                                              color: Color(0XFF000066).withOpacity(0.0095),
+                                              blurRadius: 5,
+                                              spreadRadius: 2.5,
+                                              offset: const Offset(0, 2.5),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Stack(
+                                          children: [
+                                            Hero(
+                                              tag: 'infoImage',
+                                              child: Container(
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      image: DecorationImage(
+                                                        image: AssetImage('assets/neck${index}.jpeg'),
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                  )
+                                              ),
+                                            ),
+                                            cardView[index] ?
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(20),
+                                              child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                                  child: Container(
+                                                      padding: EdgeInsets.all(20),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.black.withOpacity(0.5),
+                                                      ),
+                                                      child: AnimatedOpacity(
+                                                        duration: Duration(milliseconds: 50),
+                                                        opacity: cardView[index] ? 1.0 : 0.0,
+                                                        child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Center(
+                                                                child: Text(challengelist[index], style: TextStyle(
+                                                                    color: Colors.white.withOpacity(0.7),
+                                                                    fontSize: 20,
+                                                                    fontWeight: FontWeight.bold)),
+                                                              ),
+                                                              Text('', style: TextStyle(fontSize: 10)),
+                                                              Text(challengelistHow[index][0], style: TextStyle(color: Colors.white, fontSize: 15, height: 1.7,),),
+                                                            ]
+                                                        ),
+                                                      ))
+                                              ),
+                                            ):
+                                            Container(
+                                              padding: EdgeInsets.all(20),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  gradient: LinearGradient(
+                                                      begin: Alignment.topCenter,
+                                                      end: Alignment.bottomCenter,
+                                                      colors: [
+                                                        Colors.black.withOpacity(0.3),
+                                                        Colors.black.withOpacity(0.7),
                                                       ]
                                                   )
                                               ),
-                                              onPressed: () {
-                                                notifyDialog(context, i);
-                                              },
-                                            ),
-                                          Text('\n\n6일차 이후에는 도전과제가 랜덤으로 지정돼요.', style: TextStyle(color: Colors.grey, fontSize: 13)),
-                                        ]
-                                    )
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(top: 0, bottom: 0),
-                                  height:MediaQuery.of(context).size.height*0.4,
-                                  color: Colors.transparent,
-                                  padding: EdgeInsets.only(),
-                                  // 리스트뷰 추가
-                                  child: ListView.builder(
-                                    // 스크롤 방향 설정. 수평적으로 스크롤되도록 설정
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: 5,
-                                      itemBuilder: (BuildContext context, int index) {
-                                        return Bounce(
-                                          duration: Duration(milliseconds: 100),
-                                          onPressed: () {
-                                            setState((){
-                                              Navigator.push(context, MaterialPageRoute(builder: (context) => thirdInfo(index: index)));
-                                            });
-                                            print(cardView[index]);
-                                          },
-                                          child: Container(
-                                            width: MediaQuery
-                                                .of(context)
-                                                .size
-                                                .width * 0.7,
-                                            margin: EdgeInsets.fromLTRB(index == 0 ? MediaQuery
-                                                .of(context)
-                                                .size
-                                                .width * 0.05 : 10, 20, index == 4 ? MediaQuery
-                                                .of(context)
-                                                .size
-                                                .width * 0.15 : 10, 20),
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image: AssetImage('assets/neck${index}.jpeg'),
-                                                fit: BoxFit.cover,
+                                              child:
+                                              AnimatedOpacity(
+                                                duration: Duration(milliseconds: 50),
+                                                opacity: cardView[index] ? 0.0 : 1.0,
+                                                child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Spacer(),
+                                                      Text(challengelist[index], style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 20,
+                                                          fontWeight: FontWeight.bold)),
+                                                      Text('', style: TextStyle(fontSize: 6)),
+                                                      Text(challengelistHow[index][0], style: TextStyle(color: Colors.white, fontSize: 15, height: 1.7,), overflow: TextOverflow.ellipsis, maxLines: 3),
+                                                    ]
+                                                ),
                                               ),
-                                              shape: BoxShape.rectangle,
-                                              borderRadius: BorderRadius.circular(20),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Color(0XFF000066).withOpacity(0.03),
-                                                  blurRadius: 15,
-                                                  spreadRadius: 10,
-                                                  offset: const Offset(0, 10),
-                                                ),
-                                                BoxShadow(
-                                                  color: Color(0XFF000066).withOpacity(0.0165),
-                                                  blurRadius: 7.5,
-                                                  spreadRadius: 5,
-                                                  offset: const Offset(0, 5),
-                                                ),
-                                                BoxShadow(
-                                                  color: Color(0XFF000066).withOpacity(0.0095),
-                                                  blurRadius: 5,
-                                                  spreadRadius: 2.5,
-                                                  offset: const Offset(0, 2.5),
-                                                ),
-                                              ],
                                             ),
-                                            child: Stack(
-                                              children: [
-                                                Hero(
-                                                  tag: 'infoImage',
-                                                  child: Container(
-                                                      decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(20),
-                                                          image: DecorationImage(
-                                                            image: AssetImage('assets/neck${index}.jpeg'),
-                                                            fit: BoxFit.cover,
-                                                          )
-                                                      )
-                                                  ),
-                                                ),
-                                                cardView[index] ?
-                                                ClipRRect(
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-                                                      child: Container(
-                                                          padding: EdgeInsets.all(20),
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.black.withOpacity(0.5),
-                                                          ),
-                                                          child: AnimatedOpacity(
-                                                            duration: Duration(milliseconds: 50),
-                                                            opacity: cardView[index] ? 1.0 : 0.0,
-                                                            child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  Center(
-                                                                    child: Text(challengelist[index], style: TextStyle(
-                                                                        color: Colors.white.withOpacity(0.7),
-                                                                        fontSize: 20,
-                                                                        fontWeight: FontWeight.bold)),
-                                                                  ),
-                                                                  Text('', style: TextStyle(fontSize: 10)),
-                                                                  Text(challengelistHow[index][0], style: TextStyle(color: Colors.white, fontSize: 15, height: 1.7,),),
-                                                                ]
-                                                            ),
-                                                          ))
-                                                  ),
-                                                ):
-                                                Container(
-                                                  padding: EdgeInsets.all(20),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      gradient: LinearGradient(
-                                                          begin: Alignment.topCenter,
-                                                          end: Alignment.bottomCenter,
-                                                          colors: [
-                                                            Colors.black.withOpacity(0.3),
-                                                            Colors.black.withOpacity(0.7),
-                                                          ]
-                                                      )
-                                                  ),
-                                                  child:
-                                                  AnimatedOpacity(
-                                                    duration: Duration(milliseconds: 50),
-                                                    opacity: cardView[index] ? 0.0 : 1.0,
-                                                    child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Spacer(),
-                                                          Text(challengelist[index], style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 20,
-                                                              fontWeight: FontWeight.bold)),
-                                                          Text('', style: TextStyle(fontSize: 6)),
-                                                          Text(challengelistHow[index][0], style: TextStyle(color: Colors.white, fontSize: 15, height: 1.7,), overflow: TextOverflow.ellipsis, maxLines: 3),
-                                                        ]
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                  ),
-                                ),
-                                Container(
-                                    margin: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05, bottom: 20),
-                                    decoration: BoxDecoration(
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }
+                              ),
+                            ),
+                            Container(
+                                margin: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05, bottom: 20),
+                                decoration: BoxDecoration(
     borderRadius: BorderRadius.circular(20),
     color: Colors.white,
     ),
-                                    padding: EdgeInsets.only(top: 40, right: 30, left: 30, bottom: 40),
-                                    child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                              margin: EdgeInsets.only(left: 10),
-                                              child: Text('카테고리', style: TextStyle(color: Colors.black.withOpacity(0.7), fontWeight: FontWeight.bold, fontSize: 17))),
-                                          Text('', style: TextStyle(fontSize: 20)),
-                                          for(var i = 0; i < categorylist.length; i++)
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(10),
-                                                color: i % 2 == 0 ? Color(0xffF7F7F7) : Colors.white,
-                                              ),
-                                              padding: EdgeInsets.all(10),
-                                              child: Row(
-                                                children: [
-                                                  Text('${i+1}', style: TextStyle(color: Colors.grey, fontSize: 17)),
-                                                  Text('  ${categorylist[i][0]}', style: TextStyle(color: Colors.black, fontSize: 15)),
-                                                  Spacer(),
-                                                  Icon(categorylist[i][1] == true ? Icons.check_circle_rounded : Icons.cancel_rounded, size: 18, color: categorylist[i][1] == true ? Colors.indigoAccent : Color(0xffCFCFCF)),
-                                                  Text(categorylist[i][1] == true ? '  이용 중   ' : '  추후 오픈', style: TextStyle(color: categorylist[i][1] == true ? Colors.indigoAccent : Colors.grey, fontSize: 13)),
-                                                ],
-                                              ),
-                                            )
-                                        ]
-                                    )
+                                padding: EdgeInsets.only(top: 40, right: 30, left: 30, bottom: 40),
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                          margin: EdgeInsets.only(left: 10),
+                                          child: Text('카테고리', style: TextStyle(color: Colors.black.withOpacity(0.7), fontWeight: FontWeight.bold, fontSize: 17))),
+                                      Text('', style: TextStyle(fontSize: 20)),
+                                      for(var i = 0; i < categorylist.length; i++)
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: i % 2 == 0 ? Color(0xffF7F7F7) : Colors.white,
+                                          ),
+                                          padding: EdgeInsets.all(10),
+                                          child: Row(
+                                            children: [
+                                              Text('${i+1}', style: TextStyle(color: Colors.grey, fontSize: 17)),
+                                              Text('  ${categorylist[i][0]}', style: TextStyle(color: Colors.black, fontSize: 15)),
+                                              Spacer(),
+                                              Icon(categorylist[i][1] == true ? Icons.check_circle_rounded : Icons.cancel_rounded, size: 18, color: categorylist[i][1] == true ? Colors.indigoAccent : Color(0xffCFCFCF)),
+                                              Text(categorylist[i][1] == true ? '  이용 중   ' : '  추후 오픈', style: TextStyle(color: categorylist[i][1] == true ? Colors.indigoAccent : Colors.grey, fontSize: 13)),
+                                            ],
+                                          ),
+                                        )
+                                    ]
                                 )
-                              ],
-                            ),
-                          ),
+                            )
+                          ],
                         ),
-                      ]
+                      ),
                     ),
                   ]
-              ),
-            ),
-          ],
-        )
+                ),
+              ]
+          ),
+        ),
+      ],
     );
   }
 }
@@ -2797,7 +2814,7 @@ class thirdInfo extends StatefulWidget {
 class _thirdInfoState extends State<thirdInfo> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Container(
@@ -2928,369 +2945,367 @@ class AboutUs extends StatefulWidget {
 class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
-    return ScrollConfiguration(
-      behavior: NoGlowScrollBehavior(),
-      child: Container(
-          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-          child: Center(
-              child:
-              Container(
-                  margin: EdgeInsets.only(top: 30),
-                  child: ListView(children: [
-                    Stack(
-                      children: [
-                        Transform.rotate(
-                      angle: 60 * 3.141592 / 180,
-                          child: Container(
-                            height: 150,
-                            width: 150,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(60),
-                              color: Colors.amber.withOpacity(0.1),
-                            )
-                          ),
+    return Container(
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+        child: Center(
+            child:
+            Container(
+                color: Colors.white,
+                margin: EdgeInsets.only(top: 30),
+                child: ListView(children: [
+                  Stack(
+                    children: [
+                      Transform.rotate(
+                    angle: 60 * 3.141592 / 180,
+                        child: Container(
+                          height: 150,
+                          width: 150,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(60),
+                            color: Colors.amber.withOpacity(0.1),
+                          )
                         ),
-                        Container(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('', style: TextStyle(fontSize: 30)),
-                                  Text('    \u{1F36F} about 꿀곰', style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold)),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 70, right: 40, left: 40),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('꿀곰의 시작', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                        Text('', style: TextStyle(fontSize: 15)),
-                                        Text('안녕하세요, 꿀곰 프로젝트 팀 입니다! 요즘 거의 대부분의 사람들은 휴대폰 사용으로 본인의 할 일을 못하고 미룬 경험이 몇 번 있을 거예요. 물론 저희 팀원들도 그런 경험이 있었죠.', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
-                                        Text('', style: TextStyle(fontSize: 15)),
-                                        Text('꿀곰 팀은 장기간의 코로나 사태로 인해 늘어난 휴대폰 사용시간, 할 일을 못하면서 생기는 무기력증과 우울증 등이 중요한 사회적 문제라고 인식했어요. 그래서 저희 팀은 휴대폰 때문에 생기는 게으름을 방지하기 위한 앱을 만들기로 했답니다.', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
-                                      ],
-                                    ),
+                      ),
+                      Container(
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('', style: TextStyle(fontSize: 30)),
+                                Text('    \u{1F36F} about 꿀곰', style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold)),
+                                Container(
+                                  margin: EdgeInsets.only(top: 70, right: 40, left: 40),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('꿀곰의 시작', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                      Text('', style: TextStyle(fontSize: 15)),
+                                      Text('안녕하세요, 꿀곰 프로젝트 팀 입니다! 요즘 거의 대부분의 사람들은 휴대폰 사용으로 본인의 할 일을 못하고 미룬 경험이 몇 번 있을 거예요. 물론 저희 팀원들도 그런 경험이 있었죠.', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
+                                      Text('', style: TextStyle(fontSize: 15)),
+                                      Text('꿀곰 팀은 장기간의 코로나 사태로 인해 늘어난 휴대폰 사용시간, 할 일을 못하면서 생기는 무기력증과 우울증 등이 중요한 사회적 문제라고 인식했어요. 그래서 저희 팀은 휴대폰 때문에 생기는 게으름을 방지하기 위한 앱을 만들기로 했답니다.', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
+                                    ],
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 50, right: 40, left: 40),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('꿀곰은 어떤 서비스를 하나요?', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                        Text('', style: TextStyle(fontSize: 15)),
-                                        Text('꿀곰은 휴대폰 제한 사용 시간 도달 시 알람을 통해 자신이 수행할 도전 과제를 제공해 중독을 방지하고 게으름 악순환의 과정을 끊을 수 있도록 도움을 주는 서비스를 제공해요. 지속적으로 업데이트를 진행하여 더 많은 도전 과제와 다양한 기능을 추가할 예정입니다!', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
-                                      ],
-                                    ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 50, right: 40, left: 40),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('꿀곰은 어떤 서비스를 하나요?', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                      Text('', style: TextStyle(fontSize: 15)),
+                                      Text('꿀곰은 휴대폰 제한 사용 시간 도달 시 알람을 통해 자신이 수행할 도전 과제를 제공해 중독을 방지하고 게으름 악순환의 과정을 끊을 수 있도록 도움을 주는 서비스를 제공해요. 지속적으로 업데이트를 진행하여 더 많은 도전 과제와 다양한 기능을 추가할 예정입니다!', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
+                                    ],
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 50, right: 40, left: 40),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('캐릭터 소개', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                        Text('', style: TextStyle(fontSize: 15)),
-                                        Container(
-                                          width: 261,
-                                          height: 131,
-                                          decoration:BoxDecoration(
-                                            borderRadius: BorderRadius.circular(20),
-                                            border: Border.all(width: 0.5, color: Colors.black.withOpacity(0.1)),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                width: 130,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 50, right: 40, left: 40),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('캐릭터 소개', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                      Text('', style: TextStyle(fontSize: 15)),
+                                      Container(
+                                        width: 261,
+                                        height: 131,
+                                        decoration:BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20),
+                                          border: Border.all(width: 0.5, color: Colors.black.withOpacity(0.1)),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              width: 130,
+                                              height: 130,
+                                              decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(20),
+                                              bottomLeft: Radius.circular(20),
+                                            ),
+                                  border: Border.all(width: 0.5, color: Colors.black.withOpacity(0.1)),
+                                        ),
+                                                child: Center(child: Image.asset('assets/character.png', height: 100))),
+                                            Container(
+                                              width: 130,
                                                 height: 130,
                                                 decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(20),
-                                                bottomLeft: Radius.circular(20),
-                                              ),
-                                    border: Border.all(width: 0.5, color: Colors.black.withOpacity(0.1)),
-                                          ),
-                                                  child: Center(child: Image.asset('assets/character.png', height: 100))),
-                                              Container(
-                                                width: 130,
-                                                  height: 130,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.only(
-                                                      topRight: Radius.circular(20),
-                                                      bottomRight: Radius.circular(20),
-                                                    ),
-                                                    border: Border.all(width: 0.5, color: Colors.black.withOpacity(0.1)),
+                                                  borderRadius: BorderRadius.only(
+                                                    topRight: Radius.circular(20),
+                                                    bottomRight: Radius.circular(20),
                                                   ),
-                                                  child: Image.asset('assets/CharacterTime.png', height: 70)),
-                                            ],
-                                          ),
-                                        ),
-                                        Text('\n꿀곰이', style: TextStyle(fontSize: 20, height: 1.7, letterSpacing: 1.2, wordSpacing: 1.2, fontWeight: FontWeight.bold)),
-                                        Text('\n꿀곰이는 누워서 꿀 먹는 것을 좋아하는 게으른 곰이에요. 꿀곰이도 게으르게 누워서 꿀만 먹어 살이 많이 찐 탓인지, 자신의 게으름을 고치고 싶다고 하네요! 꿀곰이와 함께 차근차근 도전 과제를 깨며 게으름을 이겨내 볼까요?', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 50, bottom: 30, right: 30, left: 30),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('  팀원', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                        Text('', style: TextStyle(fontSize: 15)),
-                                        Bounce(
-                                          duration: Duration(milliseconds: 100),
-                                          onPressed: () {},
-                                          child: Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius.circular(20),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Color(0XFF000066).withOpacity(0.03),
-                                                    blurRadius: 15,
-                                                    spreadRadius: 10,
-                                                    offset: const Offset(0, 10),
-                                                  ),
-                                                  BoxShadow(
-                                                    color: Color(0XFF000066).withOpacity(0.0165),
-                                                    blurRadius: 7.5,
-                                                    spreadRadius: 5,
-                                                    offset: const Offset(0, 5),
-                                                  ),
-                                                  BoxShadow(
-                                                    color: Color(0XFF000066).withOpacity(0.0095),
-                                                    blurRadius: 5,
-                                                    spreadRadius: 2.5,
-                                                    offset: const Offset(0, 2.5),
-                                                  ),
-                                                ],
-                                              ),
-                                              padding: EdgeInsets.all(20),
-                                              margin: EdgeInsets.only(top: 20),
-                                              child: Column(
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        SizedBox(
-                                                          child: Column(
-                                                            children: [
-                                                              Text('\u{1F4E2}', style: TextStyle(fontSize: 30)),
-                                                              Text('', style: TextStyle(fontSize: 10)),
-                                                              Text('강원중', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
-                                                              Text('', style: TextStyle(fontSize: 10)),
-                                                              Text('가천대학교\n경영학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                                                            ],
-                                                          ),
-                                                          width: MediaQuery.of(context).size.width*0.25,
-                                                        ),
-                                                        SizedBox(
-                                                            width: MediaQuery.of(context).size.width*0.5,
-                                                            child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  Text('PM', style: TextStyle(fontSize: 20)),
-                                                                  Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
-                                                                  Text('하고 싶은 말', style: TextStyle(fontSize: 17))
-                                                                ]
-                                                            )
-                                                        )
-                                                      ],
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                    )
-                                                  ]
-                                              )
-                                          ),
-                                        ),
-                                        Bounce(
-                                          duration: Duration(milliseconds: 100),
-                                          onPressed: () {},
-                                          child: Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius.circular(20),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Color(0XFF000066).withOpacity(0.03),
-                                                    blurRadius: 15,
-                                                    spreadRadius: 10,
-                                                    offset: const Offset(0, 10),
-                                                  ),
-                                                  BoxShadow(
-                                                    color: Color(0XFF000066).withOpacity(0.0165),
-                                                    blurRadius: 7.5,
-                                                    spreadRadius: 5,
-                                                    offset: const Offset(0, 5),
-                                                  ),
-                                                  BoxShadow(
-                                                    color: Color(0XFF000066).withOpacity(0.0095),
-                                                    blurRadius: 5,
-                                                    spreadRadius: 2.5,
-                                                    offset: const Offset(0, 2.5),
-                                                  ),
-                                                ],
-                                              ),
-                                              padding: EdgeInsets.all(20),
-                                              margin: EdgeInsets.only(top: 20),
-                                              child: Column(
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        SizedBox(
-                                                          child: Column(
-                                                            children: [
-                                                              Text('\u{1F4DD}', style: TextStyle(fontSize: 30)),
-                                                              Text('', style: TextStyle(fontSize: 10)),
-                                                              Text('이기용', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
-                                                              Text('', style: TextStyle(fontSize: 10)),
-                                                              Text('가천대학교\n경영학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                                                            ],
-                                                          ),
-                                                          width: MediaQuery.of(context).size.width*0.25,
-                                                        ),
-                                                        SizedBox(
-                                                            width: MediaQuery.of(context).size.width*0.5,
-                                                            child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  Text('기획, 마케팅', style: TextStyle(fontSize: 20)),
-                                                                  Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
-                                                                  Text('하고 싶은 말', style: TextStyle(fontSize: 17))
-                                                                ]
-                                                            )
-                                                        )
-                                                      ],
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                    )
-                                                  ]
-                                              )
-                                          ),
-                                        ),
-                                        Bounce(
-                                          duration: Duration(milliseconds: 100),
-                                          onPressed: () {},
-                                          child: Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius.circular(20),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Color(0XFF000066).withOpacity(0.03),
-                                                    blurRadius: 15,
-                                                    spreadRadius: 10,
-                                                    offset: const Offset(0, 10),
-                                                  ),
-                                                  BoxShadow(
-                                                    color: Color(0XFF000066).withOpacity(0.0165),
-                                                    blurRadius: 7.5,
-                                                    spreadRadius: 5,
-                                                    offset: const Offset(0, 5),
-                                                  ),
-                                                  BoxShadow(
-                                                    color: Color(0XFF000066).withOpacity(0.0095),
-                                                    blurRadius: 5,
-                                                    spreadRadius: 2.5,
-                                                    offset: const Offset(0, 2.5),
-                                                  ),
-                                                ],
-                                              ),
-                                              padding: EdgeInsets.all(20),
-                                              margin: EdgeInsets.only(top: 20),
-                                              child: Column(
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        SizedBox(
-                                                          child: Column(
-                                                            children: [
-                                                              Text('\u{1F528}', style: TextStyle(fontSize: 30)),
-                                                              Text('', style: TextStyle(fontSize: 10)),
-                                                              Text('김태윤', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
-                                                              Text('', style: TextStyle(fontSize: 10)),
-                                                              Text('가천대학교\n컴퓨터공학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                                                            ],
-                                                          ),
-                                                          width: MediaQuery.of(context).size.width*0.25,
-                                                        ),
-                                                        SizedBox(
-                                                            width: MediaQuery.of(context).size.width*0.5,
-                                                            child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  Text('개발, 디자인', style: TextStyle(fontSize: 20)),
-                                                                  Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
-                                                                  Text('하고 싶은 말', style: TextStyle(fontSize: 17))
-                                                                ]
-                                                            )
-                                                        )
-                                                      ],
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                    )
-                                                  ]
-                                              )
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 50, right: 40, left: 40, bottom: 100),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text('팀 블로그', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                            Spacer(),
-                                            Bounce(
-                                                duration: Duration(milliseconds: 100),
-                                                onPressed: () async {
-                                                  final url = Uri.parse(
-                                                    'https://waytogo2.tistory.com/',
-                                                  );
-                                                  if (await canLaunchUrl(url)) {
-                                                    launchUrl(url);
-                                                  }
-                                                  else {
-                                                    print('페이지를 열 수 없어요.');
-                                                  }
-                                                },
-                                                child: Container(
-                                                  padding: EdgeInsets.all(10),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    color: Color(0xffF2F2F2),
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Text('팀 블로그 구경가기', style: TextStyle(color: Colors.black, fontSize: 15)),
-                                                      Icon(Icons.navigate_next_rounded, color: Colors.grey, size: 20),
-                                                    ],
-                                                  ),
-                                                )
-                                            )
+                                                  border: Border.all(width: 0.5, color: Colors.black.withOpacity(0.1)),
+                                                ),
+                                                child: Image.asset('assets/CharacterTime.png', height: 70)),
                                           ],
                                         ),
-                                        Text('', style: TextStyle(fontSize: 15)),
-                                        Text('꿀곰 프로젝트의 팀 블로그예요. 꿀곰이 만들어지는 과정과 꿀곰에 들어간 생각이 궁금하시다면 한번 방문해봐요.', style: TextStyle(fontSize: 15, height: 1.7, letterSpacing: 1.1, wordSpacing: 1.2)),
-                                      ],
-                                    ),
+                                      ),
+                                      Text('\n꿀곰이', style: TextStyle(fontSize: 20, height: 1.7, letterSpacing: 1.2, wordSpacing: 1.2, fontWeight: FontWeight.bold)),
+                                      Text('\n꿀곰이는 누워서 꿀 먹는 것을 좋아하는 게으른 곰이에요. 꿀곰이도 게으르게 누워서 꿀만 먹어 살이 많이 찐 탓인지, 자신의 게으름을 고치고 싶다고 하네요! 꿀곰이와 함께 차근차근 도전 과제를 깨며 게으름을 이겨내 볼까요?', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
+                                    ],
                                   ),
-                                  Center(
-                                      child: Column(children: [
-                                        Text('꿀곰 프로젝트', style: TextStyle(color: Colors.grey, fontSize: 20)),
-                                        Text('', style: TextStyle(fontSize: 10)),
-                                        Text('가천대학교 TMI 프로젝트 2022', style: TextStyle(color: Colors.grey, fontSize: 15)),
-                                        Text('', style: TextStyle(fontSize: 60)),
-                                      ])
-                                  )
-                                ])
-                        ),
-                      ],
-                    ),
-                  ])
-              )
-          )
-      ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 50, bottom: 30, right: 30, left: 30),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('  팀원', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                      Text('', style: TextStyle(fontSize: 15)),
+                                      Bounce(
+                                        duration: Duration(milliseconds: 100),
+                                        onPressed: () {},
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Color(0XFF000066).withOpacity(0.03),
+                                                  blurRadius: 15,
+                                                  spreadRadius: 10,
+                                                  offset: const Offset(0, 10),
+                                                ),
+                                                BoxShadow(
+                                                  color: Color(0XFF000066).withOpacity(0.0165),
+                                                  blurRadius: 7.5,
+                                                  spreadRadius: 5,
+                                                  offset: const Offset(0, 5),
+                                                ),
+                                                BoxShadow(
+                                                  color: Color(0XFF000066).withOpacity(0.0095),
+                                                  blurRadius: 5,
+                                                  spreadRadius: 2.5,
+                                                  offset: const Offset(0, 2.5),
+                                                ),
+                                              ],
+                                            ),
+                                            padding: EdgeInsets.all(20),
+                                            margin: EdgeInsets.only(top: 20),
+                                            child: Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(
+                                                        child: Column(
+                                                          children: [
+                                                            Text('\u{1F4E2}', style: TextStyle(fontSize: 30)),
+                                                            Text('', style: TextStyle(fontSize: 10)),
+                                                            Text('강원중', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
+                                                            Text('', style: TextStyle(fontSize: 10)),
+                                                            Text('가천대학교\n경영학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                                          ],
+                                                        ),
+                                                        width: MediaQuery.of(context).size.width*0.25,
+                                                      ),
+                                                      SizedBox(
+                                                          width: MediaQuery.of(context).size.width*0.5,
+                                                          child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text('PM', style: TextStyle(fontSize: 20)),
+                                                                Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
+                                                                Text('하고 싶은 말', style: TextStyle(fontSize: 17))
+                                                              ]
+                                                          )
+                                                      )
+                                                    ],
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                  )
+                                                ]
+                                            )
+                                        ),
+                                      ),
+                                      Bounce(
+                                        duration: Duration(milliseconds: 100),
+                                        onPressed: () {},
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Color(0XFF000066).withOpacity(0.03),
+                                                  blurRadius: 15,
+                                                  spreadRadius: 10,
+                                                  offset: const Offset(0, 10),
+                                                ),
+                                                BoxShadow(
+                                                  color: Color(0XFF000066).withOpacity(0.0165),
+                                                  blurRadius: 7.5,
+                                                  spreadRadius: 5,
+                                                  offset: const Offset(0, 5),
+                                                ),
+                                                BoxShadow(
+                                                  color: Color(0XFF000066).withOpacity(0.0095),
+                                                  blurRadius: 5,
+                                                  spreadRadius: 2.5,
+                                                  offset: const Offset(0, 2.5),
+                                                ),
+                                              ],
+                                            ),
+                                            padding: EdgeInsets.all(20),
+                                            margin: EdgeInsets.only(top: 20),
+                                            child: Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(
+                                                        child: Column(
+                                                          children: [
+                                                            Text('\u{1F4DD}', style: TextStyle(fontSize: 30)),
+                                                            Text('', style: TextStyle(fontSize: 10)),
+                                                            Text('이기용', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
+                                                            Text('', style: TextStyle(fontSize: 10)),
+                                                            Text('가천대학교\n경영학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                                          ],
+                                                        ),
+                                                        width: MediaQuery.of(context).size.width*0.25,
+                                                      ),
+                                                      SizedBox(
+                                                          width: MediaQuery.of(context).size.width*0.5,
+                                                          child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text('기획, 마케팅', style: TextStyle(fontSize: 20)),
+                                                                Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
+                                                                Text('하고 싶은 말', style: TextStyle(fontSize: 17))
+                                                              ]
+                                                          )
+                                                      )
+                                                    ],
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                  )
+                                                ]
+                                            )
+                                        ),
+                                      ),
+                                      Bounce(
+                                        duration: Duration(milliseconds: 100),
+                                        onPressed: () {},
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Color(0XFF000066).withOpacity(0.03),
+                                                  blurRadius: 15,
+                                                  spreadRadius: 10,
+                                                  offset: const Offset(0, 10),
+                                                ),
+                                                BoxShadow(
+                                                  color: Color(0XFF000066).withOpacity(0.0165),
+                                                  blurRadius: 7.5,
+                                                  spreadRadius: 5,
+                                                  offset: const Offset(0, 5),
+                                                ),
+                                                BoxShadow(
+                                                  color: Color(0XFF000066).withOpacity(0.0095),
+                                                  blurRadius: 5,
+                                                  spreadRadius: 2.5,
+                                                  offset: const Offset(0, 2.5),
+                                                ),
+                                              ],
+                                            ),
+                                            padding: EdgeInsets.all(20),
+                                            margin: EdgeInsets.only(top: 20),
+                                            child: Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(
+                                                        child: Column(
+                                                          children: [
+                                                            Text('\u{1F528}', style: TextStyle(fontSize: 30)),
+                                                            Text('', style: TextStyle(fontSize: 10)),
+                                                            Text('김태윤', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
+                                                            Text('', style: TextStyle(fontSize: 10)),
+                                                            Text('가천대학교\n컴퓨터공학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                                          ],
+                                                        ),
+                                                        width: MediaQuery.of(context).size.width*0.25,
+                                                      ),
+                                                      SizedBox(
+                                                          width: MediaQuery.of(context).size.width*0.5,
+                                                          child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text('개발, 디자인', style: TextStyle(fontSize: 20)),
+                                                                Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
+                                                                Text('하고 싶은 말', style: TextStyle(fontSize: 17))
+                                                              ]
+                                                          )
+                                                      )
+                                                    ],
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                  )
+                                                ]
+                                            )
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 50, right: 40, left: 40, bottom: 100),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text('팀 블로그', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                          Spacer(),
+                                          Bounce(
+                                              duration: Duration(milliseconds: 100),
+                                              onPressed: () async {
+                                                final url = Uri.parse(
+                                                  'https://waytogo2.tistory.com/',
+                                                );
+                                                if (await canLaunchUrl(url)) {
+                                                  launchUrl(url);
+                                                }
+                                                else {
+                                                  print('페이지를 열 수 없어요.');
+                                                }
+                                              },
+                                              child: Container(
+                                                padding: EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  color: Color(0xffF2F2F2),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Text('팀 블로그 구경가기', style: TextStyle(color: Colors.black, fontSize: 15)),
+                                                    Icon(Icons.navigate_next_rounded, color: Colors.grey, size: 20),
+                                                  ],
+                                                ),
+                                              )
+                                          )
+                                        ],
+                                      ),
+                                      Text('', style: TextStyle(fontSize: 15)),
+                                      Text('꿀곰 프로젝트의 팀 블로그예요. 꿀곰이 만들어지는 과정과 꿀곰에 들어간 생각이 궁금하시다면 한번 방문해봐요.', style: TextStyle(fontSize: 15, height: 1.7, letterSpacing: 1.1, wordSpacing: 1.2)),
+                                    ],
+                                  ),
+                                ),
+                                Center(
+                                    child: Column(children: [
+                                      Text('꿀곰 프로젝트', style: TextStyle(color: Colors.grey, fontSize: 20)),
+                                      Text('', style: TextStyle(fontSize: 10)),
+                                      Text('가천대학교 TMI 프로젝트 2022', style: TextStyle(color: Colors.grey, fontSize: 15)),
+                                      Text('', style: TextStyle(fontSize: 60)),
+                                    ])
+                                )
+                              ])
+                      ),
+                    ],
+                  ),
+                ])
+            )
+        )
     );
   }
 }
@@ -3306,153 +3321,155 @@ class _SecondAppState extends State<SecondApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: ThemeData(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-        ),
-        home: Scaffold(
-          backgroundColor: Colors.white,
-          body:
-          Stack(
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-              ),
-              Container(
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.fromLTRB(25, 60, 25, 0),
-                      child: Row(children: [
-                        Bounce(
-                            duration: Duration(milliseconds: 100),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                                height: 50,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: Color(0xffEFEFEF),
-                                ),
-                                child: Center(
-                                    child: Icon(Icons.navigate_before_rounded, color: Colors.grey, size: 30)
-                                )
-                            )
-                        ),
-                      ]),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(25, 25, 25, 25),
-                      child:
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(left: 0),
-                                  child:
-                                  Text('오늘의 게으름을 선택해주세요.', style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),
-                                ),
-                              ],
-                            ),
-                            Text('', style: TextStyle(color: Colors.grey, fontSize: 30)),
-                            Container(
-                              margin: EdgeInsets.only(top: 40),
-                              child: Column(
+    return Theme(
+      data: ThemeData(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+      ),
+      child: CupertinoApp(
+          home: Scaffold(
+            backgroundColor: Colors.white,
+            body:
+            Stack(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                ),
+                Container(
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.fromLTRB(25, 60, 25, 0),
+                        child: Row(children: [
+                          Bounce(
+                              duration: Duration(milliseconds: 100),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    color: Color(0xffEFEFEF),
+                                  ),
+                                  child: Center(
+                                      child: Icon(Icons.navigate_before_rounded, color: Colors.grey, size: 30)
+                                  )
+                              )
+                          ),
+                        ]),
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(25, 25, 25, 25),
+                        child:
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  GridView.builder(
-                                    itemCount: 9,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      crossAxisSpacing: 20,
-                                      mainAxisSpacing: 20,
-                                    ),
-                                    itemBuilder: (context, index){
-                                      return Bounce(
-                                          duration: Duration(milliseconds: 100),
-                                          onPressed: () {
-                                            setState(() {
-                                              todayList[index] ? todayList[index] = false : todayList[index] = true;
-                                              print(todayList);
-                                            });
-                                          },
-                                          child: Stack(
-                                            children: [
-                                              Container(
-                                                  padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(20),
-                                                    image: DecorationImage(
-                                                      image: AssetImage('assets/neck1.jpeg'),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                    color: Color(0xff7F7F7F),
-                                                  ),
-                                              ),
-                                              AnimatedContainer(
-                                                duration: Duration(milliseconds: 200),
-                                                padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  color: todayList[index] ? Color(0xff1F1F1F).withOpacity(0.4) : Colors.white.withOpacity(0.7),
-                                                  border: todayList[index] ? Border.all(width: 7, color: Color(0xff76BB9E)) : Border.all(width: 1, color: Colors.white.withOpacity(0)),
-                                                ),
-                                                child: Center(
-                                                  child: Text(todayListName[index], style: TextStyle(color: todayList[index] ? Colors.white : Colors.black, fontSize: 17, fontWeight: todayList[index] ? FontWeight.bold : FontWeight.normal),
-                                                  ),
-                                                )
-                                              )
-                                            ],
-                                          )
-                                      );
-                                    },
+                                  Container(
+                                    margin: EdgeInsets.only(left: 0),
+                                    child:
+                                    Text('오늘의 게으름을 선택해주세요.', style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),
                                   ),
                                 ],
                               ),
-                            ),
-                          ]
-                      ),
-                    ),
-                    Spacer(),
-                    Container(
-                        margin: EdgeInsets.fromLTRB(50, 0, 50, 50),
-                        child: Bounce(
-                            duration: Duration(milliseconds: 100),
-                            onPressed: () {
-                              setState((){
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) => RememberToday()));
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Color(0xff76BB9E),
+                              Text('', style: TextStyle(color: Colors.grey, fontSize: 30)),
+                              Container(
+                                margin: EdgeInsets.only(top: 40),
+                                child: Column(
+                                  children: [
+                                    GridView.builder(
+                                      itemCount: 9,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        crossAxisSpacing: 20,
+                                        mainAxisSpacing: 20,
+                                      ),
+                                      itemBuilder: (context, index){
+                                        return Bounce(
+                                            duration: Duration(milliseconds: 100),
+                                            onPressed: () {
+                                              setState(() {
+                                                todayList[index] ? todayList[index] = false : todayList[index] = true;
+                                                print(todayList);
+                                              });
+                                            },
+                                            child: Stack(
+                                              children: [
+                                                Container(
+                                                    padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      image: DecorationImage(
+                                                        image: AssetImage('assets/neck1.jpeg'),
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                      color: Color(0xff7F7F7F),
+                                                    ),
+                                                ),
+                                                AnimatedContainer(
+                                                  duration: Duration(milliseconds: 200),
+                                                  padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(20),
+                                                    color: todayList[index] ? Color(0xff1F1F1F).withOpacity(0.4) : Colors.white.withOpacity(0.7),
+                                                    border: todayList[index] ? Border.all(width: 7, color: Color(0xff76BB9E)) : Border.all(width: 1, color: Colors.white.withOpacity(0)),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(todayListName[index], style: TextStyle(color: todayList[index] ? Colors.white : Colors.black, fontSize: 17, fontWeight: todayList[index] ? FontWeight.bold : FontWeight.normal),
+                                                    ),
+                                                  )
+                                                )
+                                              ],
+                                            )
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
-                              padding: EdgeInsets.all(20),
-                              child: Row(children:[
-                                Text(''),
-                                Spacer(),
-                                Text('기록하기', style: TextStyle(color: Colors.white, fontSize: 15)),
-                                Spacer(),
-                                Text(''),
-                              ]),
-                            )
-                        )
-                    )
-                  ],
+                            ]
+                        ),
+                      ),
+                      Spacer(),
+                      Container(
+                          margin: EdgeInsets.fromLTRB(50, 0, 50, 50),
+                          child: Bounce(
+                              duration: Duration(milliseconds: 100),
+                              onPressed: () {
+                                setState((){
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) => RememberToday()));
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Color(0xff76BB9E),
+                                ),
+                                padding: EdgeInsets.all(20),
+                                child: Row(children:[
+                                  Text(''),
+                                  Spacer(),
+                                  Text('기록하기', style: TextStyle(color: Colors.white, fontSize: 15)),
+                                  Spacer(),
+                                  Text(''),
+                                ]),
+                              )
+                          )
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        )
+              ],
+            ),
+          )
+      ),
     );
   }
 }
@@ -3470,13 +3487,17 @@ class _RememberTodayState extends State<RememberToday> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
-            backgroundColor: Colors.white,
-            body:
-            ScrollConfiguration(
-              behavior: NoGlowScrollBehavior(),
-              child: Container(
+    return CupertinoApp(
+        home: Localizations(
+          locale: const Locale('en', 'US'),
+          delegates: const <LocalizationsDelegate<dynamic>>[
+            DefaultWidgetsLocalizations.delegate,
+            DefaultMaterialLocalizations.delegate,
+          ],
+          child: Scaffold(
+              backgroundColor: Colors.white,
+              body:
+              Container(
                 margin: EdgeInsets.only(top: 35),
                   padding: EdgeInsets.all(25),
                   child: Column(
@@ -3548,74 +3569,74 @@ class _RememberTodayState extends State<RememberToday> {
                     ],
                   )
               ),
-            ),
-            bottomNavigationBar: Container(
-                margin: const EdgeInsets.fromLTRB(50, 0, 50, 50),
-                child: Bounce(
-                    duration: const Duration(milliseconds: 100),
-                    onPressed: () async {
-                      var nowTodayList = 0;
-                      if(nowCheck == true) {
-                        var j = 0;
-                        if(memoController.text.length > 0) {
-                          for (var i = 0; i < todayList.length; i++) {
-                            var equation = 10;
-                            if (todayList[i] == true) {
-                              for(var t = 0; t < j; t++){
-                                equation *= 10;
-                                print(equation);
+              bottomNavigationBar: Container(
+                  margin: const EdgeInsets.fromLTRB(50, 0, 50, 50),
+                  child: Bounce(
+                      duration: const Duration(milliseconds: 100),
+                      onPressed: () async {
+                        var nowTodayList = 0;
+                        if(nowCheck == true) {
+                          var j = 0;
+                          if(memoController.text.length > 0) {
+                            for (var i = 0; i < todayList.length; i++) {
+                              var equation = 10;
+                              if (todayList[i] == true) {
+                                for(var t = 0; t < j; t++){
+                                  equation *= 10;
+                                  print(equation);
+                                }
+                                nowTodayList += equation*(i);
+                                print(nowTodayList);
+                                j++;
+                                var getTodays = await DBTHelper().getMemoDate(getToday());
+                                print(getTodays);
                               }
-                              nowTodayList += equation*(i);
-                              print(nowTodayList);
-                              j++;
-                              var getTodays = await DBTHelper().getMemoDate(getToday());
-                              print(getTodays);
                             }
-                          }
-                          DBTHelper().insertToday(Today(
-                              id: year * 1000000 +
-                                  month * 10000 +
-                                  day * 100,
-                              memo: nowTodayList,
-                              createTime: getToday()));
-                          print(await DBTHelper().todays());
-                          j = 0;
-                          DBTMHelper().insertTodayMemo(TodayMemo(
-                            id: year * 1000000 + month * 10000 + day * 100 + j,
-                            memo: memoController.text,
-                            createTime: getToday(),
-                          ));
-                          Navigator.popUntil(context, ModalRoute.withName('/'));}
-                        else {
-                          Duration duration = new Duration(seconds: 3);
-                          setState((){
-                            nowCheck = false;
-                          });
-                          Future.delayed(duration, (){
+                            DBTHelper().insertToday(Today(
+                                id: year * 1000000 +
+                                    month * 10000 +
+                                    day * 100,
+                                memo: nowTodayList,
+                                createTime: getToday()));
+                            print(await DBTHelper().todays());
+                            j = 0;
+                            DBTMHelper().insertTodayMemo(TodayMemo(
+                              id: year * 1000000 + month * 10000 + day * 100 + j,
+                              memo: memoController.text,
+                              createTime: getToday(),
+                            ));
+                            Navigator.popUntil(context, ModalRoute.withName('/'));}
+                          else {
+                            Duration duration = new Duration(seconds: 3);
                             setState((){
-                              nowCheck = true;
+                              nowCheck = false;
                             });
-                          });
+                            Future.delayed(duration, (){
+                              setState((){
+                                nowCheck = true;
+                              });
+                            });
+                          }
                         }
-                      }
-                    },
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 200),
-                      padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: nowCheck ? Color(0xff76BB9E) : Color(0xffF2F2F2),
-                      ),
-                      child: Row(children: [
-                        Text(' '),
-                        Spacer(),
-                        Text(nowCheck ? '표현하기' : '기록해 주세요', style: TextStyle(color: nowCheck ? Colors.white : Colors.grey, fontSize: 17)),
-                        Spacer(),
-                        Text(' '),
-                      ]),
-                    )
-                )
-            )
+                      },
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 200),
+                        padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: nowCheck ? Color(0xff76BB9E) : Color(0xffF2F2F2),
+                        ),
+                        child: Row(children: [
+                          Text(' '),
+                          Spacer(),
+                          Text(nowCheck ? '표현하기' : '기록해 주세요', style: TextStyle(color: nowCheck ? Colors.white : Colors.grey, fontSize: 17)),
+                          Spacer(),
+                          Text(' '),
+                        ]),
+                      )
+                  )
+              )
+          ),
         )
     );
   }
@@ -3642,289 +3663,347 @@ class _BadgeAppState extends State<BadgeApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
         home: Scaffold(
             backgroundColor: Colors.white,
-            body: Column(
+            body: Stack(
               children: [
+                Container(
+                  padding: EdgeInsets.only(top: 250),
+                    decoration: BoxDecoration(
+                      color: Color(0xffF2F2F7),
+                    ),
+                    child: ListView(children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        margin: EdgeInsets.only(top: 40),
+                        child: Column(
+                          children: [
+                            Text('도전과제', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 17, fontWeight: FontWeight.bold)),
+                            GridView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  childAspectRatio: 2/3,
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                ),
+                                itemCount: badgelist.length,
+                                itemBuilder: (context, index) {
+                                  return AnimatedScale(
+                                    duration: Duration(milliseconds: 1000),
+                                    curve: Curves.elasticOut,
+                                    scale: _check ? 1.0 : 0.7,
+                                    child: Container(
+                                        color: Colors.transparent,
+                                        padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                        child: Column(children: <Widget>[
+                                          if (badgeHave > index)
+                                            Bounce(
+                                              duration: Duration(milliseconds: 100),
+                                              onPressed: () {
+                                                showCupertinoModalPopup(context: context, builder: (BuildContext context) => CupertinoPopupSurface(
+                                                    child: Container(
+                                                        padding: EdgeInsets.all(40),
+                                                        height: MediaQuery.of(context).size.height*0.5,
+                                                        width: MediaQuery.of(context).size.width,
+                                                        child: Column(
+                                                            children: [
+                                                              Row(
+                                                                  children: [
+                                                                    Spacer(),
+                                                                    Bounce(
+                                                                        duration: Duration(milliseconds: 100),
+                                                                        onPressed: () {
+                                                                          Navigator.pop(context, 1);
+                                                                        },
+                                                                        child: Container(
+                                                                            width: 50,
+                                                                            height: 50,
+                                                                            decoration: BoxDecoration(
+                                                                              borderRadius: BorderRadius.circular(50),
+                                                                              color: Colors.white,
+                                                                            ),
+                                                                            child: Center(
+                                                                              child: Icon(Icons.close_rounded, size: 30, color: Colors.black),
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                  ]
+                                                              ),
+                                                              Image.asset('assets/badge/badge${index+1}.png',width: 130),
+                                                              Text('', style: TextStyle(fontSize: 30)),
+                                                              Text('${badgelist[index]}', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                                              Text('', style: TextStyle(fontSize: 10)),
+                                                              Text('배지의 효과 작성', style: TextStyle(fontSize: 17, color: Colors.grey)),
+                                                            ]
+                                                        )
+                                                    )
+                                                ));
+                                              },
+                                              child: Stack(
+                                                  children: [
+                                                    Container(
+                                                        width: 100,
+                                                        height: 100,
+                                                        margin: EdgeInsets.only(bottom: 0),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(130),
+                                                            gradient: RadialGradient(
+                                                              colors: [
+                                                                Colors.amber.withOpacity(0.7),
+                                                                Colors.amber.withOpacity(0),
+                                                              ],
+                                                            )
+                                                        )
+                                                    ),
+                                                    Container(
+                                                        width: 80,
+                                                        height: 80,
+                                                        margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            gradient: LinearGradient(
+                                                                begin: Alignment.topLeft,
+                                                                end: Alignment.bottomRight,
+                                                                colors: [
+                                                                  Colors.amber.withOpacity(0.4),
+                                                                  Colors.amber.withOpacity(0.9),
+                                                                ]
+                                                            )
+                                                        )
+                                                    ),
+                                                    Container(
+                                                        width: 70,
+                                                        height: 70,
+                                                        margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            gradient: LinearGradient(
+                                                                begin: Alignment.topLeft,
+                                                                end: Alignment.bottomRight,
+                                                                colors: [
+                                                                  Colors.amber.withOpacity(0.4),
+                                                                  Colors.amber.withOpacity(0.9),
+                                                                ]
+                                                            ),
+                                                            border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
+                                                        )
+                                                    ),
+                                                    Container(
+                                                        width: 70,
+                                                        height: 70,
+                                                        margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            color: Colors.white.withOpacity(0.9),
+                                                            border: Border.all(width: 3, color: Colors.amber.withOpacity(0.8))
+                                                        ),
+                                                        child: Center(
+                                                          child: Image.asset('assets/badge/badge${index+1}.png', width: 50),
+                                                        )
+                                                    ),
+                                                  ]
+                                              ),)
+                                          else
+                                            Bounce(
+                                              duration: Duration(milliseconds: 100),
+                                              onPressed: () {
+                                                showCupertinoModalPopup(context: context, builder: (BuildContext context) => CupertinoPopupSurface(
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(40),
+                                                    height: MediaQuery.of(context).size.height*0.5,
+                                                    width: MediaQuery.of(context).size.width,
+                                                    child: Column(
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Spacer(),
+                                                            Bounce(
+                                                              duration: Duration(milliseconds: 100),
+                                                              onPressed: () {
+                                                                Navigator.pop(context, 1);
+                                                              },
+                                                              child: Container(
+                                                                width: 50,
+                                                                height: 50,
+                                                                decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(50),
+                                                                  color: Colors.white,
+                                                                ),
+                                                                child: Center(
+                                                                  child: Icon(Icons.close_rounded, size: 30, color: Colors.black),
+                                                                )
+                                                              )
+                                                            )
+                                                          ]
+                                                        ),
+                                                        Image.asset('assets/badge/badge${index+1}.png',width: 130),
+                                                        Text('', style: TextStyle(fontSize: 30)),
+                                                        Text('${badgelist[index]}', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                                        Text('', style: TextStyle(fontSize: 10)),
+                                                        Text('얻을 수 있는 조건을 작성', style: TextStyle(fontSize: 17, color: Colors.grey)),
+                                                      ]
+                                                    )
+                                                  )
+                                                ));
+                                              },
+                                              child: Stack(
+                                                  children: [
+                                                    Container(
+                                                        width: 100,
+                                                        height: 100,
+                                                        margin: EdgeInsets.only(bottom: 0),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(130),
+                                                            gradient: RadialGradient(
+                                                              colors: [
+                                                                Colors.amber.withOpacity(0),
+                                                                Colors.amber.withOpacity(0),
+                                                              ],
+                                                            )
+                                                        )
+                                                    ),
+                                                    Container(
+                                                        width: 80,
+                                                        height: 80,
+                                                        margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            gradient: LinearGradient(
+                                                                begin: Alignment.topLeft,
+                                                                end: Alignment.bottomRight,
+                                                                colors: [
+                                                                  Colors.amber.withOpacity(0.1),
+                                                                  Colors.amber.withOpacity(0.3),
+                                                                ]
+                                                            )
+                                                        )
+                                                    ),
+                                                    Container(
+                                                        width: 70,
+                                                        height: 70,
+                                                        margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            gradient: LinearGradient(
+                                                                begin: Alignment.topLeft,
+                                                                end: Alignment.bottomRight,
+                                                                colors: [
+                                                                  Colors.amber.withOpacity(0.1),
+                                                                  Colors.amber.withOpacity(0.3),
+                                                                ]
+                                                            ),
+                                                            border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
+                                                        )
+                                                    ),
+                                                    Container(
+                                                        width: 70,
+                                                        height: 70,
+                                                        margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(100),
+                                                            color: Colors.white.withOpacity(0.9),
+                                                            border: Border.all(width: 3, color: Colors.amber.withOpacity(0.3))
+                                                        ),
+                                                        child: Center(
+                                                          child: Image.asset('assets/badge/badge${index+1}.png', width: 50, color: const Color.fromRGBO(255, 255, 255, 0.2),colorBlendMode: BlendMode.modulate),
+                                                        )
+                                                    ),
+                                                  ]
+                                              ),),
+                                          Container(
+                                            margin: EdgeInsets.only(top: 10),
+                                            child: Text(badgelist[index], style: TextStyle(color: Color(0xff0f1f42), fontSize: 15, fontWeight: FontWeight.bold)),
+                                          )
+                                        ])
+                                    ),
+                                  );
+                                }
+                            ),
+                          ],
+                        ),
+                      )
+                    ],)
+                ),
                 Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(40, 70, 40, 20),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.white,
-                              Colors.white,
-                              Colors.white,
-                              Color(0xffF2F2F7).withOpacity(0),
-                            ]
-                          ),
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0XFF000066).withOpacity(0.03),
-                              blurRadius: 15,
-                              spreadRadius: 10,
-                              offset: const Offset(0, 10),
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(40, 70, 40, 20),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.white,
+                                  Colors.white,
+                                  Colors.white.withOpacity(0),
+                                ]
                             ),
-                            BoxShadow(
-                              color: Color(0XFF000066).withOpacity(0.0165),
-                              blurRadius: 7.5,
-                              spreadRadius: 5,
-                              offset: const Offset(0, 5),
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(20),
+                              bottomRight: Radius.circular(20),
                             ),
-                            BoxShadow(
-                              color: Color(0XFF000066).withOpacity(0.0095),
-                              blurRadius: 5,
-                              spreadRadius: 2.5,
-                              offset: const Offset(0, 2.5),
-                            ),
-                          ]
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children:[
-                                Container(
-                                  width: MediaQuery.of(context).size.width-80,
-                                    margin: EdgeInsets.fromLTRB(0, 0, 0, 40),
-                                    child: Row(
-                                        children: [
-                                          Bounce(
-                                            duration: Duration(milliseconds: 100),
-                                            child: Container(
-                                                height: 50,
-                                                width: 50,
-                                                decoration: BoxDecoration(
+
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children:[
+                                  Container(
+                                      width: MediaQuery.of(context).size.width-80,
+                                      margin: EdgeInsets.fromLTRB(0, 0, 0, 40),
+                                      child: Row(
+                                          children: [
+                                            Bounce(
+                                                duration: Duration(milliseconds: 100),
+                                                child: Container(
+                                                  height: 50,
+                                                  width: 50,
+                                                  decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(100),
                                                     border: Border.all(width: 1, color: Color(0xffEFEFEF)),
-                                                  color: Color(0xffEFEFEF),
-                                                ),
+                                                    color: Color(0xffEFEFEF),
+                                                  ),
                                                   child: Icon(Icons.navigate_before_rounded, color: AllFontColor, size: 40),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                }
                                             ),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            }
-                                          ),
-                                          Spacer(),
-                                          Text('활동 배지', style: TextStyle(color: Color(0xff5F5F5F), fontWeight: FontWeight.bold, fontSize: 17)),
-                                          Spacer(),
-                                          Container(
-                                            height: 50,
-                                            width: 50,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(100),
-                                              border: Border.all(width: 1, color: Color(0xffEFEFEF)),
-                                              color: Color(0xffEFEFEF),
+                                            Spacer(),
+                                            Text('활동 배지', style: TextStyle(color: Color(0xff5F5F5F), fontWeight: FontWeight.bold, fontSize: 17)),
+                                            Spacer(),
+                                            Container(
+                                              height: 50,
+                                              width: 50,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(100),
+                                                border: Border.all(width: 1, color: Color(0xffEFEFEF)),
+                                                color: Color(0xffEFEFEF),
+                                              ),
+                                              child: badgeHave == 6 ? Icon(Icons.close_rounded) : Image.asset('assets/badge/badge${badgeHave+1}.png', width: 20),
                                             ),
-                                            child: badgeHave == 6 ? Icon(Icons.close_rounded) : Image.asset('assets/badge/badge${badgeHave+1}.png', width: 20),
-                                          ),
-                                        ]
-                                    )
-                                ),
-                                Image.asset('assets/badgeicon.png', width: 30),
-                                Text('', style: TextStyle(fontSize: 15)),
-                                Text('${badgeHave}개', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 30, fontWeight: FontWeight.bold)),
-                                Text('', style: TextStyle(fontSize:10)),
-                              ]),
-                          Spacer(),
-                        ],
-                      ),
-                    ),
-                  ]
-                ),
-                Expanded(
-                  child: ScrollConfiguration(
-                    behavior: NoGlowScrollBehavior(),
-                    child: Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xffF2F2F7),
+                                          ]
+                                      )
+                                  ),
+                                  Image.asset('assets/badgeicon.png', width: 30),
+                                  Text('', style: TextStyle(fontSize: 15)),
+                                  Text('${badgeHave}개', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 30, fontWeight: FontWeight.bold)),
+                                  Text('', style: TextStyle(fontSize:10)),
+                                ]),
+                            Spacer(),
+                          ],
                         ),
-                        child: ListView(children: [
-                          Container(
-                            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            margin: EdgeInsets.only(top: 40),
-                            child: Column(
-                              children: [
-                                Text('도전과제', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 17, fontWeight: FontWeight.bold)),
-                                GridView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                      childAspectRatio: 2/3,
-                                      crossAxisCount: 3,
-                                      crossAxisSpacing: 10,
-                                      mainAxisSpacing: 10,
-                                    ),
-                                    itemCount: badgelist.length,
-                                    itemBuilder: (context, index) {
-                                      return AnimatedScale(
-                                        duration: Duration(milliseconds: 1000),
-                                        curve: Curves.elasticOut,
-                                        scale: _check ? 1.0 : 0.7,
-                                        child: Container(
-                                            color: Colors.transparent,
-                                            padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                                            child: Column(children: <Widget>[
-                                              if (badgeHave > index)
-                                                Container(
-                                                  child: Stack(
-                                                      children: [
-                                                        Container(
-                                                            width: 100,
-                                                            height: 100,
-                                                            margin: EdgeInsets.only(bottom: 0),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(130),
-                                                                gradient: RadialGradient(
-                                                                  colors: [
-                                                                    Colors.amber.withOpacity(0.7),
-                                                                    Colors.amber.withOpacity(0),
-                                                                  ],
-                                                                )
-                                                            )
-                                                        ),
-                                                        Container(
-                                                            width: 80,
-                                                            height: 80,
-                                                            margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(100),
-                                                                gradient: LinearGradient(
-                                                                    begin: Alignment.topLeft,
-                                                                    end: Alignment.bottomRight,
-                                                                    colors: [
-                                                                      Colors.amber.withOpacity(0.4),
-                                                                      Colors.amber.withOpacity(0.9),
-                                                                    ]
-                                                                )
-                                                            )
-                                                        ),
-                                                        Container(
-                                                            width: 70,
-                                                            height: 70,
-                                                            margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(100),
-                                                                gradient: LinearGradient(
-                                                                    begin: Alignment.topLeft,
-                                                                    end: Alignment.bottomRight,
-                                                                    colors: [
-                                                                      Colors.amber.withOpacity(0.4),
-                                                                      Colors.amber.withOpacity(0.9),
-                                                                    ]
-                                                                ),
-                                                                border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
-                                                            )
-                                                        ),
-                                                        Container(
-                                                            width: 70,
-                                                            height: 70,
-                                                            margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(100),
-                                                                color: Colors.white.withOpacity(0.9),
-                                                                border: Border.all(width: 3, color: Colors.amber.withOpacity(0.8))
-                                                            ),
-                                                            child: Center(
-                                                              child: Image.asset('assets/badge/badge${index+1}.png', width: 50),
-                                                            )
-                                                        ),
-                                                      ]
-                                                  ),)
-                                              else
-                                                Container(
-                                                  child: Stack(
-                                                      children: [
-                                                        Container(
-                                                            width: 100,
-                                                            height: 100,
-                                                            margin: EdgeInsets.only(bottom: 0),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(130),
-                                                                gradient: RadialGradient(
-                                                                  colors: [
-                                                                    Colors.amber.withOpacity(0),
-                                                                    Colors.amber.withOpacity(0),
-                                                                  ],
-                                                                )
-                                                            )
-                                                        ),
-                                                        Container(
-                                                            width: 80,
-                                                            height: 80,
-                                                            margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(100),
-                                                                gradient: LinearGradient(
-                                                                    begin: Alignment.topLeft,
-                                                                    end: Alignment.bottomRight,
-                                                                    colors: [
-                                                                      Colors.amber.withOpacity(0.1),
-                                                                      Colors.amber.withOpacity(0.3),
-                                                                    ]
-                                                                )
-                                                            )
-                                                        ),
-                                                        Container(
-                                                            width: 70,
-                                                            height: 70,
-                                                            margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(100),
-                                                                gradient: LinearGradient(
-                                                                    begin: Alignment.topLeft,
-                                                                    end: Alignment.bottomRight,
-                                                                    colors: [
-                                                                      Colors.amber.withOpacity(0.1),
-                                                                      Colors.amber.withOpacity(0.3),
-                                                                    ]
-                                                                ),
-                                                                border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
-                                                            )
-                                                        ),
-                                                        Container(
-                                                            width: 70,
-                                                            height: 70,
-                                                            margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(100),
-                                                                color: Colors.white.withOpacity(0.9),
-                                                                border: Border.all(width: 3, color: Colors.amber.withOpacity(0.3))
-                                                            ),
-                                                            child: Center(
-                                                              child: Image.asset('assets/badge/badge${index+1}.png', width: 50, color: const Color.fromRGBO(255, 255, 255, 0.2),colorBlendMode: BlendMode.modulate),
-                                                            )
-                                                        ),
-                                                      ]
-                                                  ),),
-                                              Container(
-                                                margin: EdgeInsets.only(top: 10),
-                                                child: Text(badgelist[index], style: TextStyle(color: Color(0xff0f1f42), fontSize: 15, fontWeight: FontWeight.bold)),
-                                              )
-                                            ])
-                                        ),
-                                      );
-                                    }
-                                ),
-                              ],
-                            ),
-                          )
-                        ],)
-                    ),
-                  ),
+                      ),
+                    ]
                 ),
               ],
             )
@@ -3945,62 +4024,82 @@ class StrictApp extends StatefulWidget {
 class _StrictAppState extends State<StrictApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
         home: Scaffold(
           backgroundColor: Colors.white,
-          appBar: AppBar(
-              elevation: 0.0,
-              backgroundColor: Colors.white,
-              leading: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () => {
-                      Navigator.pop(context),
-                    },
-                    child: Row(
-                      children: [
-                        Icon(Icons.navigate_before_rounded, color: AllFontColor, size: 40),
-                      ],
-                    ),
-                  )
-              )
-          ),
-          body: ScrollConfiguration(
-            behavior: NoGlowScrollBehavior(),
-            child: Container(
-                color: Colors.white,
-                margin: EdgeInsets.only(top: 30),
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Column(children: [
-                  Column(children:[
-                    Text('시간 제한', style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
-                    Text('\n\n\n\n', style: TextStyle(color: Colors.grey, fontSize: 17)),
-                  ]),
-                  Spacer(),
-                  Center(
-                    child: Container(
-                      padding: EdgeInsets.all(30),
+          body: Container(
+              color: Colors.white,
+              margin: EdgeInsets.only(top: 60),
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Column(children: [
+                Container(
+                  child: Row(children: [
+                    Bounce(
+                      duration: Duration(milliseconds: 100),
+                      onPressed: () {
+                        Navigator.pop(context);
+          },
+                      child: Container(
+                        width: 50,
+                        height: 50,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(50),
+                          color: Color(0xffEFEFEF),
                         ),
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 130,
-                                height: 130,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(130),
-                                  color: Color(0xffF2F2F2),
-                                ),
-                                child: Icon(Icons.priority_high_rounded, color: Colors.redAccent, size: 80)),
-                            Text('\n나중에 추가될 기능이에요.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                          ],
-                        )),
-                  ),
-                  Spacer(),
-                  Spacer(),
-                ],)
-            ),
+                        child: Center(
+                          child: Icon(Icons.navigate_before_rounded, color: Colors.black, size: 30),
+                        )
+                      )
+                    ),
+                    Spacer(),
+                    Text('시간 제한', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    Spacer(),
+                    Bounce(
+                        duration: Duration(milliseconds: 100),
+                        onPressed: () {
+                        },
+                        child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: Color(0xffEFEFEF),
+                            ),
+                            child: Center(
+                              child: Icon(Icons.more_vert_rounded, color: Colors.black, size: 30),
+                            )
+                        )
+                    ),
+                  ])
+                ),
+                Column(children:[
+                  Text('', style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold)),
+                  Text('\n\n\n\n', style: TextStyle(color: Colors.grey, fontSize: 17)),
+                ]),
+                Spacer(),
+                Center(
+                  child: Container(
+                    padding: EdgeInsets.all(30),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 130,
+                              height: 130,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(130),
+                                color: Color(0xffF2F2F2),
+                              ),
+                              child: Icon(Icons.priority_high_rounded, color: Colors.redAccent, size: 80)),
+                          Text('\n나중에 추가될 기능이에요.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        ],
+                      )),
+                ),
+                Spacer(),
+                Spacer(),
+              ],)
           ),
           bottomNavigationBar:Container(
               child: Bounce(
@@ -4438,86 +4537,73 @@ class _AllAppState extends State<AllApp> with WidgetsBindingObserver{
   @override
   Widget build(BuildContext context) {
     print('challengeHow: $challengeHow');
-    return MaterialApp(
+    return CupertinoApp(
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+        supportedLocales: [
+          Locale('ko', ''),
+          Locale('en', ''),
+        ],
         home: Scaffold(
           backgroundColor: Color(0xffF2F2F7),
           body:
-          ScrollConfiguration(
-            behavior: NoGlowScrollBehavior(),
+          Container(
             child: Container(
-              padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-              child: Column(
+              child: Stack(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Bounce(
-                        duration: Duration(milliseconds: 100),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                            height: 50,
-                            width: 50,
-                            margin: EdgeInsets.fromLTRB(20, 60, 20, 0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: Colors.white,
-                            ),
-                            child: Center(
-                              child: Icon(Icons.navigate_before_rounded, color: AllFontColor, size: 30),
-                            )
-                        ),
-                      )
-                    ]
-                  ),
-                  Expanded(
+                  Container(
+                    margin: EdgeInsets.only(top: 90),
                     child: ListView(
                         children: [
-                          Text('   설정', style: TextStyle(color: Colors.black, fontSize: 35, fontWeight: FontWeight.bold)),
-                          Text('', style: TextStyle(fontSize: 20)),
-                          Container(
-                              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                              ),
-                              margin: EdgeInsets.only(top: 10, bottom: 20, left: 15, right: 15),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.only(bottom: 10),
-                                    decoration: BoxDecoration(
-                                      border: Border(bottom: BorderSide(width: 1, color: Colors.black.withOpacity(0.1))),
-                                    ),
-                                    child: Container(
-                                      margin: EdgeInsets.only(top: 10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white,
-                                      ),
-                                      child: Row(children: [
-                                        Container(
-                                            width: 37,
-                                            height: 37,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(30),
-                                              color: Colors.green,
-                                            ),
-                                            child: Center(child: Icon(Icons.notifications_rounded, color: Colors.white, size: 20))),
-                                        Text('   알림', style: TextStyle(color: Colors.black, fontSize: 18)),
-                                        Spacer(),
-                                        CupertinoSwitch(
-                                          value: notifyMe,
-                                          onChanged: (bool value) {
-                                            setState(() async {
-                                              notifyMe = value;
-                                              if (notifyMe == false) {
-                                                await _cancelNotification();
-                                                setNotify();
-                                                print('꺼짐');
-                                              }
-                                              else {
+                          CupertinoListSection.insetGrouped(
+                              children: [
+                                CupertinoListTile.notched(
+                                  title: Text('알림'),
+                                  leading: _DummyIcon(Colors.green, Icon(Icons.notifications_none_rounded, color: Colors.white, size: 17)),
+                                  trailing: CupertinoSwitch(
+                                      value: notifyMe,
+                                      onChanged: (bool value) {
+                                        setState(() async {
+                                          notifyMe = value;
+                                          if (notifyMe == false) {
+                                            await _cancelNotification();
+                                            setNotify();
+                                            print('꺼짐');
+                                          }
+                                          else {
+                                            await _cancelNotification();
+                                            await _requestPermissions();
+
+                                            final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+                                            await _registerMessage(
+                                              hour: notifyHour,
+                                              minutes: notifyMin,
+                                              message: '오늘의 꿀곰 챌린지가 있어요!',
+                                            );
+                                            print('${notifyHour}:${notifyMin}');
+                                            setNotify();
+                                          }
+                                        });
+                                      }
+                                  ),
+                                ),
+                                CupertinoListTile.notched(
+                                  title: Text('알림 시간'),
+                                  leading: _DummyIcon(Colors.teal, Icon(Icons.watch_later_outlined, color: Colors.white, size: 17)),
+                                  additionalInfo: Text(notifyMe ? '${notifyHour}시 ${notifyMin}분' : '꺼져 있음'),
+                                  trailing: CupertinoListTileChevron(),
+                                  onTap: () {
+                                    notifyMe ? _showDialog(
+                                        CupertinoTimerPicker(
+                                            mode: CupertinoTimerPickerMode.hm,
+                                            initialTimerDuration: duration,
+                                            onTimerDurationChanged: (Duration newDuration) {
+                                              setState(() async {
+                                                notifyHour = int.parse(newDuration.toString().split(':')[0]);
+                                                notifyMin = int.parse(newDuration.toString().split(':')[1]);
+                                                duration = newDuration;
                                                 await _cancelNotification();
                                                 await _requestPermissions();
 
@@ -4529,235 +4615,84 @@ class _AllAppState extends State<AllApp> with WidgetsBindingObserver{
                                                 );
                                                 print('${notifyHour}:${notifyMin}');
                                                 setNotify();
-                                              }
-                                            });
-                                          }
-                                        ),
-                                      ]),
-                                    ),
-                                  ),
-                                  Bounce(
-                                    duration: Duration(milliseconds: 100),
-                                    child: Container(
-                                      margin: EdgeInsets.only(top: 10, bottom: 10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white,
-                                      ),
-                                      child: Row(children: [
-                                        Container(
-                                            height: 37,
-                                            width: 37,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(30),
-                                              color: Colors.teal,
-                                            ),
-                                            child: Center(child: Icon(Icons.watch_later_rounded, color: Colors.white, size: 20))),
-                                        Text('   알림 시간', style: TextStyle(color: Colors.black, fontSize: 18)),
-                                        Spacer(),
-                                        Text(notifyMe ? '${notifyHour}시 ${notifyMin}분' : '꺼져 있음', style: TextStyle(color: Colors.grey, fontSize: 15)),
-                                        Icon(Icons.navigate_next_rounded, color: Colors.grey),
-                                      ]),
-                                    ),
-                                    onPressed: () {
-                                      notifyMe ? _showDialog(
-                                        CupertinoTimerPicker(
-                                          mode: CupertinoTimerPickerMode.hm,
-                                            initialTimerDuration: duration,
-                                            onTimerDurationChanged: (Duration newDuration) {
-                                          setState(() async {
-                                            notifyHour = int.parse(newDuration.toString().split(':')[0]);
-                                            notifyMin = int.parse(newDuration.toString().split(':')[1]);
-                                            duration = newDuration;
-                                            await _cancelNotification();
-                                            await _requestPermissions();
+                                                setNotifyTime();
+                                              });
+                                            })
+                                    ) :
+                                    showCupertinoModalPopup(context: context, builder: (context){
+                                      return CupertinoActionSheet(
+                                          title: Text('알림 시간 설정'),
+                                          actions: [
+                                            CupertinoActionSheetAction(onPressed: () {
+                                              Navigator.pop(context, 1);
+                                              setState(() async {
+                                                await _cancelNotification();
+                                                await _requestPermissions();
 
-                                            final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-                                            await _registerMessage(
-                                                hour: notifyHour,
-                                                minutes: notifyMin,
-                                                message: '오늘의 꿀곰 챌린지가 있어요!',
-                                            );
-                                            print('${notifyHour}:${notifyMin}');
-                                            setNotify();
-                                          });
-                                        })
-                                      ) :
-                                          showCupertinoModalPopup(context: context, builder: (context){
-                                            return CupertinoActionSheet(
-                                                title: Text('알림 시간 설정'),
-                                                actions: [
-                                                  CupertinoActionSheetAction(onPressed: () {
-                                                    Navigator.pop(context, 1);
-                                                    setState(() async {
-                                                      await _cancelNotification();
-                                                      await _requestPermissions();
-
-                                                      final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-                                                      await _registerMessage(
-                                                          hour: notifyHour,
-                                                          minutes: notifyMin,
-                                                          message: '오늘의 꿀곰 챌린지가 있어요!',
-                                                      );
-                                                      print('${notifyHour}:${notifyMin}');
-                                                      setNotifyMe();
-                                                    });
-                                                  }, child: Text('알림 켜기')),
-                                                ]
-                                            );
-                                          });
-                                    },
-                                  ),
-                                ],
-                              )
+                                                final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+                                                await _registerMessage(
+                                                  hour: notifyHour,
+                                                  minutes: notifyMin,
+                                                  message: '오늘의 꿀곰 챌린지가 있어요!',
+                                                );
+                                                print('${notifyHour}:${notifyMin}');
+                                                setNotifyMe();
+                                              });
+                                            }, child: Text('알림 켜기')),
+                                          ]
+                                      );
+                                    });
+                                  },
+                                ),
+                              ]
                           ),
-                          Container(
-                              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
+                          CupertinoListSection.insetGrouped(
+                            children: [
+                              CupertinoListTile.notched(
+                                title: Text('도전과제 형태'),
+                                leading: _DummyIcon(Colors.indigo, Icon(Icons.check_rounded, color: Colors.white, size: 17)),
+                                additionalInfo: Text('활동'),
+                                trailing: CupertinoListTileChevron(),
+                                onTap: () {
+                                },
                               ),
-                              margin: EdgeInsets.only(top: 5, right: 15, left: 15),
-                              child: Column(
-                                children: [
-                                  Row(children: [
-                                    Container(
-                                        height: 37,
-                                        width: 37,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(30),
-                                          color: Colors.indigoAccent,
-                                        ),
-                                        child: Center(child: Icon(Icons.check_circle_rounded, color: Colors.white, size: 20))),
-                                    Text('   도전과제 형태', style: TextStyle(color: Colors.black, fontSize: 18)),
-                                    Spacer(),
-                                    Container(
-                                        child: Row(
-                                          children: [
-                                            Bounce(
-                                              duration: Duration(milliseconds: 100),
-                                              child: Container(
-                                                padding: EdgeInsets.all(5),
-                                                margin: EdgeInsets.only(right: 5),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                  color: challengeHow ? Color(0xffDFDFDF) : Colors.transparent,
-                                                ),
-                                                child: Text('활동', style: TextStyle(color: challengeHow ? Colors.black : Colors.grey, fontSize: 15)),
-                                              ),
-                                              onPressed: () {
-                                                if (challengeHow == false) {
-                                                  setState(() {
-                                                    _nowChallenge = false;
-                                                    setChallengeHow();
-                                                    print(challengeHow);
-                                                  });
-                                                }
-                                              },
-                                            ),
-                                            Bounce(
-                                              duration: Duration(milliseconds: 100),
-                                              child: Container(
-                                                padding: EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                  color: challengeHow ? Colors.transparent : Color(0xffDFDFDF),
-                                                ),
-                                                child: Text('문제', style: TextStyle(color: challengeHow ? Colors.grey : Colors.black, fontSize: 15)),
-                                              ),
-                                              onPressed: () {
-                                                /*if (challengeHow == true) {
-                                                  setState(() {
-                                                    _nowChallenge = false;
-                                                    setChallengeHow();
-                                                    print(challengeHow);
-                                                  });
-                                                }*/
-                                                notifyChallenge(context);
-                                              },
-                                            ),
-                                          ],
-                                        )
-                                    )
-                                  ]),
-                                ],
-                              )
+                            ]
                           ),
                           Container(
-                            margin: EdgeInsets.only(top: 25, left: 20, bottom: 5),
+                            margin: EdgeInsets.only(top: 25, left: 20, bottom: 0),
                             child: Text('꿀곰 프로젝트 팀', style: TextStyle(color: Colors.grey, fontSize: 15, fontWeight: FontWeight.bold)),
                           ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                              ),
-                              child: Column(
-                                children: [
-                                  Bounce(
-                                    duration: Duration(milliseconds: 100),
-                                    child: Container(
-                                        margin: EdgeInsets.only(top: 10),
-                                        padding: EdgeInsets.only(bottom: 10),
-                                        decoration: BoxDecoration(
-                                          border: Border(bottom: BorderSide(width: 1, color: Colors.black.withOpacity(0.1))),
-                                        ),
-                                        child: Column(children: [
-                                          Container(
-                                              child: Row(children: [
-                                                Container(
-                                                  width: 37,
-                                                  height: 37,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(50),
-                                                    color: Color(0xffEFEFEF),
-                                                  ),
-                                                    child: Center(
-                                                  child: Text('\u{1F4E2}', style: TextStyle(fontSize: 17)),
-                                              )
-                                                ),
-                                                Text('   강원중', style: TextStyle(fontSize: 17)),
-                                                Spacer(),
-                                                Text('연결', style: TextStyle(color: Colors.grey, fontSize: 15)),
-                                                Icon(Icons.navigate_next_rounded, color: Colors.grey),
-                                              ])
-                                          )
-                                        ])
+                          CupertinoListSection.insetGrouped(
+                              children: [
+                                CupertinoListTile.notched(
+                                    title: Text('강원중'),
+                                    leading: Container(
+                                      width: 37,
+                                      height: 37,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: Color(0xffEFEFEF),
+                                      ),
+                                      child: Center(child: Text('\u{1F4E2}', style: TextStyle(fontSize: 15))),
                                     ),
-                                    onPressed: () {},
-                                  ),
-                                  Bounce(
-                                    duration: Duration(milliseconds: 100),
-                                    child: Container(
-                                        padding: EdgeInsets.only(bottom: 10, top: 10),
-                                        decoration: BoxDecoration(
-                                          border: Border(bottom: BorderSide(width: 1, color: Colors.black.withOpacity(0.1))),
-                                        ),
-                                        child: Column(children: [
-                                          Container(
-                                              child: Row(children: [
-                                                Container(
-                                                    width: 37,
-                                                    height: 37,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(70),
-                                                      color: Color(0xffEFEFEF),
-                                                    ),
-                                                    child: Center(
-                                                      child: Text('\u{1F4DD}', style: TextStyle(fontSize: 17)),
-                                                    )
-                                                ),
-                                                Text('   이씨의 길', style: TextStyle(fontSize: 17)),
-                                                Spacer(),
-                                                Text('네이버 블로그로 연결', style: TextStyle(color: Colors.grey, fontSize: 15)),
-                                                Icon(Icons.navigate_next_rounded, color: Colors.grey),
-                                              ])
-                                          )
-                                        ])
+                                    trailing: CupertinoListTileChevron(),
+                                    onTap: () {
+                                    }
+                                ),
+                                CupertinoListTile.notched(
+                                    title: Text('이기용'),
+                                    leading: Container(
+                                      width: 37,
+                                      height: 37,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: Color(0xffEFEFEF),
+                                      ),
+                                      child: Center(child: Text('\u{1F4DD}', style: TextStyle(fontSize: 15))),
                                     ),
-                                    onPressed: () async {
+                                    additionalInfo: Text('네이버 블로그'),
+                                    trailing: CupertinoListTileChevron(),
+                                    onTap: () async {
                                       final url = Uri.parse(
                                         'https://blog.naver.com/rldyd0304',
                                       );
@@ -4767,37 +4702,22 @@ class _AllAppState extends State<AllApp> with WidgetsBindingObserver{
                                       else {
                                         print('페이지를 열 수 없어요.');
                                       }
-                                    },
-                                  ),
-                                  Bounce(
-                                    duration: Duration(milliseconds: 100),
-                                    child: Container(
-                                        padding: EdgeInsets.only(top: 10, bottom: 10),
-                                        decoration: BoxDecoration(
-                                        ),
-                                        child: Column(children: [
-                                          Container(
-                                              child: Row(children: [
-                                                Container(
-                                                    width: 37,
-                                                    height: 37,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(70),
-                                                      color: Color(0xffEFEFEF),
-                                                    ),
-                                                    child: Center(
-                                                      child: Text('\u{1F528}', style: TextStyle(fontSize: 17)),
-                                                    )
-                                                ),
-                                                Text('   kim__tune', style: TextStyle(fontSize: 17)),
-                                                Spacer(),
-                                                Text('인스타그램으로 연결', style: TextStyle(color: Colors.grey, fontSize: 15)),
-                                                Icon(Icons.navigate_next_rounded, color: Colors.grey),
-                                              ])
-                                          )
-                                        ])
+                                    }
+                                ),
+                                CupertinoListTile.notched(
+                                    title: Text('김태윤'),
+                                    leading: Container(
+                                      width: 37,
+                                      height: 37,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: Color(0xffEFEFEF),
+                                      ),
+                                      child: Center(child: Text('\u{1F528}', style: TextStyle(fontSize: 15))),
                                     ),
-                                    onPressed: () async {
+                                    additionalInfo: Text('인스타그램'),
+                                    trailing: CupertinoListTileChevron(),
+                                    onTap: () async {
                                       final url = Uri.parse(
                                         'https://www.instagram.com/kim__tune/',
                                       );
@@ -4807,13 +4727,58 @@ class _AllAppState extends State<AllApp> with WidgetsBindingObserver{
                                       else {
                                         print('페이지를 열 수 없어요.');
                                       }
-                                    },
-                                  )
-                                ],
-                              )
+                                    }
+                                ),
+                              ]
                           )
                         ]
                     ),
+                  ),
+                  Container(
+                      decoration: BoxDecoration(
+                          border: Border(bottom: BorderSide(width: 1, color: Colors.black.withOpacity(0.07)))
+                      ),
+                      child: ClipRRect(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                          child: Row(
+                              children: [
+                                Bounce(
+                                    duration: Duration(milliseconds: 100),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                        margin: EdgeInsets.fromLTRB(20, 60, 20, 20),
+                                        width: 50,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(50),
+                                          color: Colors.white,
+                                        ),
+                                        child: Center(
+                                          child: Icon(Icons.navigate_before_rounded, size: 30, color: Colors.black),
+                                        )
+                                    )
+                                ),
+                                Spacer(),
+                                Container(
+                                    margin: EdgeInsets.only(top: 60),
+                                    child: Text('설정', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
+                                Spacer(),
+                                Container(
+                                    margin: EdgeInsets.fromLTRB(20, 60, 20, 0),
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: Color(0xffF2F2F7).withOpacity(0),
+                                    )
+                                )
+                              ]
+                          ),
+                        ),
+                      )
                   ),
                 ],
               ),
@@ -4822,6 +4787,18 @@ class _AllAppState extends State<AllApp> with WidgetsBindingObserver{
         )
     );
   }
+}
+
+Widget _DummyIcon(Color _color, Icon _icon) {
+  return Container(
+    width: 37,
+    height: 37,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(50),
+      color: _color,
+    ),
+    child: Center(child: _icon),
+  );
 }
 
 class WidgetBadge extends StatelessWidget {
@@ -5118,7 +5095,7 @@ class NewBadgePage extends StatefulWidget {
 class _NewBadgePageState extends State<NewBadgePage> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
       home: Scaffold(
         body: Container(
           decoration: BoxDecoration(
@@ -5258,11 +5235,26 @@ class ChallengeMode extends StatefulWidget {
 }
 
 class _ChallengeModeState extends State<ChallengeMode> {
-
+  bool _mainstart = false;
+  bool _timeAttackstart = false;
   var sec = 30000;
   var timeroff = false;
   var timerset = false;
 
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: 3000), () {
+      setState((){
+        _mainstart = true;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 3100), () {
+      setState((){
+        _timeAttackstart = true;
+      });
+    });
+  }
   @override
   timer() {
     Timer.periodic(Duration(milliseconds: 100), (timer) {
@@ -5300,7 +5292,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
   @override
   Widget build(BuildContext context) {
 
-    return MaterialApp(
+    return CupertinoApp(
         home: Scaffold(
             backgroundColor: Colors.white,
             body: WillPopScope(
@@ -6131,76 +6123,84 @@ class _ChallengeModeState extends State<ChallengeMode> {
                                 ),
                               ])),
                               Spacer(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children:[
-                                  Container(
-                                    width: MediaQuery.of(context).size.width*0.3,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10)),
-                                      border: Border.all(width: 1, color: timeAttack ? Colors.indigoAccent.withOpacity(0.1) : Color(0xffDFDFDF)),
-                                      color: timeAttack ? Colors.indigoAccent.withOpacity(0.1) : Colors.white,
-                                    ),
-                                    child: Bounce(
-                                      duration: Duration(milliseconds: 100),
-                                      onPressed: () {
-                                        setState((){
-                                          timeAttack = true;
-                                        });
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                                          ),
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              child: Center(
-                                                child: Icon(Icons.access_alarm_rounded, color: timeAttack ? Colors.indigoAccent : Colors.grey, size: 20),
-                                              )
-                                            ),
-                                            Text('시간 제한', style: TextStyle(color: timeAttack ? Colors.indigoAccent : Colors.grey, fontSize: 15, fontWeight: timeAttack ? FontWeight.bold : FontWeight.normal)),
-                                          ],
-                                        )
+                              AnimatedScale(
+                                duration: Duration(milliseconds: 1000),
+                                scale: _timeAttackstart ? 1 : 0.8,
+                                curve: Curves.easeInOutBack,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children:[
+                                    Container(
+                                      width: MediaQuery.of(context).size.width*0.3,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10)),
+                                        border: Border.all(width: 1, color: timeAttack ? Colors.indigoAccent.withOpacity(0.1) : Color(0xffDFDFDF)),
+                                        color: timeAttack ? Colors.indigoAccent.withOpacity(0.1) : Colors.white,
                                       ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width*0.3,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(width: 1, color: timeAttack ? Color(0xffDFDFDF) : Colors.redAccent.withOpacity(0.1)),
-                                      borderRadius: BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
-                                      color: timeAttack ? Colors.white : Colors.redAccent.withOpacity(0.1),
-                                    ),
-                                    child: Bounce(
-                                      duration: Duration(milliseconds: 100),
-                                      onPressed: () {
-                                        setState((){
-                                          timeAttack = false;
-                                        });
-                                      },
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                                          ),
+                                      child: Bounce(
+                                        duration: Duration(milliseconds: 100),
+                                        onPressed: () {
+                                          setState((){
+                                            timeAttack = true;
+                                          });
+                                        },
+                                        child: Container(
                                           padding: EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                                            ),
                                           child: Column(
                                             children: [
                                               Container(
-                                                  child: Center(
-                                                    child: Icon(Icons.close, color: timeAttack ? Colors.grey : Colors.redAccent, size: 20),
-                                                  )
+                                                child: Center(
+                                                  child: Icon(Icons.access_alarm_rounded, color: timeAttack ? Colors.indigoAccent : Colors.grey, size: 20),
+                                                )
                                               ),
-                                              Text('시간 제한 없이', style: TextStyle(color: timeAttack ? Colors.grey : Colors.redAccent, fontSize: 15, fontWeight: timeAttack ? FontWeight.normal : FontWeight.bold)),
+                                              Text('시간 제한', style: TextStyle(color: timeAttack ? Colors.indigoAccent : Colors.grey, fontSize: 15, fontWeight: timeAttack ? FontWeight.bold : FontWeight.normal)),
                                             ],
                                           )
+                                        ),
                                       ),
                                     ),
-                                  )
-                                ]),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width*0.3,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(width: 1, color: timeAttack ? Color(0xffDFDFDF) : Colors.redAccent.withOpacity(0.1)),
+                                        borderRadius: BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
+                                        color: timeAttack ? Colors.white : Colors.redAccent.withOpacity(0.1),
+                                      ),
+                                      child: Bounce(
+                                        duration: Duration(milliseconds: 100),
+                                        onPressed: () {
+                                          setState((){
+                                            timeAttack = false;
+                                          });
+                                        },
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                                            ),
+                                            padding: EdgeInsets.all(10),
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                    child: Center(
+                                                      child: Icon(Icons.close, color: timeAttack ? Colors.grey : Colors.redAccent, size: 20),
+                                                    )
+                                                ),
+                                                Text('시간 제한 없이', style: TextStyle(color: timeAttack ? Colors.grey : Colors.redAccent, fontSize: 15, fontWeight: timeAttack ? FontWeight.normal : FontWeight.bold)),
+                                              ],
+                                            )
+                                        ),
+                                      ),
+                                    )
+                                  ]),
+                              ),
                               Spacer(),
-                              Container(
+                              AnimatedScale(
+                                  duration: Duration(milliseconds: 1000),
+                                  scale: _mainstart ? 1 : 0.8,
+                                  curve: Curves.easeInOutBack,
                                   child: Bounce(
                                     duration: Duration(milliseconds: 100),
                                     child: Container(
@@ -6520,28 +6520,42 @@ class _RememberListState extends State<RememberList> {
   }
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
-          backgroundColor: Color(0xffF2F2F7),
-          appBar: AppBar(
-              backgroundColor: Colors.white,
-              elevation: 0.0,
-              leading: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () => {
-                      Navigator.pop(context),
-                    },
-                    child: Icon(Icons.navigate_before_rounded, color: AllFontColor, size: 40),
-                  )
-              )
-          ),
-          body:
-          ScrollConfiguration(
-            behavior: NoGlowScrollBehavior(),
-            child: Column(
+    return CupertinoApp(
+        home: Localizations(
+          locale: const Locale('en', 'US'),
+          delegates: const <LocalizationsDelegate<dynamic>>[
+            DefaultWidgetsLocalizations.delegate,
+            DefaultMaterialLocalizations.delegate,
+          ],
+          child: Scaffold(
+            backgroundColor: Color(0xffF2F2F7),
+            body:
+            Column(
                 children: [
                   Column(children: [
+                    Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.only(top: 60, left: 20, right: 20, bottom: 20),
+                      child: Row(children: [
+                        Bounce(
+                      duration: Duration(milliseconds: 100),
+                          onPressed: () {
+                        Navigator.pop(context);
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: Color(0xffEFEFEF),
+                            ),
+                            child: Center(
+                              child: Icon(Icons.navigate_before_rounded, color: Colors.black, size: 30),
+                            )
+                          )
+                        )
+                      ])
+                    ),
                     Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -6750,57 +6764,99 @@ class _RememberListState extends State<RememberList> {
                   )
                 ]
             ),
-          ),
-          bottomNavigationBar: Container(
-            margin: EdgeInsets.fromLTRB(50, 0, 50, 50),
-            child: Bounce(
-                duration: Duration(milliseconds: 100),
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
-                  decoration: BoxDecoration(
-                      color: memoSave ? Colors.blueAccent : Color(0xffDFDFDF),
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0XFF000066).withOpacity(memoSave ? 0.03 : 0),
-                          blurRadius: 15,
-                          spreadRadius: 10,
-                          offset: const Offset(0, 10),
-                        ),
-                        BoxShadow(
-                          color: Color(0XFF000066).withOpacity(memoSave ? 0.0165 : 0),
-                          blurRadius: 7.5,
-                          spreadRadius: 5,
-                          offset: const Offset(0, 5),
-                        ),
-                        BoxShadow(
-                          color: Color(0XFF000066).withOpacity(memoSave ? 0.0095 : 0),
-                          blurRadius: 5,
-                          spreadRadius: 2.5,
-                          offset: const Offset(0, 2.5),
-                        ),
-                      ]
+            bottomNavigationBar: Container(
+              margin: EdgeInsets.fromLTRB(50, 0, 50, 50),
+              child: Bounce(
+                  duration: Duration(milliseconds: 100),
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                    decoration: BoxDecoration(
+                        color: memoSave ? Colors.blueAccent : Color(0xffDFDFDF),
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0XFF000066).withOpacity(memoSave ? 0.03 : 0),
+                            blurRadius: 15,
+                            spreadRadius: 10,
+                            offset: const Offset(0, 10),
+                          ),
+                          BoxShadow(
+                            color: Color(0XFF000066).withOpacity(memoSave ? 0.0165 : 0),
+                            blurRadius: 7.5,
+                            spreadRadius: 5,
+                            offset: const Offset(0, 5),
+                          ),
+                          BoxShadow(
+                            color: Color(0XFF000066).withOpacity(memoSave ? 0.0095 : 0),
+                            blurRadius: 5,
+                            spreadRadius: 2.5,
+                            offset: const Offset(0, 2.5),
+                          ),
+                        ]
+                    ),
+                    child: Row(children: [
+                      Spacer(),
+                      Text(memoSave ? '저장하기': '느낀 점을 입력해주세요.', style: TextStyle(color: memoSave ? Colors.white : Colors.grey, fontSize: 17)),
+                      Spacer(),
+                    ]),
                   ),
-                  child: Row(children: [
-                    Spacer(),
-                    Text(memoSave ? '저장하기': '느낀 점을 입력해주세요.', style: TextStyle(color: memoSave ? Colors.white : Colors.grey, fontSize: 17)),
-                    Spacer(),
-                  ]),
-                ),
-                onPressed: () async {
-                  if(memoSave == true){
-                    if(memoController.text.length > 0){
-                      if (addPoint == false) {
-                        successChallenge.add('기록하기');
-                        successChallengePoint.add(20);
-                        sum += 20;
-                        addPoint = true;
-                        print('time: $time');
-                        if (todayMemo[timeBlock] == false) {
-                          time += 1;
-                          setTime();
-                          DBHelper().insertMemo(Memo(
+                  onPressed: () async {
+                    if(memoSave == true){
+                      if(memoController.text.length > 0){
+                        if (addPoint == false) {
+                          successChallenge.add('기록하기');
+                          successChallengePoint.add(20);
+                          sum += 20;
+                          addPoint = true;
+                          print('time: $time');
+                          if (todayMemo[timeBlock] == false) {
+                            time += 1;
+                            setTime();
+                            DBHelper().insertMemo(Memo(
+                                id: year * 1000000 + month * 10000 + day * 100 + time,
+                                title: challengelist[challengeNumber[timeBlock]],
+                                point: challengelistPoint[challengeNumber[timeBlock]],
+                                emotion: nowemotion,
+                                memo: memoController.text,
+                                createTime: getToday(),
+                                time: getTime()));
+                            print(await DBHelper().memos());
+                            setState((){
+                              todayMemo[timeBlock] = true;
+                            });
+                          }
+                          _isChallenge = false;
+                          setIsChallenge();
+                          if(newBadge == false){
+                            Navigator.popUntil(context, ModalRoute.withName('/'));
+                          }
+                          else {
+                            if(badgeHave < 6) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          NewBadgePage()));
+                              SharedPreferences prefs =
+                              await SharedPreferences
+                                  .getInstance();
+                              setState(() {
+                                prefs.setInt(
+                                    'badgeHave', badgeHave + 1);
+                              });
+                              newBadge = false;
+                            }
+                          }
+                          setDayWeek();
+                          todayCheck = true;
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          setState((){
+                            prefs.setBool('todayCheck', true);
+                          });
+                        }
+                        else {
+                          DBHelper().updateMemo(Memo(
                               id: year * 1000000 + month * 10000 + day * 100 + time,
                               title: challengelist[challengeNumber[timeBlock]],
                               point: challengelistPoint[challengeNumber[timeBlock]],
@@ -6808,86 +6864,44 @@ class _RememberListState extends State<RememberList> {
                               memo: memoController.text,
                               createTime: getToday(),
                               time: getTime()));
-                          print(await DBHelper().memos());
-                          setState((){
-                            todayMemo[timeBlock] = true;
-                          });
-                        }
-                        _isChallenge = false;
-                        setIsChallenge();
-                        if(newBadge == false){
-                          Navigator.popUntil(context, ModalRoute.withName('/'));
-                        }
-                        else {
-                          if(badgeHave < 6) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        NewBadgePage()));
-                            SharedPreferences prefs =
-                            await SharedPreferences
-                                .getInstance();
-                            setState(() {
-                              prefs.setInt(
-                                  'badgeHave', badgeHave + 1);
-                            });
-                            newBadge = false;
+                          if(newBadge == false){
+                            Navigator.popUntil(context, ModalRoute.withName('/'));
+                          }
+                          else {
+                            if(badgeHave < 6) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          NewBadgePage()));
+                              SharedPreferences prefs =
+                              await SharedPreferences
+                                  .getInstance();
+                              setState(() {
+                                prefs.setInt(
+                                    'badgeHave', badgeHave + 1);
+                              });
+                              newBadge = false;
+                            }
                           }
                         }
-                        setDayWeek();
-                        todayCheck = true;
-                        SharedPreferences prefs = await SharedPreferences.getInstance();
-                        setState((){
-                          prefs.setBool('todayCheck', true);
-                        });
                       }
                       else {
-                        DBHelper().updateMemo(Memo(
-                            id: year * 1000000 + month * 10000 + day * 100 + time,
-                            title: challengelist[challengeNumber[timeBlock]],
-                            point: challengelistPoint[challengeNumber[timeBlock]],
-                            emotion: nowemotion,
-                            memo: memoController.text,
-                            createTime: getToday(),
-                            time: getTime()));
-                        if(newBadge == false){
-                          Navigator.popUntil(context, ModalRoute.withName('/'));
-                        }
-                        else {
-                          if(badgeHave < 6) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        NewBadgePage()));
-                            SharedPreferences prefs =
-                            await SharedPreferences
-                                .getInstance();
-                            setState(() {
-                              prefs.setInt(
-                                  'badgeHave', badgeHave + 1);
+                        setState((){
+                          Duration duration = new Duration(seconds: 3);
+                          memoSave = false;
+                          Future.delayed(duration, (){
+                            setState((){
+                              memoSave = true;
                             });
-                            newBadge = false;
-                          }
-                        }
-                      }
-                    }
-                    else {
-                      setState((){
-                        Duration duration = new Duration(seconds: 3);
-                        memoSave = false;
-                        Future.delayed(duration, (){
-                          setState((){
-                            memoSave = true;
+                            print('memoSave = true');
                           });
-                          print('memoSave = true');
                         });
-                      });
-                    }}
-                  else {
+                      }}
+                    else {
+                    }
                   }
-                }
+              ),
             ),
           ),
         )
@@ -7030,7 +7044,7 @@ class _ChallengeTipState extends State<ChallengeTip> {
   @override
   Widget build(BuildContext context) {
     var i = 1;
-    return MaterialApp(
+    return CupertinoApp(
         home: Scaffold(
           backgroundColor: Color(0xff1F1F1F),
           body:

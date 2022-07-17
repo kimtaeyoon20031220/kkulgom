@@ -60,7 +60,7 @@ class _AllViewAppState extends State<AllViewApp> {
                                 ),
                                 CupertinoListTile.notched(
                                     title: Text('알림'),
-                                    leading: _DummyIcon(Colors.green, Icon(Icons.notifications_rounded, size: 15, color: Colors.white)),
+                                    leading: _DummyIcon(Colors.green, Icon(Icons.notifications_none_rounded, size: 15, color: Colors.white)),
                                     additionalInfo: Text(notifyMe ? '켜짐' : '꺼짐'),
                                     trailing: CupertinoListTileChevron(),
                                     onTap: () {
@@ -69,8 +69,8 @@ class _AllViewAppState extends State<AllViewApp> {
                                 ),
                                 CupertinoListTile.notched(
                                     title: Text('알림 시간'),
-                                    leading: _DummyIcon(Colors.teal, Icon(Icons.access_time_filled_rounded, size: 15, color: Colors.white)),
-                                    additionalInfo: Text(notifyMe ? '${notifyHour}:${notifyMin}' : '꺼짐'),
+                                    leading: _DummyIcon(Colors.teal, Icon(Icons.watch_later_outlined, size: 15, color: Colors.white)),
+                                    additionalInfo: Text(notifyMe ? '${notifyHour}시 ${notifyMin}분' : '꺼짐'),
                                     trailing: CupertinoListTileChevron(),
                                     onTap: () {
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => AllApp()));
@@ -78,7 +78,7 @@ class _AllViewAppState extends State<AllViewApp> {
                                 ),
                                 CupertinoListTile.notched(
                                     title: Text('도전과제 형태'),
-                                    leading: _DummyIcon(Colors.indigoAccent, Icon(Icons.check_circle_rounded, size: 15, color: Colors.white)),
+                                    leading: _DummyIcon(Colors.indigoAccent, Icon(Icons.check_rounded, size: 15, color: Colors.white)),
                                     additionalInfo: Text('활동'),
                                     trailing: CupertinoListTileChevron(),
                                     onTap: () {
@@ -192,6 +192,9 @@ class _AllViewAppState extends State<AllViewApp> {
                         ),
                       ),
                       Container(
+                        decoration: BoxDecoration(
+                            border: Border(bottom: BorderSide(width: 1, color: Colors.black.withOpacity(0.07)))
+                        ),
                           child: ClipRRect(
                             child: BackdropFilter(
                               filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
