@@ -750,10 +750,21 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
+  var _scale = [false, false, false, false, false, false, false];
+  Curve _curve = Curves.easeOutCubic;
 
   @override
   void initState() {
     super.initState();
+    if (firstTime == true) {
+      for(int i = 0; i < _scale.length; i++) {
+        Future.delayed(Duration(milliseconds: 150 * (i+6)), () {
+          setState((){
+            _scale[i] = true;
+          });
+        });
+      }
+    }
     print('first page 입장!');
     WidgetsBinding.instance!.addObserver(this);
     _init();
@@ -994,288 +1005,303 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                                 )
                               ])
                           ),
-                          Container(
-                              margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0XFF000066).withOpacity(0.03),
-                                    blurRadius: 15,
-                                    spreadRadius: 10,
-                                    offset: const Offset(0, 10),
+                          AnimatedScale(
+                                duration: Duration(milliseconds: 500),
+                            scale: _scale[0] ? 1 : 0,
+                            curve: _curve,
+                            child: Container(
+                                margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.03),
+                                      blurRadius: 15,
+                                      spreadRadius: 10,
+                                      offset: const Offset(0, 10),
+                                    ),
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.0165),
+                                      blurRadius: 7.5,
+                                      spreadRadius: 5,
+                                      offset: const Offset(0, 5),
+                                    ),
+                                    BoxShadow(
+                                      color: Color(0XFF000066).withOpacity(0.0095),
+                                      blurRadius: 5,
+                                      spreadRadius: 2.5,
+                                      offset: const Offset(0, 2.5),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(margin:EdgeInsets.only(top: 40, left: 40, right: 40),child: Row(
+                                        children: [
+                                          Text('오늘의 도전 과제', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AllFontColor)),
+                                          Spacer(),
+                                          Text('불러오는 중', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AllFontColor)),
+                                        ],
+                                      )),
+                                      Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(15),
+                                            color: Color(0xffF7F7F7),
+                                          ),
+                                          padding: EdgeInsets.all(10),
+                                          margin: EdgeInsets.only(top: 20, left: 30, right: 30),
+                                          child: Row(children: [
+                                            Container(
+                                                width: 25,
+                                                height: 25,
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: Colors.white,
+                                                    border: Border.all(width: 1, color: Color(0xffDFDFDF))
+                                                ),
+                                                child: Center(child: Icon(Icons.wb_twilight_rounded, size: 17, color: Colors.deepOrange))),
+                                            SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 0 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 0 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
+                                            Spacer(),
+                                            Text('06:00~12:00', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                          ])
+                                      ),
+                                      Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(15),
+                                            color: Colors.white,
+                                          ),
+                                          padding: EdgeInsets.all(10),
+                                          margin: EdgeInsets.only(top: 5, left: 30, right: 30),
+                                          child: Row(children: [
+                                            Container(
+                                                width: 25,
+                                                height: 25,
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: Colors.white,
+                                                    border: Border.all(width: 1, color: Color(0xffDFDFDF))
+                                                ),
+                                                child: Icon(Icons.light_mode_rounded, size: 17, color: Colors.amber)),
+                                            SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 1 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 1 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
+                                            Spacer(),
+                                            Text('12:00~17:00', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                          ])
+                                      ),
+                                      Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(15),
+                                            color: Color(0xffF2F2F2),
+                                          ),
+                                          padding: EdgeInsets.all(10),
+                                          margin: EdgeInsets.only(top: 5, left: 30, right: 30, bottom: 40),
+                                          child: Row(children: [
+                                            Container(
+                                                width: 25,
+                                                height: 25,
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    color: Colors.white,
+                                                    border: Border.all(width: 1, color: Color(0xffDFDFDF))
+                                                ),
+                                                child: Icon(Icons.dark_mode_rounded, size: 17, color: Colors.indigo)),
+                                            SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 2 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 2 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
+                                            Spacer(),
+                                            Text('17:00~06:00', style: TextStyle(fontSize: 13, color: Colors.grey,)),
+                                          ])
+                                      ),
+                                    ])
+                            ),
+                          ),
+                          AnimatedScale(
+                            duration: Duration(milliseconds: 500),
+                            scale: _scale[1] ? 1 : 0,
+                            curve: _curve,
+                            child: Bounce(
+                              duration: Duration(milliseconds: 100),
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 20),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                        colors: [
+                                          Colors.white,
+                                          Colors.grey,
+                                          Colors.white,
+                                        ]
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0XFF000066).withOpacity(0.03),
+                                        blurRadius: 15,
+                                        spreadRadius: 10,
+                                        offset: const Offset(0, 10),
+                                      ),
+                                      BoxShadow(
+                                        color: Color(0XFF000066).withOpacity(0.0165),
+                                        blurRadius: 7.5,
+                                        spreadRadius: 5,
+                                        offset: const Offset(0, 5),
+                                      ),
+                                      BoxShadow(
+                                        color: Color(0XFF000066).withOpacity(0.0095),
+                                        blurRadius: 5,
+                                        spreadRadius: 2.5,
+                                        offset: const Offset(0, 2.5),
+                                      ),
+                                    ],
                                   ),
-                                  BoxShadow(
-                                    color: Color(0XFF000066).withOpacity(0.0165),
-                                    blurRadius: 7.5,
-                                    spreadRadius: 5,
-                                    offset: const Offset(0, 5),
-                                  ),
-                                  BoxShadow(
-                                    color: Color(0XFF000066).withOpacity(0.0095),
-                                    blurRadius: 5,
-                                    spreadRadius: 2.5,
-                                    offset: const Offset(0, 2.5),
-                                  ),
-                                ],
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: BackdropFilter(
+                                          filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                          child: Stack(
+                                            children: [
+                                              Container(
+                                                  color: Colors.black.withOpacity(0.3),
+                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                                  child: Row(children: [
+                                                    Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
+                                                    Spacer(),
+                                                    Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold)),
+                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0)),
+                                                  ])
+                                              ),
+                                              Container(
+                                                  color: Colors.blueAccent.withOpacity(0.5),
+                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                                  child: Row(children: [
+                                                    Stack(
+                                                      children: [
+                                                        Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
+                                                        Container(
+                                                            width: 150,
+                                                            height: 20,
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(20),
+                                                              color: Colors.white.withOpacity(0.2),
+                                                            )
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Spacer(),
+                                                    Text('불러오는 중', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold)),
+                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
+                                                  ])
+                                              ),
+                                            ],
+                                          )
+                                      )
+                                  )
                               ),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(margin:EdgeInsets.only(top: 40, left: 40, right: 40),child: Row(
-                                      children: [
-                                        Text('오늘의 도전 과제', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AllFontColor)),
-                                        Spacer(),
-                                        Text('불러오는 중', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AllFontColor)),
-                                      ],
-                                    )),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15),
-                                          color: Color(0xffF7F7F7),
-                                        ),
-                                        padding: EdgeInsets.all(10),
-                                        margin: EdgeInsets.only(top: 20, left: 30, right: 30),
-                                        child: Row(children: [
-                                          Container(
-                                              width: 25,
-                                              height: 25,
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                  color: Colors.white,
-                                                  border: Border.all(width: 1, color: Color(0xffDFDFDF))
-                                              ),
-                                              child: Center(child: Icon(Icons.wb_twilight_rounded, size: 17, color: Colors.deepOrange))),
-                                          SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 0 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 0 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
-                                          Spacer(),
-                                          Text('06:00~12:00', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                                        ])
-                                    ),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15),
-                                          color: Colors.white,
-                                        ),
-                                        padding: EdgeInsets.all(10),
-                                        margin: EdgeInsets.only(top: 5, left: 30, right: 30),
-                                        child: Row(children: [
-                                          Container(
-                                              width: 25,
-                                              height: 25,
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                  color: Colors.white,
-                                                  border: Border.all(width: 1, color: Color(0xffDFDFDF))
-                                              ),
-                                              child: Icon(Icons.light_mode_rounded, size: 17, color: Colors.amber)),
-                                          SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 1 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 1 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
-                                          Spacer(),
-                                          Text('12:00~17:00', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                                        ])
-                                    ),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15),
-                                          color: Color(0xffF2F2F2),
-                                        ),
-                                        padding: EdgeInsets.all(10),
-                                        margin: EdgeInsets.only(top: 5, left: 30, right: 30, bottom: 40),
-                                        child: Row(children: [
-                                          Container(
-                                              width: 25,
-                                              height: 25,
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                  color: Colors.white,
-                                                  border: Border.all(width: 1, color: Color(0xffDFDFDF))
-                                              ),
-                                              child: Icon(Icons.dark_mode_rounded, size: 17, color: Colors.indigo)),
-                                          SizedBox(width: MediaQuery.of(context).size.width*0.3, child: Text('', style: TextStyle(fontSize: 15, color: timeBlock == 2 ? Colors.blueAccent : Colors.black, fontWeight: timeBlock == 2 ? FontWeight.bold : FontWeight.normal), overflow: TextOverflow.ellipsis, maxLines: 1,)),
-                                          Spacer(),
-                                          Text('17:00~06:00', style: TextStyle(fontSize: 13, color: Colors.grey,)),
-                                        ])
-                                    ),
-                                  ])
-                          ),
-                          Bounce(
-                            duration: Duration(milliseconds: 100),
-                            child: Container(
-                                margin: EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 20),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  gradient: LinearGradient(
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                      colors: [
-                                        Colors.white,
-                                        Colors.grey,
-                                        Colors.white,
-                                      ]
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(0XFF000066).withOpacity(0.03),
-                                      blurRadius: 15,
-                                      spreadRadius: 10,
-                                      offset: const Offset(0, 10),
-                                    ),
-                                    BoxShadow(
-                                      color: Color(0XFF000066).withOpacity(0.0165),
-                                      blurRadius: 7.5,
-                                      spreadRadius: 5,
-                                      offset: const Offset(0, 5),
-                                    ),
-                                    BoxShadow(
-                                      color: Color(0XFF000066).withOpacity(0.0095),
-                                      blurRadius: 5,
-                                      spreadRadius: 2.5,
-                                      offset: const Offset(0, 2.5),
-                                    ),
-                                  ],
-                                ),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: BackdropFilter(
-                                        filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                                color: Colors.black.withOpacity(0.3),
-                                                padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                                child: Row(children: [
-                                                  Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
-                                                  Spacer(),
-                                                  Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold)),
-                                                  Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0)),
-                                                ])
-                                            ),
-                                            Container(
-                                                color: Colors.blueAccent.withOpacity(0.5),
-                                                padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                                child: Row(children: [
-                                                  Stack(
-                                                    children: [
-                                                      Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
-                                                      Container(
-                                                          width: 150,
-                                                          height: 20,
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(20),
-                                                            color: Colors.white.withOpacity(0.2),
-                                                          )
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Spacer(),
-                                                  Text('불러오는 중', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold)),
-                                                  Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
-                                                ])
-                                            ),
-                                          ],
-                                        )
-                                    )
-                                )
-                            ),
-                            onPressed: () {
-                              if(dayWeek == challengeNumber[0] && dayWeek < 5) {
-                                print('도전과제 오류 없음');
-                                print(answer);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});}
-                                );
-                              }
-                              else if(dayWeek >= 5) {
-                                print('도전과제 오류 없음, 6주차 이상');
-                                print(answer);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});});
-                              }
-                              else {
-                                print('setChallenge>dayWeek==${dayWeek}일차 도전과제');
-                                Navigator.push(
+                              onPressed: () {
+                                if(dayWeek == challengeNumber[0] && dayWeek < 5) {
+                                  print('도전과제 오류 없음');
+                                  print(answer);
+                                  Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => ChallengeError())
-                                );
-                              }
-                            },
-                          ),
-                          Bounce(
-                            duration: Duration(milliseconds: 100),
-                            child: Container(
-                                margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  gradient: LinearGradient(
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                      colors: [
-                                        Colors.white,
-                                        Colors.grey,
-                                        Colors.white,
-                                      ]
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(0XFF000066).withOpacity(0.03),
-                                      blurRadius: 15,
-                                      spreadRadius: 10,
-                                      offset: const Offset(0, 10),
-                                    ),
-                                    BoxShadow(
-                                      color: Color(0XFF000066).withOpacity(0.0165),
-                                      blurRadius: 7.5,
-                                      spreadRadius: 5,
-                                      offset: const Offset(0, 5),
-                                    ),
-                                    BoxShadow(
-                                      color: Color(0XFF000066).withOpacity(0.0095),
-                                      blurRadius: 5,
-                                      spreadRadius: 2.5,
-                                      offset: const Offset(0, 2.5),
-                                    ),
-                                  ],
-                                ),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: BackdropFilter(
-                                        filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                                color: Colors.black.withOpacity(0.3),
-                                                padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                                child: Row(children: [
-                                                  Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
-                                                  Spacer(),
-                                                  Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold)),
-                                                  Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0)),
-                                                ])
-                                            ),
-                                            Container(
-                                                color: Colors.greenAccent.withOpacity(0.5),
-                                                padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
-                                                child: Row(children: [
-                                                  Text('기록하기', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
-                                                  Spacer(),
-                                                  Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
-                                                ])
-                                            ),
-                                          ],
-                                        )
-                                    )
-                                )
+                                    MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});}
+                                  );
+                                }
+                                else if(dayWeek >= 5) {
+                                  print('도전과제 오류 없음, 6주차 이상');
+                                  print(answer);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ChallengeMode()),).then((value) {setState(() {});});
+                                }
+                                else {
+                                  print('setChallenge>dayWeek==${dayWeek}일차 도전과제');
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ChallengeError())
+                                  );
+                                }
+                              },
                             ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => SecondApp()),
-                              );
-                              todayListNow = false;
-                            },
+                          ),
+                          AnimatedScale(
+                    duration: Duration(milliseconds: 500),
+                            scale: _scale[2] ? 1 : 0,
+                            curve: _curve,
+                            child: Bounce(
+                              duration: Duration(milliseconds: 100),
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                        colors: [
+                                          Colors.white,
+                                          Colors.grey,
+                                          Colors.white,
+                                        ]
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0XFF000066).withOpacity(0.03),
+                                        blurRadius: 15,
+                                        spreadRadius: 10,
+                                        offset: const Offset(0, 10),
+                                      ),
+                                      BoxShadow(
+                                        color: Color(0XFF000066).withOpacity(0.0165),
+                                        blurRadius: 7.5,
+                                        spreadRadius: 5,
+                                        offset: const Offset(0, 5),
+                                      ),
+                                      BoxShadow(
+                                        color: Color(0XFF000066).withOpacity(0.0095),
+                                        blurRadius: 5,
+                                        spreadRadius: 2.5,
+                                        offset: const Offset(0, 2.5),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: BackdropFilter(
+                                          filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                          child: Stack(
+                                            children: [
+                                              Container(
+                                                  color: Colors.black.withOpacity(0.3),
+                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                                  child: Row(children: [
+                                                    Text('블라블라', style: TextStyle(color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold, fontSize: 20),),
+                                                    Spacer(),
+                                                    Text('지금 도전하기', style: TextStyle(fontSize: 15, color: Colors.white.withOpacity(0), fontWeight: FontWeight.bold)),
+                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0)),
+                                                  ])
+                                              ),
+                                              Container(
+                                                  color: Colors.greenAccent.withOpacity(0.5),
+                                                  padding: EdgeInsets.fromLTRB(30, 25, 30, 25),
+                                                  child: Row(children: [
+                                                    Text('기록하기', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
+                                                    Spacer(),
+                                                    Icon(Icons.navigate_next_rounded, color: Colors.white.withOpacity(0.3)),
+                                                  ])
+                                              ),
+                                            ],
+                                          )
+                                      )
+                                  )
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => SecondApp()),
+                                );
+                                todayListNow = false;
+                              },
+                            ),
                           ),
                           Container(
                               margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -1285,63 +1311,80 @@ class _FirstPageState extends State<FirstPage> with WidgetsBindingObserver {
                                   child: ListView(
                                       scrollDirection: Axis.horizontal,
                                       children: [
-                    Container(
-                    height: MediaQuery.of(context).size.height*0.17,
-                    width: MediaQuery.of(context).size.height*0.17,
-                    margin: EdgeInsets.only(bottom: 15, right: 10, left: 20),
-                    child: Bounce(
-                    duration: Duration(milliseconds: 100),
-                    child: Stack(
-                    children: [
-                    Container(
-                    decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(20),
-
-                    ),
-                    padding: EdgeInsets.all(25),
-                    child: Column(children: [
-                    Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                    Image.asset('assets/badgeicon.png', width: 45),
-                    ],
-                    ),
-                    Spacer(),
-                    Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                    Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                    Text('모은 배지', style: TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 17)),
-                    Text(' ', style: TextStyle(fontSize: 6)),
-                    Stack(
+                                        AnimatedScale(
+                                          duration: Duration(milliseconds: 500),
+                      scale: _scale[3] ? 1 : 0,
+                      curve: _curve,
+                      child: Container(
+                      height: MediaQuery.of(context).size.height*0.17,
+                      width: MediaQuery.of(context).size.height*0.17,
+                      margin: EdgeInsets.only(bottom: 15, right: 10, left: 20),
+                      child: Bounce(
+                      duration: Duration(milliseconds: 100),
+                      child: Stack(
                       children: [
-                        Text('개', style: TextStyle(color: Colors.black.withOpacity(0), fontSize: 25, fontWeight: FontWeight.bold)),
-                    Container(
-                    width: 30,
-                    height: 20,
-                    decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.black.withOpacity(0.1),
-                    )
-                    )
+                      Container(
+                      decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(20),
+
+                      ),
+                      padding: EdgeInsets.all(25),
+                      child: Column(children: [
+                      Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                      Image.asset('assets/badgeicon.png', width: 45),
                       ],
+                      ),
+                      Spacer(),
+                      Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                      Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                      Text('모은 배지', style: TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 17)),
+                      Text(' ', style: TextStyle(fontSize: 6)),
+                      Stack(
+                        children: [
+                          Text('개', style: TextStyle(color: Colors.black.withOpacity(0), fontSize: 25, fontWeight: FontWeight.bold)),
+                      Container(
+                      width: 30,
+                      height: 20,
+                      decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.black.withOpacity(0.1),
+                      )
+                      )
+                        ],
+                      ),
+                      ]),
+                      ]),
+                      ]),
+                      ),
+                      ],
+                      ),
+                      onPressed: () {}
+                      ),
+                      ),
                     ),
-                    ]),
-                    ]),
-                    ]),
-                    ),
-                    ],
-                    ),
-                    onPressed: () {}
-                    ),
-                    ),
-                                        WidgetPoint(),
-                                        WidgetSettings(),
-                                        WidgetAll(),
+                                        AnimatedScale(
+                                          duration: Duration(milliseconds: 500),
+                                            scale: _scale[4] ? 1 : 0,
+                                            curve: _curve,
+                                            child: WidgetPoint()),
+                                        AnimatedScale(
+                                          duration: Duration(milliseconds: 500),
+                                            scale: _scale[5] ? 1 : 0,
+                                            curve: _curve,
+                                            child: WidgetSettings()),
+                                        AnimatedScale(
+                                          duration: Duration(milliseconds: 500),
+                                            scale: _scale[6] ? 1 : 0,
+                                            curve: _curve,
+                                            child: WidgetAll()),
                                       ]),
                                 ),
                               ])
@@ -1960,7 +2003,7 @@ class _SecondPageState extends State<SecondPage> {
                 leftChevronVisible: false,
                 rightChevronVisible: false,
                 titleCentered: true,
-                titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
                 headerMargin: EdgeInsets.only(bottom: 30),
               ),
               locale: 'ko-KR',
@@ -2137,7 +2180,7 @@ class _SecondPageState extends State<SecondPage> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text('', style: TextStyle(fontSize: 15)),
-                                          Text(dayListToday[0].memo, style: TextStyle(fontSize: 17, letterSpacing:1, wordSpacing: 1, height: 1.2)),
+                                          Text(dayListToday[0].memo, style: TextStyle(fontSize: 17, letterSpacing:1, wordSpacing: 1, height: 1.2, color: Colors.black)),
                                           Container(
                                               margin: EdgeInsets.only(top: 20),
                                               child: Wrap(
@@ -2977,11 +3020,11 @@ class _AboutUsState extends State<AboutUs> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('꿀곰의 시작', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                      Text('꿀곰의 시작', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black)),
                                       Text('', style: TextStyle(fontSize: 15)),
-                                      Text('안녕하세요, 꿀곰 프로젝트 팀 입니다! 요즘 거의 대부분의 사람들은 휴대폰 사용으로 본인의 할 일을 못하고 미룬 경험이 몇 번 있을 거예요. 물론 저희 팀원들도 그런 경험이 있었죠.', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
+                                      Text('안녕하세요, 꿀곰 프로젝트 팀 입니다! 요즘 거의 대부분의 사람들은 휴대폰 사용으로 본인의 할 일을 못하고 미룬 경험이 몇 번 있을 거예요. 물론 저희 팀원들도 그런 경험이 있었죠.', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2, color: Colors.black)),
                                       Text('', style: TextStyle(fontSize: 15)),
-                                      Text('꿀곰 팀은 장기간의 코로나 사태로 인해 늘어난 휴대폰 사용시간, 할 일을 못하면서 생기는 무기력증과 우울증 등이 중요한 사회적 문제라고 인식했어요. 그래서 저희 팀은 휴대폰 때문에 생기는 게으름을 방지하기 위한 앱을 만들기로 했답니다.', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
+                                      Text('꿀곰 팀은 장기간의 코로나 사태로 인해 늘어난 휴대폰 사용시간, 할 일을 못하면서 생기는 무기력증과 우울증 등이 중요한 사회적 문제라고 인식했어요. 그래서 저희 팀은 휴대폰 때문에 생기는 게으름을 방지하기 위한 앱을 만들기로 했답니다.', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2, color: Colors.black)),
                                     ],
                                   ),
                                 ),
@@ -2990,9 +3033,9 @@ class _AboutUsState extends State<AboutUs> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('꿀곰은 어떤 서비스를 하나요?', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                      Text('꿀곰은 어떤 서비스를 하나요?', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black)),
                                       Text('', style: TextStyle(fontSize: 15)),
-                                      Text('꿀곰은 휴대폰 제한 사용 시간 도달 시 알람을 통해 자신이 수행할 도전 과제를 제공해 중독을 방지하고 게으름 악순환의 과정을 끊을 수 있도록 도움을 주는 서비스를 제공해요. 지속적으로 업데이트를 진행하여 더 많은 도전 과제와 다양한 기능을 추가할 예정입니다!', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
+                                      Text('꿀곰은 휴대폰 제한 사용 시간 도달 시 알람을 통해 자신이 수행할 도전 과제를 제공해 중독을 방지하고 게으름 악순환의 과정을 끊을 수 있도록 도움을 주는 서비스를 제공해요. 지속적으로 업데이트를 진행하여 더 많은 도전 과제와 다양한 기능을 추가할 예정입니다!', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2, color: Colors.black)),
                                     ],
                                   ),
                                 ),
@@ -3001,7 +3044,7 @@ class _AboutUsState extends State<AboutUs> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('캐릭터 소개', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                      Text('캐릭터 소개', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black)),
                                       Text('', style: TextStyle(fontSize: 15)),
                                       Container(
                                         width: 261,
@@ -3039,7 +3082,7 @@ class _AboutUsState extends State<AboutUs> {
                                         ),
                                       ),
                                       Text('\n꿀곰이', style: TextStyle(fontSize: 20, height: 1.7, letterSpacing: 1.2, wordSpacing: 1.2, fontWeight: FontWeight.bold)),
-                                      Text('\n꿀곰이는 누워서 꿀 먹는 것을 좋아하는 게으른 곰이에요. 꿀곰이도 게으르게 누워서 꿀만 먹어 살이 많이 찐 탓인지, 자신의 게으름을 고치고 싶다고 하네요! 꿀곰이와 함께 차근차근 도전 과제를 깨며 게으름을 이겨내 볼까요?', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2)),
+                                      Text('\n꿀곰이는 누워서 꿀 먹는 것을 좋아하는 게으른 곰이에요. 꿀곰이도 게으르게 누워서 꿀만 먹어 살이 많이 찐 탓인지, 자신의 게으름을 고치고 싶다고 하네요! 꿀곰이와 함께 차근차근 도전 과제를 깨며 게으름을 이겨내 볼까요?', style: TextStyle(fontSize: 15, height: 2, letterSpacing: 1, wordSpacing: 1.2, color: Colors.black)),
                                     ],
                                   ),
                                 ),
@@ -3048,7 +3091,7 @@ class _AboutUsState extends State<AboutUs> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('  팀원', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                      Text('  팀원', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black)),
                                       Text('', style: TextStyle(fontSize: 15)),
                                       Bounce(
                                         duration: Duration(milliseconds: 100),
@@ -3090,7 +3133,7 @@ class _AboutUsState extends State<AboutUs> {
                                                           children: [
                                                             Text('\u{1F4E2}', style: TextStyle(fontSize: 30)),
                                                             Text('', style: TextStyle(fontSize: 10)),
-                                                            Text('강원중', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
+                                                            Text('강원중', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black)),
                                                             Text('', style: TextStyle(fontSize: 10)),
                                                             Text('가천대학교\n경영학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
                                                           ],
@@ -3102,7 +3145,7 @@ class _AboutUsState extends State<AboutUs> {
                                                           child: Column(
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
-                                                                Text('PM', style: TextStyle(fontSize: 20)),
+                                                                Text('PM', style: TextStyle(fontSize: 20, color: Colors.black)),
                                                                 Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
                                                                 Text('하고 싶은 말', style: TextStyle(fontSize: 17))
                                                               ]
@@ -3155,7 +3198,7 @@ class _AboutUsState extends State<AboutUs> {
                                                           children: [
                                                             Text('\u{1F4DD}', style: TextStyle(fontSize: 30)),
                                                             Text('', style: TextStyle(fontSize: 10)),
-                                                            Text('이기용', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
+                                                            Text('이기용', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black)),
                                                             Text('', style: TextStyle(fontSize: 10)),
                                                             Text('가천대학교\n경영학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
                                                           ],
@@ -3167,9 +3210,9 @@ class _AboutUsState extends State<AboutUs> {
                                                           child: Column(
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
-                                                                Text('기획, 마케팅', style: TextStyle(fontSize: 20)),
+                                                                Text('기획, 마케팅', style: TextStyle(fontSize: 20, color: Colors.black)),
                                                                 Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
-                                                                Text('하고 싶은 말', style: TextStyle(fontSize: 17))
+                                                                Text('하고 싶은 말', style: TextStyle(fontSize: 17, color: Colors.black))
                                                               ]
                                                           )
                                                       )
@@ -3220,7 +3263,7 @@ class _AboutUsState extends State<AboutUs> {
                                                           children: [
                                                             Text('\u{1F528}', style: TextStyle(fontSize: 30)),
                                                             Text('', style: TextStyle(fontSize: 10)),
-                                                            Text('김태윤', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
+                                                            Text('김태윤', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black)),
                                                             Text('', style: TextStyle(fontSize: 10)),
                                                             Text('가천대학교\n컴퓨터공학과', style: TextStyle(fontSize: 13, color: Colors.grey)),
                                                           ],
@@ -3232,9 +3275,9 @@ class _AboutUsState extends State<AboutUs> {
                                                           child: Column(
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
-                                                                Text('개발, 디자인', style: TextStyle(fontSize: 20)),
+                                                                Text('개발, 디자인', style: TextStyle(fontSize: 20, color: Colors.black)),
                                                                 Text('_____\n', style: TextStyle(fontSize: 10, color: Colors.grey)),
-                                                                Text('하고 싶은 말', style: TextStyle(fontSize: 17))
+                                                                Text('하고 싶은 말', style: TextStyle(fontSize: 17, color: Colors.black))
                                                               ]
                                                           )
                                                       )
@@ -3255,7 +3298,7 @@ class _AboutUsState extends State<AboutUs> {
                                     children: [
                                       Row(
                                         children: [
-                                          Text('팀 블로그', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                          Text('팀 블로그', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black)),
                                           Spacer(),
                                           Bounce(
                                               duration: Duration(milliseconds: 100),
@@ -3287,7 +3330,7 @@ class _AboutUsState extends State<AboutUs> {
                                         ],
                                       ),
                                       Text('', style: TextStyle(fontSize: 15)),
-                                      Text('꿀곰 프로젝트의 팀 블로그예요. 꿀곰이 만들어지는 과정과 꿀곰에 들어간 생각이 궁금하시다면 한번 방문해봐요.', style: TextStyle(fontSize: 15, height: 1.7, letterSpacing: 1.1, wordSpacing: 1.2)),
+                                      Text('꿀곰 프로젝트의 팀 블로그예요. 꿀곰이 만들어지는 과정과 꿀곰에 들어간 생각이 궁금하시다면 한번 방문해봐요.', style: TextStyle(fontSize: 15, height: 1.7, letterSpacing: 1.1, wordSpacing: 1.2, color: Colors.black)),
                                     ],
                                   ),
                                 ),
@@ -3651,14 +3694,16 @@ class BadgeApp extends StatefulWidget {
 }
 
 class _BadgeAppState extends State<BadgeApp> {
-  bool _check = false;
+  var _check = [false, false, false, false, false, false];
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 0), () {
-      setState((){
-        _check = true;
+    for(int i = 0; i < _check.length; i++) {
+      Future.delayed(Duration(milliseconds: 100 * (i + 1)), () {
+        setState((){
+          _check[i] = true;
+        });
       });
-    });
+    }
   }
 
   @override
@@ -3668,278 +3713,274 @@ class _BadgeAppState extends State<BadgeApp> {
             backgroundColor: Colors.white,
             body: Stack(
               children: [
-                Container(
-                  padding: EdgeInsets.only(top: 250),
+                ListView(children: [
+                  Container(
+                    padding: EdgeInsets.fromLTRB(20, 250, 20, 0),
                     decoration: BoxDecoration(
-                      color: Color(0xffF2F2F7),
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    child: ListView(children: [
-                      Container(
-                        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        margin: EdgeInsets.only(top: 40),
-                        child: Column(
-                          children: [
-                            Text('도전과제', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 17, fontWeight: FontWeight.bold)),
-                            GridView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  childAspectRatio: 2/3,
-                                  crossAxisCount: 3,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                ),
-                                itemCount: badgelist.length,
-                                itemBuilder: (context, index) {
-                                  return AnimatedScale(
-                                    duration: Duration(milliseconds: 1000),
-                                    curve: Curves.elasticOut,
-                                    scale: _check ? 1.0 : 0.7,
-                                    child: Container(
-                                        color: Colors.transparent,
-                                        padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                                        child: Column(children: <Widget>[
-                                          if (badgeHave > index)
-                                            Bounce(
-                                              duration: Duration(milliseconds: 100),
-                                              onPressed: () {
-                                                showCupertinoModalPopup(context: context, builder: (BuildContext context) => CupertinoPopupSurface(
-                                                    child: Container(
-                                                        padding: EdgeInsets.all(40),
-                                                        height: MediaQuery.of(context).size.height*0.5,
-                                                        width: MediaQuery.of(context).size.width,
-                                                        child: Column(
-                                                            children: [
-                                                              Row(
-                                                                  children: [
-                                                                    Spacer(),
-                                                                    Bounce(
-                                                                        duration: Duration(milliseconds: 100),
-                                                                        onPressed: () {
-                                                                          Navigator.pop(context, 1);
-                                                                        },
-                                                                        child: Container(
-                                                                            width: 50,
-                                                                            height: 50,
-                                                                            decoration: BoxDecoration(
-                                                                              borderRadius: BorderRadius.circular(50),
-                                                                              color: Colors.white,
-                                                                            ),
-                                                                            child: Center(
-                                                                              child: Icon(Icons.close_rounded, size: 30, color: Colors.black),
-                                                                            )
-                                                                        )
-                                                                    )
-                                                                  ]
-                                                              ),
-                                                              Image.asset('assets/badge/badge${index+1}.png',width: 130),
-                                                              Text('', style: TextStyle(fontSize: 30)),
-                                                              Text('${badgelist[index]}', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                                              Text('', style: TextStyle(fontSize: 10)),
-                                                              Text('배지의 효과 작성', style: TextStyle(fontSize: 17, color: Colors.grey)),
-                                                            ]
-                                                        )
-                                                    )
-                                                ));
-                                              },
-                                              child: Stack(
-                                                  children: [
-                                                    Container(
-                                                        width: 100,
-                                                        height: 100,
-                                                        margin: EdgeInsets.only(bottom: 0),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(130),
-                                                            gradient: RadialGradient(
-                                                              colors: [
-                                                                Colors.amber.withOpacity(0.7),
-                                                                Colors.amber.withOpacity(0),
-                                                              ],
-                                                            )
-                                                        )
-                                                    ),
-                                                    Container(
-                                                        width: 80,
-                                                        height: 80,
-                                                        margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(100),
-                                                            gradient: LinearGradient(
-                                                                begin: Alignment.topLeft,
-                                                                end: Alignment.bottomRight,
-                                                                colors: [
-                                                                  Colors.amber.withOpacity(0.4),
-                                                                  Colors.amber.withOpacity(0.9),
-                                                                ]
-                                                            )
-                                                        )
-                                                    ),
-                                                    Container(
-                                                        width: 70,
-                                                        height: 70,
-                                                        margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(100),
-                                                            gradient: LinearGradient(
-                                                                begin: Alignment.topLeft,
-                                                                end: Alignment.bottomRight,
-                                                                colors: [
-                                                                  Colors.amber.withOpacity(0.4),
-                                                                  Colors.amber.withOpacity(0.9),
-                                                                ]
-                                                            ),
-                                                            border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
-                                                        )
-                                                    ),
-                                                    Container(
-                                                        width: 70,
-                                                        height: 70,
-                                                        margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(100),
-                                                            color: Colors.white.withOpacity(0.9),
-                                                            border: Border.all(width: 3, color: Colors.amber.withOpacity(0.8))
-                                                        ),
-                                                        child: Center(
-                                                          child: Image.asset('assets/badge/badge${index+1}.png', width: 50),
-                                                        )
-                                                    ),
-                                                  ]
-                                              ),)
-                                          else
-                                            Bounce(
-                                              duration: Duration(milliseconds: 100),
-                                              onPressed: () {
-                                                showCupertinoModalPopup(context: context, builder: (BuildContext context) => CupertinoPopupSurface(
-                                                  child: Container(
+                    margin: EdgeInsets.only(top: 40),
+                    child: Column(
+                      children: [
+                        Text('도전과제', style: TextStyle(color: Colors.black.withOpacity(0.7), fontSize: 17, fontWeight: FontWeight.bold)),
+                        GridView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              childAspectRatio: 2/3,
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                            ),
+                            itemCount: badgelist.length,
+                            itemBuilder: (context, index) {
+                              return AnimatedScale(
+                                duration: Duration(milliseconds: 1000),
+                                curve: Curves.easeOutCubic,
+                                scale: _check[index] ? 1.0 : 0.7,
+                                child: Container(
+                                    color: Colors.transparent,
+                                    padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                    child: Column(children: <Widget>[
+                                      if (badgeHave > index)
+                                        Bounce(
+                                          duration: Duration(milliseconds: 100),
+                                          onPressed: () {
+                                            showCupertinoModalPopup(context: context, builder: (BuildContext context) => CupertinoPopupSurface(
+                                                child: Container(
                                                     padding: EdgeInsets.all(40),
                                                     height: MediaQuery.of(context).size.height*0.5,
                                                     width: MediaQuery.of(context).size.width,
                                                     child: Column(
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Spacer(),
-                                                            Bounce(
-                                                              duration: Duration(milliseconds: 100),
-                                                              onPressed: () {
-                                                                Navigator.pop(context, 1);
-                                                              },
-                                                              child: Container(
-                                                                width: 50,
-                                                                height: 50,
-                                                                decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(50),
-                                                                  color: Colors.white,
-                                                                ),
-                                                                child: Center(
-                                                                  child: Icon(Icons.close_rounded, size: 30, color: Colors.black),
+                                                        children: [
+                                                          Row(
+                                                              children: [
+                                                                Spacer(),
+                                                                Bounce(
+                                                                    duration: Duration(milliseconds: 100),
+                                                                    onPressed: () {
+                                                                      Navigator.pop(context, 1);
+                                                                    },
+                                                                    child: Container(
+                                                                        width: 50,
+                                                                        height: 50,
+                                                                        decoration: BoxDecoration(
+                                                                          borderRadius: BorderRadius.circular(50),
+                                                                          color: Colors.white,
+                                                                        ),
+                                                                        child: Center(
+                                                                          child: Icon(Icons.close_rounded, size: 30, color: Colors.black),
+                                                                        )
+                                                                    )
                                                                 )
-                                                              )
-                                                            )
-                                                          ]
-                                                        ),
-                                                        Image.asset('assets/badge/badge${index+1}.png',width: 130),
-                                                        Text('', style: TextStyle(fontSize: 30)),
-                                                        Text('${badgelist[index]}', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                                                        Text('', style: TextStyle(fontSize: 10)),
-                                                        Text('얻을 수 있는 조건을 작성', style: TextStyle(fontSize: 17, color: Colors.grey)),
-                                                      ]
+                                                              ]
+                                                          ),
+                                                          Image.asset('assets/badge/badge${index+1}.png',width: 130),
+                                                          Text('', style: TextStyle(fontSize: 30)),
+                                                          Text('${badgelist[index]}', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                                          Text('', style: TextStyle(fontSize: 10)),
+                                                          Text('배지의 효과 작성', style: TextStyle(fontSize: 17, color: Colors.grey)),
+                                                        ]
                                                     )
-                                                  )
-                                                ));
-                                              },
-                                              child: Stack(
-                                                  children: [
-                                                    Container(
-                                                        width: 100,
-                                                        height: 100,
-                                                        margin: EdgeInsets.only(bottom: 0),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(130),
-                                                            gradient: RadialGradient(
-                                                              colors: [
-                                                                Colors.amber.withOpacity(0),
-                                                                Colors.amber.withOpacity(0),
-                                                              ],
-                                                            )
+                                                )
+                                            ));
+                                          },
+                                          child: Stack(
+                                              children: [
+                                                Container(
+                                                    width: 100,
+                                                    height: 100,
+                                                    margin: EdgeInsets.only(bottom: 0),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(130),
+                                                        gradient: RadialGradient(
+                                                          colors: [
+                                                            Colors.amber.withOpacity(0.7),
+                                                            Colors.amber.withOpacity(0),
+                                                          ],
                                                         )
-                                                    ),
-                                                    Container(
-                                                        width: 80,
-                                                        height: 80,
-                                                        margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(100),
-                                                            gradient: LinearGradient(
-                                                                begin: Alignment.topLeft,
-                                                                end: Alignment.bottomRight,
-                                                                colors: [
-                                                                  Colors.amber.withOpacity(0.1),
-                                                                  Colors.amber.withOpacity(0.3),
-                                                                ]
-                                                            )
+                                                    )
+                                                ),
+                                                Container(
+                                                    width: 80,
+                                                    height: 80,
+                                                    margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(100),
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment.topLeft,
+                                                            end: Alignment.bottomRight,
+                                                            colors: [
+                                                              Colors.amber.withOpacity(0.4),
+                                                              Colors.amber.withOpacity(0.9),
+                                                            ]
                                                         )
-                                                    ),
-                                                    Container(
-                                                        width: 70,
-                                                        height: 70,
-                                                        margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(100),
-                                                            gradient: LinearGradient(
-                                                                begin: Alignment.topLeft,
-                                                                end: Alignment.bottomRight,
-                                                                colors: [
-                                                                  Colors.amber.withOpacity(0.1),
-                                                                  Colors.amber.withOpacity(0.3),
-                                                                ]
-                                                            ),
-                                                            border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
-                                                        )
-                                                    ),
-                                                    Container(
-                                                        width: 70,
-                                                        height: 70,
-                                                        margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(100),
-                                                            color: Colors.white.withOpacity(0.9),
-                                                            border: Border.all(width: 3, color: Colors.amber.withOpacity(0.3))
+                                                    )
+                                                ),
+                                                Container(
+                                                    width: 70,
+                                                    height: 70,
+                                                    margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(100),
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment.topLeft,
+                                                            end: Alignment.bottomRight,
+                                                            colors: [
+                                                              Colors.amber.withOpacity(0.4),
+                                                              Colors.amber.withOpacity(0.9),
+                                                            ]
                                                         ),
-                                                        child: Center(
-                                                          child: Image.asset('assets/badge/badge${index+1}.png', width: 50, color: const Color.fromRGBO(255, 255, 255, 0.2),colorBlendMode: BlendMode.modulate),
-                                                        )
+                                                        border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
+                                                    )
+                                                ),
+                                                Container(
+                                                    width: 70,
+                                                    height: 70,
+                                                    margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(100),
+                                                        color: Colors.white.withOpacity(0.9),
+                                                        border: Border.all(width: 3, color: Colors.amber.withOpacity(0.8))
                                                     ),
+                                                    child: Center(
+                                                      child: Image.asset('assets/badge/badge${index+1}.png', width: 50),
+                                                    )
+                                                ),
+                                              ]
+                                          ),)
+                                      else
+                                        Bounce(
+                                          duration: Duration(milliseconds: 100),
+                                          onPressed: () {
+                                            showCupertinoModalPopup(context: context, builder: (BuildContext context) => CupertinoPopupSurface(
+                                              child: Container(
+                                                padding: EdgeInsets.all(40),
+                                                height: MediaQuery.of(context).size.height*0.5,
+                                                width: MediaQuery.of(context).size.width,
+                                                child: Column(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Spacer(),
+                                                        Bounce(
+                                                          duration: Duration(milliseconds: 100),
+                                                          onPressed: () {
+                                                            Navigator.pop(context, 1);
+                                                          },
+                                                          child: Container(
+                                                            width: 50,
+                                                            height: 50,
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(50),
+                                                              color: Colors.white,
+                                                            ),
+                                                            child: Center(
+                                                              child: Icon(Icons.close_rounded, size: 30, color: Colors.black),
+                                                            )
+                                                          )
+                                                        )
+                                                      ]
+                                                    ),
+                                                    Image.asset('assets/badge/badge${index+1}.png',width: 130),
+                                                    Text('', style: TextStyle(fontSize: 30)),
+                                                    Text('${badgelist[index]}', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                                                    Text('', style: TextStyle(fontSize: 10)),
+                                                    Text('얻을 수 있는 조건을 작성', style: TextStyle(fontSize: 17, color: Colors.grey)),
                                                   ]
-                                              ),),
-                                          Container(
-                                            margin: EdgeInsets.only(top: 10),
-                                            child: Text(badgelist[index], style: TextStyle(color: Color(0xff0f1f42), fontSize: 15, fontWeight: FontWeight.bold)),
-                                          )
-                                        ])
-                                    ),
-                                  );
-                                }
-                            ),
-                          ],
+                                                )
+                                              )
+                                            ));
+                                          },
+                                          child: Stack(
+                                              children: [
+                                                Container(
+                                                    width: 100,
+                                                    height: 100,
+                                                    margin: EdgeInsets.only(bottom: 0),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(130),
+                                                        gradient: RadialGradient(
+                                                          colors: [
+                                                            Colors.amber.withOpacity(0),
+                                                            Colors.amber.withOpacity(0),
+                                                          ],
+                                                        )
+                                                    )
+                                                ),
+                                                Container(
+                                                    width: 80,
+                                                    height: 80,
+                                                    margin: EdgeInsets.only(bottom: 0, left: 10, top: 10),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(100),
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment.topLeft,
+                                                            end: Alignment.bottomRight,
+                                                            colors: [
+                                                              Colors.amber.withOpacity(0.1),
+                                                              Colors.amber.withOpacity(0.3),
+                                                            ]
+                                                        )
+                                                    )
+                                                ),
+                                                Container(
+                                                    width: 70,
+                                                    height: 70,
+                                                    margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(100),
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment.topLeft,
+                                                            end: Alignment.bottomRight,
+                                                            colors: [
+                                                              Colors.amber.withOpacity(0.1),
+                                                              Colors.amber.withOpacity(0.3),
+                                                            ]
+                                                        ),
+                                                        border: Border.all(width: 3, color: Colors.white.withOpacity(0.25))
+                                                    )
+                                                ),
+                                                Container(
+                                                    width: 70,
+                                                    height: 70,
+                                                    margin: EdgeInsets.only(bottom: 0, left: 15, top: 15),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(100),
+                                                        color: Colors.white.withOpacity(0.9),
+                                                        border: Border.all(width: 3, color: Colors.amber.withOpacity(0.3))
+                                                    ),
+                                                    child: Center(
+                                                      child: Image.asset('assets/badge/badge${index+1}.png', width: 50, color: const Color.fromRGBO(255, 255, 255, 0.2),colorBlendMode: BlendMode.modulate),
+                                                    )
+                                                ),
+                                              ]
+                                          ),),
+                                      Container(
+                                        margin: EdgeInsets.only(top: 10),
+                                        child: Text(badgelist[index], style: TextStyle(color: Color(0xff0f1f42), fontSize: 15, fontWeight: FontWeight.bold)),
+                                      )
+                                    ])
+                                ),
+                              );
+                            }
                         ),
-                      )
-                    ],)
-                ),
+                      ],
+                    ),
+                  )
+                ],),
                 Column(
                     children: [
                       Container(
-                        padding: EdgeInsets.fromLTRB(40, 70, 40, 20),
+                        padding: EdgeInsets.fromLTRB(40, 70, 40, 100),
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
                             gradient: LinearGradient(
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: [
+                                  Colors.white,
+                                  Colors.white,
                                   Colors.white,
                                   Colors.white,
                                   Colors.white.withOpacity(0),
@@ -6124,7 +6165,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
                               ])),
                               Spacer(),
                               AnimatedScale(
-                                duration: Duration(milliseconds: 1000),
+                                duration: Duration(milliseconds: 500),
                                 scale: _timeAttackstart ? 1 : 0.8,
                                 curve: Curves.easeInOutBack,
                                 child: Row(
@@ -6198,7 +6239,7 @@ class _ChallengeModeState extends State<ChallengeMode> {
                               ),
                               Spacer(),
                               AnimatedScale(
-                                  duration: Duration(milliseconds: 1000),
+                                  duration: Duration(milliseconds: 500),
                                   scale: _mainstart ? 1 : 0.8,
                                   curve: Curves.easeInOutBack,
                                   child: Bounce(
