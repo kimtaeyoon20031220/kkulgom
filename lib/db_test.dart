@@ -84,6 +84,20 @@ class DBHelper {
     });
   }
 
+  Future<List<Memo>> getCreateTime() async {
+    final db = await database;
+
+    // 모든 Memo를 얻기 위해 테이블에 질의합니다.
+    final List<Map<String, dynamic>> maps = await db.query('memos');
+
+    // List<Map<String, dynamic>를 List<Memo>으로 변환합니다.
+    return List.generate(maps.length, (i) {
+      return Memo(
+        createTime: maps[i]['createTime'],
+      );
+    });
+  }
+
   Future<void> updateMemo(Memo memo) async {
     final db = await database;
 

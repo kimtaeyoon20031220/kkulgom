@@ -32,6 +32,7 @@ import 'package:flutter/services.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import './animation.dart';
+import './eventload.dart';
 
 
 var AllFontColor = Color(0xff565445);
@@ -1868,8 +1869,6 @@ class _ChallengeErrorState extends State<ChallengeError> {
 }
 
 
-
-
 class SecondPage extends StatefulWidget {
   const SecondPage({Key? key}) : super(key: key);
 
@@ -1878,8 +1877,15 @@ class SecondPage extends StatefulWidget {
 }
 
 class _SecondPageState extends State<SecondPage> {
+
+  var Data = [];
+  var Databefore = [];
+  var tData = [];
+  var tDatabefore = [];
+
   void initState() {
     super.initState();
+    loadData();
     dayListToday = [];
     dayList = [];
     dayListAll = [];
@@ -1889,6 +1895,19 @@ class _SecondPageState extends State<SecondPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     initializeDateFormatting(Localizations.localeOf(context).languageCode);
+  }
+  @override
+  void loadData() async {
+    Databefore = await DBHelper().getCreateTime();
+    tDatabefore = await DBTHelper().todays();
+    for(int i = 0; i < Databefore.length; i++) {
+      Data.add(Databefore[i].createTime);
+    }
+    for(int i = 0; i < tDatabefore.length; i++) {
+      tData.add(tDatabefore[i].createTime);
+    }
+    print('Data: ${Data}');
+    print('tData: ${tData}');
   }
   Future<void>printMe() async {
     dayList = await DBHelper().getMemoDate(getToday());
@@ -1908,15 +1927,12 @@ class _SecondPageState extends State<SecondPage> {
     print("printMeNext");
   }
 
-
   var _selectedDay;
   var _focusedDay = DateTime.now();
   var _calendarFormat = CalendarFormat.week;
   var dayLen;
   var dayTLen;
   var dayALen;
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -1935,56 +1951,126 @@ class _SecondPageState extends State<SecondPage> {
           ),
           margin: EdgeInsets.only(bottom: 0, top: 0, left: 0, right: 0),
           child: Column(children: [
-            TableCalendar(
-              headerStyle: HeaderStyle(
-                formatButtonVisible: false,
-                leftChevronVisible: false,
-                rightChevronVisible: false,
-                titleCentered: true,
-                titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
-                headerMargin: EdgeInsets.only(bottom: 30),
-              ),
-              locale: 'ko-KR',
-              focusedDay: _focusedDay,
-              firstDay: DateTime.now().subtract(Duration(days:365*10+2)),
-              lastDay: DateTime.now().add(Duration(days: 365*10+2)),
-              selectedDayPredicate: (day) {
-                return isSameDay(_selectedDay, day);
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-                setState(() async {
-                  dayList = await DBHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
-                  dayListToday = await DBTMHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
-                  dayListAll = await DBTHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
-                  dayLen = dayList;
-                  dayTLen = dayListToday;
-                  dayALen = dayListAll;
-                });
-              },
-              onPageChanged: (focusedDay){
-                _focusedDay = focusedDay;
-              },
-              calendarFormat: _calendarFormat,
-              onFormatChanged: (format){
-                setState((){
-                  _calendarFormat = format;
-                });
-              },
-              calendarBuilders: CalendarBuilders(
-                defaultBuilder: (context, dateTime, _) {
-                  return CalendarCellBuilder(context, dateTime, _, 0);
-                },
-                todayBuilder: (context, dateTime, _) {
-                  return CalendarCellBuilder(context, dateTime, _, 1);
-                },
-                selectedBuilder: (context, dateTime, _) {
-                  return CalendarCellBuilder(context, dateTime, _, 2);
-                },
-              ),
+            FutureBuilder(
+              future: Future.delayed(Duration(milliseconds: 70)),
+              builder: (BuildContext context, AsyncSnapshot DataSnapshot) {
+                if (DataSnapshot.hasData == false) {
+                  return TableCalendar(
+                  headerStyle: HeaderStyle(
+                    formatButtonVisible: false,
+                    leftChevronVisible: false,
+                    rightChevronVisible: false,
+                    titleCentered: true,
+                    titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
+                    headerMargin: EdgeInsets.only(bottom: 30),
+                  ),
+                  eventLoader: (day) {
+                    return getEventsForDay(day);
+                  },
+                  locale: 'ko-KR',
+                  focusedDay: _focusedDay,
+                  firstDay: DateTime.now().subtract(Duration(days:365*10+2)),
+                  lastDay: DateTime.now().add(Duration(days: 365*10+2)),
+                  selectedDayPredicate: (day) {
+                    return isSameDay(_selectedDay, day);
+                  },
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      _selectedDay = selectedDay;
+                      _focusedDay = focusedDay;
+                    });
+                    setState(() async {
+                      dayList = await DBHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
+                      dayListToday = await DBTMHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
+                      dayListAll = await DBTHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
+                      dayLen = dayList;
+                      dayTLen = dayListToday;
+                      dayALen = dayListAll;
+                      print('dayList: ${dayList}');
+                    });
+                  },
+                  onPageChanged: (focusedDay){
+                    _focusedDay = focusedDay;
+                  },
+                  calendarFormat: _calendarFormat,
+                  onFormatChanged: (format){
+                    setState((){
+                      _calendarFormat = format;
+                    });
+                  },
+                  calendarBuilders: CalendarBuilders(
+                    defaultBuilder: (context, dateTime, _) {
+                      return CalendarCellBuilder(context, dateTime, _, 0, _selectedDay, Data, tData);
+                    },
+                    todayBuilder: (context, dateTime, _) {
+                      return CalendarCellBuilder(context, dateTime, _, 1, _selectedDay, Data, tData);
+                    },
+                    selectedBuilder: (context, dateTime, _) {
+                      return CalendarCellBuilder(context, dateTime, _, 2, _selectedDay, Data, tData);
+                    },
+                    ),
+                  );
+                  }
+                else if (DataSnapshot.hasError) {
+                  return Text('error');
+    }
+                else {
+                  return TableCalendar(
+                    headerStyle: HeaderStyle(
+                      formatButtonVisible: false,
+                      leftChevronVisible: false,
+                      rightChevronVisible: false,
+                      titleCentered: true,
+                      titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
+                      headerMargin: EdgeInsets.only(bottom: 30),
+                    ),
+                    eventLoader: (day) {
+                      return getEventsForDay(day);
+                    },
+                    locale: 'ko-KR',
+                    focusedDay: _focusedDay,
+                    firstDay: DateTime.now().subtract(Duration(days:365*10+2)),
+                    lastDay: DateTime.now().add(Duration(days: 365*10+2)),
+                    selectedDayPredicate: (day) {
+                      return isSameDay(_selectedDay, day);
+                    },
+                    onDaySelected: (selectedDay, focusedDay) {
+                      setState(() {
+                        _selectedDay = selectedDay;
+                        _focusedDay = focusedDay;
+                      });
+                      setState(() async {
+                        dayList = await DBHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
+                        dayListToday = await DBTMHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
+                        dayListAll = await DBTHelper().getMemoDate(_selectedDay.toString().split(' ')[0]);
+                        dayLen = dayList;
+                        dayTLen = dayListToday;
+                        dayALen = dayListAll;
+                      });
+                    },
+                    onPageChanged: (focusedDay){
+                      _focusedDay = focusedDay;
+                    },
+                    calendarFormat: _calendarFormat,
+                    onFormatChanged: (format){
+                    setState((){
+                      _calendarFormat = format;
+                    });
+                  },
+                  calendarBuilders: CalendarBuilders(
+                    defaultBuilder: (context, dateTime, _) {
+                      return CalendarCellBuilder(context, dateTime, _, 0, _selectedDay, Data, tData);
+                    },
+                    todayBuilder: (context, dateTime, _) {
+                      return CalendarCellBuilder(context, dateTime, _, 1, _selectedDay, Data, tData);
+                    },
+                    selectedBuilder: (context, dateTime, _) {
+                      return CalendarCellBuilder(context, dateTime, _, 2, _selectedDay, Data, tData);
+                    },
+                  ),
+                );
+              }
+            }
             ),
           ])
       ),
@@ -2355,21 +2441,30 @@ class _printChallengeWidgetState extends State<printChallengeWidget> {
   }
 }
 
-
-
-
-Widget CalendarCellBuilder(BuildContext context, DateTime dateTime, _, int type) {
-  String date = DateFormat('dd').format(dateTime);
+Widget CalendarCellBuilder(BuildContext context, DateTime dateTime, _, int type, _selectedDay, Data, tData) {
+  String date = DateFormat('yyyy-MM-dd').format(dateTime);
+  print('CellbuilderData: ${Data}');
+  print('CellbuildertData:${tData}');
   return Container(
-      padding: EdgeInsets.all(5),
-      child: Container(
+      padding: EdgeInsets.all(3),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 200),
+        curve: Curves.ease,
         padding: EdgeInsets.all(0),
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: CalendarBorder[type],
+          borderRadius: BorderRadius.circular(5),
+          color: type == 2 ? Color(0xff83C7A9).withOpacity(0.3) : Colors.white,
         ),
-        child: Center(child: Text('$date', style: TextStyle(color: CalendarText[type], fontSize: 17, fontWeight: CalendarFontWeight[type]))),
+        child: Center(child: AnimatedContainer(
+          duration: Duration(milliseconds: 200),
+          curve: Curves.ease,
+          padding: EdgeInsets.all(type == 2 ? 5 : 10),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+                color: type == 2 ? Color(0xff83C7A9) : (Data.contains(date) || tData.contains(date)) ? Colors.blueAccent : Color(0xffEFEFEF),
+            ),
+            child: Text('${date.toString().split('-')[2]}', style: TextStyle(color: type == 2 ? Colors.white : (Data.contains(date) || tData.contains(date)) ? Colors.white : Colors.black, fontSize: 17, fontWeight: CalendarFontWeight[type])))),
       )
   );
 }
@@ -3645,7 +3740,7 @@ class _BadgeAppState extends State<BadgeApp> {
   void initState() {
     super.initState();
     for(int i = 0; i < _check.length; i++) {
-      Future.delayed(Duration(milliseconds: 100 * (i + 1)), () {
+      Future.delayed(Duration(milliseconds: 30 * (i+1)), () {
         setState((){
           _check[i] = true;
         });
@@ -3685,7 +3780,7 @@ class _BadgeAppState extends State<BadgeApp> {
                             itemCount: badgelist.length,
                             itemBuilder: (context, index) {
                               return AnimatedScale(
-                                duration: Duration(milliseconds: 1000),
+                                duration: Duration(milliseconds: 500),
                                 curve: Curves.easeOutCubic,
                                 scale: _check[index] ? 1.0 : 0.7,
                                 child: Container(
@@ -6968,14 +7063,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         todayDecoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
-
         ),
         todayTextStyle: TextStyle(color: Colors.black),
         defaultTextStyle: TextStyle(color: Colors.white),
         selectedTextStyle: TextStyle(color: Colors.black),
       ),
       locale: 'ko-KR',
-      daysOfWeekHeight: 30,
+      daysOfWeekHeight: 50,
       headerStyle: HeaderStyle(
         headerMargin: EdgeInsets.only(left:40, top: 10, right: 40, bottom: 10),
         titleCentered: true,
@@ -6987,9 +7081,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         setState((){
           _calendarFormat = format;
         });
-      },
-      eventLoader: (day){
-        return [];
       },
     );
   }
